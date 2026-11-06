@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      hls.js:
-        specifier: ^1.7.4
-        version: 1.7.4
       react:
         specifier: ^19.2.0
         version: 19.3.1
@@ -510,9 +507,6 @@ packages:
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
-
-  hls.js@1.7.4:
-    resolution: {integrity: sha512-3GlxGdPvT2YHvQYOt+yOzT/DEior/qJVNIylHA77kgeoBTdQQqi70GwefNEUmHQeNGyjC8U62+bruqW/Tpm+tg==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -1023,8 +1017,6 @@ snapshots:
     optional: true
 
   gensync@1.0.0-beta.2: {}
-
-  hls.js@1.7.4: {}
 
   js-tokens@4.0.0: {}
 

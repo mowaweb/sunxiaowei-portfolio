@@ -6,7 +6,7 @@ import LiweikeCaseStudy from './LiweikeCaseStudy';
 import PosterCaseStudy from './PosterCaseStudy';
 import UniCaseStudy from './UniCaseStudy';
 import FriesCaseStudy from './FriesCaseStudy';
-import { FilmEditions, FilmViews, fullFilms, useLocalStream } from './FullFilm';
+import { FilmEditions, FilmViews, fullFilms } from './FullFilm';
 import './styles.css';
 import './case-studies.css';
 import './liweike-case.css';
@@ -162,7 +162,6 @@ function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange
   const videoRef = useRef(null);
   const versions = clip.versions || [];
   const media = versions.find(item => item.id === version) || versions[0] || clip;
-  const stream = useLocalStream(videoRef, media.video);
   useEffect(() => {
     if (videoRef.current) videoRef.current.playbackRate = playbackRate;
   }, [media.video, playbackRate]);
@@ -177,8 +176,7 @@ function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange
     }
   };
   return <div className={`dialog-player ${(clip.portrait ?? project.portrait) ? 'vertical-player' : ''}`}>
-    {media.video ? <><video ref={videoRef} key={`${clip.id}-${media.id}`} src={stream.playlist ? undefined : media.video} poster={media.image} controls autoPlay={autoPlay} playsInline preload="metadata" onEnded={onEnded} onLoadedMetadata={event => { updateDuration(event); event.currentTarget.playbackRate = playbackRate; }} onDurationChange={updateDuration} onRateChange={event => { if (event.currentTarget.playbackRate !== playbackRate) onPlaybackRateChange(event.currentTarget.playbackRate); }} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
-      {stream.failed && <p role="status" className="film-notice">正片暂未加载。<a href={project.link} target="_blank" rel="noreferrer">去 B 站观看 ↗</a></p>}
+    {media.video ? <><video ref={videoRef} key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay={autoPlay} playsInline preload="metadata" onEnded={onEnded} onLoadedMetadata={event => { updateDuration(event); event.currentTarget.playbackRate = playbackRate; }} onDurationChange={updateDuration} onRateChange={event => { if (event.currentTarget.playbackRate !== playbackRate) onPlaybackRateChange(event.currentTarget.playbackRate); }} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
       <div className="video-transport" role="group" aria-label="视频播放控制">
         <div className="video-seek-actions"><button type="button" onClick={() => seekBy(-5)} disabled={!duration} aria-label="快退5秒">← 快退 5 秒</button><button type="button" onClick={() => seekBy(5)} disabled={!duration} aria-label="快进5秒">快进 5 秒 →</button></div>
         <label className="video-speed">倍速<select aria-label="播放速度" value={playbackRate} onChange={event => onPlaybackRateChange(Number(event.target.value))}>{[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map(rate => <option value={rate} key={rate}>{rate === 1 ? '1× 正常' : `${rate}×`}</option>)}</select></label>
