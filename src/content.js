@@ -1,4 +1,5 @@
 import { additionalProjects } from './more-projects.js';
+import { graphicProjects } from './graphic-projects.js';
 
 export const profile = {
   name: '孙晓伟',
@@ -161,6 +162,7 @@ export const projects = [
     role: '创意 · AI 制作 · 剪辑合成',
   },
   ...additionalProjects,
+  ...graphicProjects,
 ].map((project, index) => ({ ...project, number: String(index + 1).padStart(2, '0') }));
 
 export const heroProjects = [

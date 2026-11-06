@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { capabilities, experiences, heroProjects, profile, projects } from './content';
+import { IPCaseStudy, MaicaiCaseStudy } from './CaseStudies';
 import './styles.css';
+import './case-studies.css';
 
 function Arrow({ direction = 'up', ...props }) {
   return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props} style={{ transform: direction === 'down' ? 'rotate(90deg)' : direction === 'right' ? 'rotate(45deg)' : undefined, ...props.style }}><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -52,7 +54,7 @@ function Header({ active }) {
   </header>;
 }
 
-function Hero({ onPlay }) {
+function Hero({ onPlay, suspended = false }) {
   const videoRef = useRef(null);
   const sectionRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -62,22 +64,26 @@ function Hero({ onPlay }) {
     const video = videoRef.current;
     let cancelled = false;
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && playing) video.play().catch(() => { if (!cancelled) setPlaying(false); });
+      if (entry.isIntersecting && playing && !suspended) video.play().catch(() => { if (!cancelled) setPlaying(false); });
       else video.pause();
     }, { threshold: 0.08 });
     observer.observe(sectionRef.current);
     return () => { cancelled = true; observer.disconnect(); video.pause(); };
-  }, [playing, selected.projectId]);
-  return <section className="hero" id="home" ref={sectionRef} aria-label="孙晓伟个人作品集首页">
-    <div className="hero-media"><video key={selected.projectId} ref={videoRef} src={selected.video} poster={selected.image} autoPlay={playing} muted loop playsInline preload="metadata" aria-hidden="true" onError={() => setPlaying(false)} /><div className="hero-shade" /></div>
+  }, [playing, selected.projectId, suspended]);
+  const previews = [1, 2, 3].map(offset => ({ ...heroProjects[(selectedIndex + offset) % heroProjects.length], index: (selectedIndex + offset) % heroProjects.length }));
+  return <section className="hero hero-editorial" id="home" ref={sectionRef} aria-label="孙晓伟个人作品集首页">
+    <div className="hero-media"><video key={selected.projectId} ref={videoRef} src={selected.video} poster={selected.image} autoPlay={playing && !suspended} muted playsInline preload="metadata" aria-hidden="true" onEnded={() => { if (playing && !suspended) setSelectedIndex(index => (index + 1) % heroProjects.length); }} onError={() => setPlaying(false)} /><div className="hero-shade" /></div>
     <div className="hero-grid" aria-hidden="true" />
     <div className="hero-content shell">
       <div className="hero-eyebrow"><span className="status-dot" /><span>孙晓伟 / SUN XIAOWEI</span><span className="eyebrow-separator">—</span><span>独立视觉创作者</span></div>
+      <div className="hero-title-block"><span className="hero-project-kicker">CREATIVE MOTION / {String(selectedIndex + 1).padStart(2, '0')} · {selected.label}</span>
       <h1>让想象，<br />成为<span className="hero-emphasis">画面<svg viewBox="0 0 340 25" preserveAspectRatio="none" aria-hidden="true"><path d="M2 16C105-1 243 0 337 6M14 23c83-9 207-10 307-8" /></svg></span>。</h1>
       <div className="hero-intro"><p>以三维为基础，和 AI 一起拓展视觉的边界。<br />专注品牌产品视频、角色动画与创意影像。</p><span className="hero-discipline">3D · AIGC · MOTION</span></div>
+      </div>
+      <div className="hero-preview-stage" role="group" aria-label="接下来的视频项目">{previews.map(item => <button type="button" className="hero-project-preview" key={item.projectId} onClick={() => setSelectedIndex(item.index)} aria-label={`预览${item.label}`}><img src={item.image} alt="" width="320" height="180" /><span><small>{String(item.index + 1).padStart(2, '0')} /</small>{item.label}<span aria-hidden="true">↗</span></span></button>)}</div>
       <div className="hero-actions"><a className="button button-light" href="#work">探索精选作品 <Arrow direction="down" /></a><button className="text-play" onClick={() => onPlay(selected.project)} aria-label={`播放${selected.project.title}`}><span className="play-ring"><PlayIcon /></span>播放当前项目<span className="play-length">{selected.project.duration}</span></button></div>
       <div className="hero-switcher">
-        <div className="hero-switcher-heading"><span>点击切换项目</span><span aria-live="polite" aria-atomic="true">{String(selectedIndex + 1).padStart(2, '0')} / {String(heroProjects.length).padStart(2, '0')} · {selected.label}</span></div>
+        <div className="hero-switcher-heading"><span>{playing ? '自动连播 · 点击切换项目' : '点击切换项目'}</span><span aria-live="polite" aria-atomic="true">{String(selectedIndex + 1).padStart(2, '0')} / {String(heroProjects.length).padStart(2, '0')} · {selected.label}</span></div>
         <div className="hero-projects" role="group" aria-label="切换首页视频项目">{heroProjects.map((item, index) => <button type="button" className="hero-project-choice" key={item.projectId} aria-pressed={selectedIndex === index} aria-label={`切换首页视频：${item.label}`} onClick={() => setSelectedIndex(index)}><img src={item.image} alt="" width="160" height="90" /><span>{item.label}</span></button>)}</div>
       </div>
     </div>
@@ -109,7 +115,7 @@ function ProjectCard({ project, onOpen }) {
   const videoCount = project.clips?.filter(clip => clip.video).length;
   const countLabel = project.clips ? videoCount ? `${videoCount} 段视频` : `${project.clips.length} 组画面` : project.duration;
   const action = project.video ? '播放' : '查看';
-  return <button className={`project-card ${project.featured ? 'featured' : ''} ${project.portrait ? 'portrait-project' : ''}`} onClick={() => onOpen(project)} aria-label={`${action}${project.title}`}>
+  return <button className={`project-card ${project.featured ? 'featured' : ''} ${project.portrait ? 'portrait-project' : ''} ${project.category === 'graphic' ? 'graphic-project' : ''}`} onClick={() => onOpen(project)} aria-label={`${action}${project.title}`}>
     <div className="project-art"><img src={project.image} alt={project.title + '作品画面'} loading="lazy" decoding="async" />{project.portrait && <div className="portrait-cover-type" aria-hidden="true"><span>AI SHORT FILM</span><strong>孔乙己</strong><small>一个熟悉的故事，<br />一次新的影像表达。</small></div>}<div className="project-shade" /><div className="project-topline"><span>{project.number} / {project.nature}</span><span className="project-duration">{project.video ? <PlayIcon /> : <Arrow />}{countLabel}</span></div><div className="project-art-footer"><span>{project.english}</span><span className="project-open"><Arrow /></span></div>{project.featured && <div className="featured-title"><span>三维 × AI · 产品影像制作</span><strong>越过想象的边界。</strong></div>}<span className="project-hover-play">{project.video ? <PlayIcon /> : <Arrow />}{action}作品</span></div>
     <div className="project-meta"><h3>{project.title}</h3><div>{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></div>
   </button>;
@@ -121,7 +127,7 @@ function matchesProjectFilter(project, filter) {
 
 function Work({ onOpen }) {
   const [filter, setFilter] = useState('all');
-  const filters = [{ id: 'all', name: '全部作品' }, { id: 'commercial', name: '商业视频' }, { id: 'cg', name: '三维 / CG' }, { id: 'personal', name: '个人创作' }].map(filter => ({ ...filter, count: String(projects.filter(project => matchesProjectFilter(project, filter.id)).length).padStart(2, '0') }));
+  const filters = [{ id: 'all', name: '全部作品' }, { id: 'commercial', name: '商业视频' }, { id: 'cg', name: '三维 / CG' }, { id: 'graphic', name: '平面 / IP' }, { id: 'personal', name: '个人创作' }].map(filter => ({ ...filter, count: String(projects.filter(project => matchesProjectFilter(project, filter.id)).length).padStart(2, '0') }));
   const visible = projects.filter(project => matchesProjectFilter(project, filter));
   return <section className="work section shell" id="work">
     <SectionLabel number="02">精选作品 / SELECTED WORK</SectionLabel>
@@ -140,7 +146,7 @@ function Contact({ onCopy }) {
   return <section className="contact" id="contact"><div className="contact-inner shell"><SectionLabel number="04">保持联系 / CONTACT</SectionLabel><div className="contact-lead"><div className="contact-eyebrow"><span className="status-dot" />关于工作、项目，或一个新想法。</div><h2>下一个画面，<br />一起<span>创造</span>。</h2><a className="contact-orb" href={`mailto:${profile.email}`} aria-label="发送邮件联系孙晓伟"><Arrow /></a></div><div className="contact-actions"><a className="contact-email" href={`mailto:${profile.email}`}>{profile.email}<Arrow /></a><button className="copy-email" onClick={() => onCopy(profile.email, '邮箱地址')} aria-label="复制邮箱地址"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.4" /><path d="M15 8V4H4v11h4" stroke="currentColor" strokeWidth="1.4" /></svg></button></div><div className="contact-secondary"><div><span>电话 / PHONE</span><button onClick={() => onCopy(profile.phone, '电话号码')}>+86 {profile.phone} <span aria-hidden="true">⧉</span></button></div><div><span>作品 / ARCHIVE</span><a href={profile.portfolioUrl} target="_blank" rel="noreferrer">语雀作品档案 <Arrow /></a></div><div><span>简历 / RÉSUMÉ</span><a href={profile.resume} download="孙晓伟简历.pdf">下载个人简历 <Arrow direction="down" /></a></div></div><footer className="footer"><a className="footer-brand" href="#home">孙晓伟 <span>SUN XIAOWEI</span></a><span>© {new Date().getFullYear()} · DESIGN IN MOTION</span><a href="#home">返回顶部 <Arrow /></a></footer></div></section>;
 }
 
-function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange }) {
+function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange, autoPlay = true }) {
   const [version, setVersion] = useState('ai');
   const [duration, setDuration] = useState(0);
   const videoRef = useRef(null);
@@ -160,7 +166,7 @@ function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange
     }
   };
   return <div className={`dialog-player ${(clip.portrait ?? project.portrait) ? 'vertical-player' : ''}`}>
-    {media.video ? <><video ref={videoRef} key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay playsInline preload="metadata" onEnded={onEnded} onLoadedMetadata={event => { updateDuration(event); event.currentTarget.playbackRate = playbackRate; }} onDurationChange={updateDuration} onRateChange={event => { if (event.currentTarget.playbackRate !== playbackRate) onPlaybackRateChange(event.currentTarget.playbackRate); }} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
+    {media.video ? <><video ref={videoRef} key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay={autoPlay} playsInline preload="metadata" onEnded={onEnded} onLoadedMetadata={event => { updateDuration(event); event.currentTarget.playbackRate = playbackRate; }} onDurationChange={updateDuration} onRateChange={event => { if (event.currentTarget.playbackRate !== playbackRate) onPlaybackRateChange(event.currentTarget.playbackRate); }} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
       <div className="video-transport" role="group" aria-label="视频播放控制">
         <div className="video-seek-actions"><button type="button" onClick={() => seekBy(-5)} disabled={!duration} aria-label="快退5秒">← 快退 5 秒</button><button type="button" onClick={() => seekBy(5)} disabled={!duration} aria-label="快进5秒">快进 5 秒 →</button></div>
         <label className="video-speed">倍速<select aria-label="播放速度" value={playbackRate} onChange={event => onPlaybackRateChange(Number(event.target.value))}>{[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map(rate => <option value={rate} key={rate}>{rate === 1 ? '1× 正常' : `${rate}×`}</option>)}</select></label>
@@ -171,30 +177,34 @@ function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange
   </div>;
 }
 
-function ProjectPlayer({ project }) {
+function ProjectPlayer({ project, autoPlay = true, playlistFirst = false }) {
   const [clipIndex, setClipIndex] = useState(0);
+  const [hasSelectedClip, setHasSelectedClip] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
   const clips = project.clips || [{ id: project.id, title: project.title, stage: '作品片段', video: project.video, image: project.image }];
   const clip = clips[clipIndex];
   const hasImages = clips.some(item => !item.video);
   const hasVideos = clips.some(item => item.video);
-  return <>
-    <ClipPlayer key={clip.id} project={project} clip={clip} playbackRate={playbackRate} onPlaybackRateChange={setPlaybackRate} onEnded={project.autoAdvanceClips ? () => setClipIndex(current => Math.min(current + 1, clips.length - 1)) : undefined} />
-    {clips.length > 1 && <section className="project-clips" aria-label={`${project.title}的片段与制作过程`}>
+  const playlist = clips.length > 1 && <section className="project-clips" aria-label={`${project.title}的片段与制作过程`}>
       <div className="clips-heading"><span>{project.autoAdvanceClips ? '片段顺序 · 自动连播' : hasImages ? hasVideos ? '视频与项目画面' : '项目画面' : '片段与制作过程'}</span><span aria-live="polite" aria-atomic="true">{String(clipIndex + 1).padStart(2, '0')} / {String(clips.length).padStart(2, '0')}</span></div>
       <div className="clip-list" role="group" aria-label={hasImages ? '选择项目内容' : '选择视频片段'}>
-        {clips.map((item, i) => <button key={item.id} className={`clip-button ${i === clipIndex ? 'is-active' : ''}`} aria-pressed={i === clipIndex} aria-label={`${item.video ? '播放' : '查看'}${project.autoAdvanceClips ? String(i).padStart(2, '0') + ' ' : ''}${item.title} · ${item.stage}`} onClick={() => setClipIndex(i)}>
+        {clips.map((item, i) => <button key={item.id} className={`clip-button ${i === clipIndex ? 'is-active' : ''}`} aria-pressed={i === clipIndex} aria-label={`${item.video ? '播放' : '查看'}${project.autoAdvanceClips ? String(i).padStart(2, '0') + ' ' : ''}${item.title} · ${item.stage}`} onClick={() => { setClipIndex(i); setHasSelectedClip(true); }}>
           <span className="clip-thumbnail"><img src={item.poster || item.image} alt="" loading="lazy" /><span className="clip-duration">{item.duration || (item.animated ? 'GIF' : '画面')}</span><span className="clip-play">{item.video ? <PlayIcon /> : <Arrow />}</span></span>
           <span className="clip-title">{project.autoAdvanceClips && <span className="clip-order">{String(i).padStart(2, '0')}</span>}{item.title}</span><span className="clip-stage">{item.stage}</span>
         </button>)}
       </div>
-    </section>}
+    </section>;
+  return <>
+    {playlistFirst && playlist}
+    <ClipPlayer key={clip.id} project={project} clip={clip} playbackRate={playbackRate} onPlaybackRateChange={setPlaybackRate} autoPlay={autoPlay || hasSelectedClip} onEnded={project.autoAdvanceClips ? () => setClipIndex(current => Math.min(current + 1, clips.length - 1)) : undefined} />
+    {!playlistFirst && playlist}
   </>;
 }
 
 function ProjectDialog({ project, onClose, onChange }) {
   const ref = useRef(null);
   const closeButton = useRef(null);
+  useEffect(() => { if (ref.current) ref.current.scrollTop = 0; }, [project?.id]);
   useEffect(() => {
     if (!project) return;
     const dialog = ref.current;
@@ -211,17 +221,19 @@ function ProjectDialog({ project, onClose, onChange }) {
   }, [Boolean(project)]);
   if (!project) return null;
   const index = projects.findIndex(p => p.id === project.id);
-  return <dialog className="project-dialog" ref={ref} aria-labelledby="dialog-project-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === ref.current) onClose(); }}>
+  const caseKind = project.caseStudy?.kind;
+  const caseVideos = caseKind === 'maicai' ? { ...project, clips: project.clips.filter(clip => clip.video).map(clip => clip.id === 'brand-blindbox' ? { ...clip, image: './assets/maicai-case-video-poster.webp' } : clip) } : null;
+  return <dialog className={`project-dialog ${caseKind ? 'case-dialog' : ''} ${caseKind === 'ip' ? 'ip-case-dialog' : ''}`} ref={ref} aria-labelledby="dialog-project-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === ref.current) onClose(); }}>
     <div className="dialog-content">
       <div className="dialog-heading"><span>SELECTED WORK / {project.number}</span><button ref={closeButton} className="dialog-close" onClick={onClose} aria-label="关闭作品视频"><span>关闭</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" stroke="currentColor" strokeWidth="1.5" /></svg></button></div>
-      <ProjectPlayer key={project.id} project={project} />
+      {caseKind === 'maicai' ? <MaicaiCaseStudy project={project}><ProjectPlayer key={project.id} project={caseVideos} autoPlay={false} playlistFirst /></MaicaiCaseStudy> : caseKind === 'ip' ? <IPCaseStudy project={project} /> : <><ProjectPlayer key={project.id} project={project} />
       <div className="dialog-info"><div><span className="dialog-nature">{project.nature} / {project.tags.join(' · ')}</span><h2 id="dialog-project-title">{project.title}</h2><p>{project.description}</p><span className="dialog-role">我的工作：{project.role}</span></div>{project.link && <a className="inline-link" href={project.link} target="_blank" rel="noreferrer">{project.linkLabel || '查看发布视频'} <Arrow /></a>}</div>
       {project.characterSheet && <figure className="character-sheet">
         <figcaption><div><span>AI 角色设定 / CHARACTER TURNAROUND</span><h3>{project.characterSheet.title}</h3></div><a className="inline-link" href={project.characterSheet.image} target="_blank" rel="noreferrer">查看原图 <Arrow /></a></figcaption>
         <a className="character-sheet-image" href={project.characterSheet.image} target="_blank" rel="noreferrer" aria-label="打开人物三视图原图"><img src={project.characterSheet.image} alt={project.characterSheet.alt} width={project.characterSheet.width} height={project.characterSheet.height} loading="lazy" decoding="async" /></a>
         <p>正面 · 侧面 · 背面 · 面部特写</p>
         {project.characterSheet.note && <p className="character-sheet-note">{project.characterSheet.note}</p>}
-      </figure>}
+      </figure>}</>}
       <div className="dialog-pagination"><button onClick={() => onChange(projects[(index - 1 + projects.length) % projects.length])}>← 上一个作品</button><span>{project.number} / {String(projects.length).padStart(2, '0')}</span><button onClick={() => onChange(projects[(index + 1) % projects.length])}>下一个作品 →</button></div>
     </div>
   </dialog>;
@@ -250,7 +262,7 @@ function App() {
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(''), 3200);
   };
-  return <><a className="skip-link" href="#main-content">跳到主要内容</a><Header active={active} /><main id="main-content"><Hero onPlay={setProject} /><About onCopy={copy} /><Work onOpen={setProject} /><Expertise /><Contact onCopy={copy} /></main><ProjectDialog project={project} onClose={() => setProject(null)} onChange={setProject} /><div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite">{toast && <><span>✓</span>{toast}</>}</div></>;
+  return <><a className="skip-link" href="#main-content">跳到主要内容</a><Header active={active} /><main id="main-content"><Hero onPlay={setProject} suspended={Boolean(project)} /><About onCopy={copy} /><Work onOpen={setProject} /><Expertise /><Contact onCopy={copy} /></main><ProjectDialog project={project} onClose={() => setProject(null)} onChange={setProject} /><div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite">{toast && <><span>✓</span>{toast}</>}</div></>;
 }
 
 const root = import.meta.hot?.data.root ?? createRoot(document.getElementById('root'));
