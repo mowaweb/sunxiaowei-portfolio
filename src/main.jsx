@@ -6,13 +6,14 @@ import LiweikeCaseStudy from './LiweikeCaseStudy';
 import PosterCaseStudy from './PosterCaseStudy';
 import UniCaseStudy from './UniCaseStudy';
 import FriesCaseStudy from './FriesCaseStudy';
+import NalouCaseStudy from './NalouCaseStudy';
+import { nalouProject } from './nalou-project';
 import { FilmEditions, FilmViews, fullFilms } from './FullFilm';
 import './styles.css';
 import './case-studies.css';
 import './liweike-case.css';
 import './poster-case.css';
 import './unihui-case.css';
-import './hero-perspective.css';
 
 function Arrow({ direction = 'up', ...props }) {
   return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props} style={{ transform: direction === 'down' ? 'rotate(90deg)' : direction === 'right' ? 'rotate(45deg)' : undefined, ...props.style }}><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -109,14 +110,21 @@ function Experience() {
   </div>;
 }
 
-function About({ onCopy }) {
+function About({ onCopy, onOpen }) {
+  const openNalou = () => onOpen(projects.find(project => project.id === nalouProject.id));
   return <section className="about section shell" id="about">
     <SectionLabel number="01">关于我 / ABOUT</SectionLabel>
     <div className="about-layout">
       <div className="identity-panel"><div className="identity-top"><span>THE PERSON<br />BEHIND THE FRAMES</span><span className="identity-cross">✳</span></div><div className="avatar-composition"><span className="avatar-orbit orbit-one" /><span className="avatar-orbit orbit-two" /><div className="avatar-frame"><img src="./assets/avatar.jpg" alt="孙晓伟简历中的手绘头像" width="260" height="260" loading="lazy" /></div><span className="avatar-coordinate">PROFILE / SUN XIAOWEI</span></div><div className="identity-bottom"><span>阿丸 <small>A-WAN</small></span><span>3D & AIGC<br />VISUAL DESIGNER</span></div></div>
       <div className="about-copy"><h2>创意有想法，<br />制作有章法<span className="accent">。</span></h2><h3>我是孙晓伟，也叫阿丸。</h3><p>从三维场景与角色制作，到品牌产品视频与 AI 短片，我喜欢把一个想法，变成有质感、有叙事的画面。</p><p>做客户项目，也独立创作。用三维控制画面，用 AI 探索可能，让创意落到最后一帧。</p><div className="about-links"><a href={`mailto:${profile.email}`}>{profile.email} <Arrow /></a><button onClick={() => onCopy(profile.phone, '电话号码')}>TEL. {profile.phone} <span className="copy-symbol" aria-hidden="true">⧉</span></button></div><Experience /></div>
     </div>
-    <div className="stats-strip"><div><strong>{String(projects.length).padStart(2, '0')}<span> /</span></strong><span>精选项目案例</span></div><div><strong>48</strong><span>自营账号作品</span></div><div><strong>6,212</strong><span>自营账号粉丝</span></div><div><strong>10<span>万+</span></strong><span>多条作品播放量</span></div><p>抖音「Nalou 娜楼」<br />账号数据来自历史截图</p></div>
+    <div className="stats-strip">
+      <div><strong>{String(projects.length).padStart(2, '0')}<span> /</span></strong><span>精选项目案例</span></div>
+      <button type="button" onClick={openNalou}><strong>48</strong><span>自营账号作品</span></button>
+      <button type="button" onClick={openNalou}><strong>6,204</strong><span>自营账号粉丝</span></button>
+      <button type="button" onClick={openNalou}><strong>10<span>万+</span></strong><span>多条作品播放量</span></button>
+      <p><button type="button" className="nalou-link" onClick={openNalou}>查看「Nalou 娜楼」作品 ↗</button><br /><time dateTime="2026-11-06">抖音数据截至 2026.11.06</time></p>
+    </div>
   </section>;
 }
 
@@ -243,6 +251,9 @@ function ProjectDialog({ project, onClose, onChange }) {
   } else if (caseKind === 'ip') {
     caseClass = 'ip-case-dialog';
     caseContent = <IPCaseStudy project={project} />;
+  } else if (caseKind === 'nalou') {
+    caseClass = 'nalou-dialog';
+    caseContent = <NalouCaseStudy project={project} Player={ClipPlayer} />;
   } else if (caseKind === 'liweike') {
     caseClass = 'lw-dialog';
     caseContent = <LiweikeCaseStudy project={project} Player={ClipPlayer} />;
@@ -270,7 +281,17 @@ function ProjectDialog({ project, onClose, onChange }) {
 }
 
 function App() {
-  const [project, setProject] = useState(null);
+  const [project, setSelectedProject] = useState(() => {
+    const id = new URLSearchParams(window.location.search).get('project');
+    return projects.find(item => item.id === id) || null;
+  });
+  function setProject(next) {
+    const url = new URL(window.location.href);
+    if (next) url.searchParams.set('project', next.id);
+    else url.searchParams.delete('project');
+    window.history.replaceState(window.history.state, '', url);
+    setSelectedProject(next);
+  }
   const [active, setActive] = useState('home');
   const [toast, setToast] = useState('');
   const toastTimer = useRef(null);
@@ -292,7 +313,7 @@ function App() {
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(''), 3200);
   };
-  return <><a className="skip-link" href="#main-content">跳到主要内容</a><Header active={active} /><main id="main-content"><Hero onPlay={setProject} suspended={Boolean(project)} /><About onCopy={copy} /><Work onOpen={setProject} /><Expertise /><Contact onCopy={copy} /></main><ProjectDialog project={project} onClose={() => setProject(null)} onChange={setProject} /><div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite">{toast && <><span>✓</span>{toast}</>}</div></>;
+  return <><a className="skip-link" href="#main-content">跳到主要内容</a><Header active={active} /><main id="main-content"><Hero onPlay={setProject} suspended={Boolean(project)} /><About onCopy={copy} onOpen={setProject} /><Work onOpen={setProject} /><Expertise /><Contact onCopy={copy} /></main><ProjectDialog project={project} onClose={() => setProject(null)} onChange={setProject} /><div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite">{toast && <><span>✓</span>{toast}</>}</div></>;
 }
 
 const root = import.meta.hot?.data.root ?? createRoot(document.getElementById('root'));

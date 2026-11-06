@@ -1,0 +1,226 @@
+.nalou-case {
+  --nalou-ink: #f2eeeb;
+  --nalou-muted: #c1b8b3;
+  --nalou-line: #ffffff29;
+  --nalou-accent: #f6c6bb;
+  color: var(--nalou-ink);
+  background:
+    radial-gradient(ellipse 60% 36% at 45% 36%, #24201e, transparent 85%),
+    #080808;
+}
+.nalou-case :is(a, button):focus-visible { outline: 2px solid var(--nalou-accent); outline-offset: 3px; }
+.nalou-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px clamp(18px, 4.5vw, 68px) 0;
+  color: var(--nalou-muted);
+  font-size: 12px;
+}
+.nalou-head a {
+  padding: 7px 13px;
+  border: 1px solid var(--nalou-line);
+  border-radius: 999px;
+  color: var(--nalou-ink);
+}
+.nalou-collage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  min-height: 430px;
+  padding: clamp(37px, 5vw, 76px) 0 clamp(70px, 6.5vw, 95px);
+}
+.nalou-main {
+  position: relative;
+  z-index: 2;
+  width: 67%;
+  min-width: 0;
+  border: 1px solid var(--nalou-line);
+  background: #101010;
+  border-radius: 15px;
+  box-shadow: 0 18px 55px #0008;
+}
+.nalou-main .dialog-player,
+.nalou-remote-frame { overflow: hidden; border-radius: 14px 14px 0 0; }
+.nalou-main .dialog-player video {
+  width: 100%;
+  height: auto;
+  max-height: 57svh;
+  object-fit: contain;
+  background: #050505;
+}
+.nalou-main .video-transport { background: #151313; }
+.nalou-main .video-transport :is(button, select) { background: #252222; color: #f2ede9; }
+.nalou-collage.is-portrait .nalou-main { width: clamp(265px, 32%, 395px); }
+.nalou-collage.is-portrait video { aspect-ratio: 9 / 16; }
+.nalou-remote-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: #161414;
+  aspect-ratio: 16 / 10;
+}
+.nalou-collage.is-portrait .nalou-remote-frame { aspect-ratio: 3 / 4; }
+.nalou-remote-frame img { width: 100%; height: 100%; min-height: 0; object-fit: cover; }
+.nalou-remote-frame a {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 17px;
+  border: 1px solid #ffffff88;
+  border-radius: 999px;
+  background: #151111db;
+  color: #fff;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.nalou-current {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 3px 9px;
+  padding: 10px 14px;
+}
+.nalou-current > span, .nalou-current > a { font: 11px/1.5 var(--mono); color: var(--nalou-muted); }
+.nalou-current > a { margin-left: auto; }
+.nalou-current h3 { margin: 0; font-weight: 500; font-size: 15px; line-height: 1.5; }
+.nalou-identity {
+  position: absolute;
+  z-index: 3;
+  left: 2.7%;
+  bottom: 12px;
+  width: min(20%, 228px);
+  padding: clamp(13px, 1.8vw, 25px);
+  border: 1px solid #ffffff37;
+  border-radius: 12px;
+  background: linear-gradient(125deg, #514948b5, #231f20d1);
+  backdrop-filter: blur(14px);
+}
+.nalou-identity h2 {
+  margin: 0;
+  color: var(--nalou-ink);
+  font-size: clamp(20px, 2.3vw, 34px);
+  line-height: 1.23;
+  font-weight: 500;
+  letter-spacing: -.055em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.nalou-identity p { margin-top: 8px; color: #e1d6cf; font-size: 11px; line-height: 1.5; }
+.nalou-peek {
+  position: absolute;
+  z-index: 3;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  width: 14.5%;
+  border: 1px solid #ffffff38;
+  border-radius: 12px;
+  background: #252323;
+  box-shadow: 0 12px 30px #0009;
+}
+.nalou-peek img { width: 100%; height: 100%; object-fit: cover; object-position: center 36%; }
+.nalou-peek span {
+  position: absolute;
+  bottom: 5px;
+  right: 6px;
+  padding: 1px 6px;
+  background: #171313c9;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+}
+.nalou-peek.peek-1 { top: 4%; left: 5%; aspect-ratio: 1; transform: rotate(-3deg); }
+.nalou-peek.peek-2 { right: 3.9%; top: 43%; aspect-ratio: .92; transform: rotate(3deg); }
+.nalou-collage.is-portrait .peek-1 { left: 14%; }
+.nalou-collage.is-portrait .peek-2 { right: 14%; }
+.nalou-works { margin-top: 15px; padding: 0 clamp(16px, 4vw, 60px) 28px; }
+.nalou-works-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--nalou-line);
+}
+.nalou-works-heading h3 { margin: 0; font-size: clamp(18px, 2vw, 28px); font-weight: 500; }
+.nalou-works-heading span { color: var(--nalou-muted); font: 11px/1.4 var(--mono); }
+.nalou-works-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+.nalou-works-grid button {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 0 0 6px;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--nalou-muted);
+  text-align: left;
+}
+.nalou-works-grid button[aria-pressed='true'] { border-color: var(--nalou-accent); color: var(--nalou-accent); }
+.nalou-tile-image {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  border-radius: 9px;
+  background: #232020;
+}
+.nalou-tile-image img { width: 100%; height: 100%; object-fit: cover; }
+.nalou-works-grid button[aria-pressed='true'] .nalou-tile-image { outline: 1px solid var(--nalou-accent); }
+.nalou-tile-image > span {
+  position: absolute;
+  inset: 6px auto auto 7px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #090808bb;
+  color: #fff;
+  font: 10px/1.4 var(--mono);
+}
+.nalou-works-grid strong { font-weight: 500; font-size: 12px; line-height: 1.5; }
+@media (hover: hover) {
+  .nalou-case a:hover, .nalou-works-grid button:hover { color: #fbd7cb; }
+  .nalou-peek:hover { border-color: var(--nalou-accent); }
+}
+@media (max-width: 850px) {
+  .nalou-collage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) repeat(2, minmax(44px, 12%));
+    min-height: 0;
+    gap: 12px;
+    padding: 16px clamp(16px, 4vw, 36px);
+  }
+  .nalou-identity {
+    position: static;
+    width: auto;
+    justify-self: start;
+    grid-column: 1;
+    grid-row: 1;
+    padding: 10px 14px;
+  }
+  .nalou-identity h2 { font-size: clamp(22px, 3.8vw, 31px); }
+  .nalou-identity p { margin-top: 4px; }
+  .nalou-collage .nalou-main { width: 100%; grid-column: 1 / -1; grid-row: 2; }
+  .nalou-collage.is-portrait .nalou-main { width: min(100%, 430px); }
+  .nalou-collage.is-portrait video { max-height: 55svh; }
+  .nalou-collage .nalou-peek {
+    position: static;
+    grid-row: 1;
+    width: 100%;
+    max-width: 85px;
+    border-radius: 8px;
+    aspect-ratio: 1;
+  }
+  .nalou-collage .peek-1 { grid-column: 2; }
+  .nalou-collage .peek-2 { grid-column: 3; }
+  .nalou-works { margin-top: 2px; }
+  .nalou-works-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 460px) {
+  .nalou-head { padding-top: 13px; }
+  .nalou-works-grid { gap: 10px 8px; }
+  .nalou-current h3 { font-size: 13px; }
+}

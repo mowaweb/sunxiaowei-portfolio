@@ -4,6 +4,7 @@ import { friesArt } from './fries-art.js';
 import { egretArt, egretCover } from './egret-art.js';
 import { unihuiPanels } from './unihui-panels.js';
 import { tmallElements } from './tmall-elements.js';
+import { nalouProject } from './nalou-project.js';
 
 export const profile = {
   name: '孙晓伟',
@@ -46,7 +47,7 @@ export const projects = [
   {
     id: 'osmo',
     number: '02',
-    title: '大疆 Osmo 360 II · 产品视频开场',
+    title: '大疆 Osmo 360 II · 产品影像',
     english: 'A NEW PERSPECTIVE',
     category: 'commercial',
     nature: '客户委托',
@@ -54,14 +55,18 @@ export const projects = [
     duration: '00:13',
     image: './assets/osmo-cover.webp',
     video: './assets/osmo.mp4',
-    description: '大疆 Osmo 360 II 产品视频开场。以 C4D 白膜预演规划产品与镜头运动，再结合 AI 完成视觉制作，展示本人制作的成片片段和对应预演。',
-    role: '镜头设计 · C4D 预演 · 三维与 AI 制作',
+    description: '用 C4D 白膜预演规划相机登场的镜头，再用 AI 完成开场画面。制作片段还展示了电池容量对比、主角跟随、全景拼缝和文件分段动效。',
+    role: '镜头设计 · C4D 预演 · 三维与 AI 制作 · AE 动效',
     link: 'https://www.bilibili.com/video/BV1NSgp6vEEV/',
     clips: [
-      { id: 'osmo-opening', title: 'Osmo 360 II', stage: '三维 × AI', duration: '00:13', video: './assets/osmo.mp4', image: './assets/osmo-cover.webp', versions: [
+      { id: 'osmo-opening', title: '产品开场', stage: '三维 × AI', duration: '00:13', video: './assets/osmo.mp4', image: './assets/osmo-cover.webp', versions: [
         { id: 'previz', label: '白膜预演', duration: '00:13', video: './assets/osmo-360-previz.mp4', image: './assets/osmo-360-previz.webp' },
         { id: 'ai', label: 'AI 生成', duration: '00:13', video: './assets/osmo.mp4', image: './assets/osmo-cover.webp' },
       ] },
+      { id: 'osmo-battery', title: '电池容量对比', stage: '产品讲解', duration: '00:05', video: './assets/osmo-battery.mp4', image: './assets/osmo-battery.webp' },
+      { id: 'osmo-tracking', title: '主角跟随', stage: '功能演示', duration: '00:04', video: './assets/osmo-tracking.mp4', image: './assets/osmo-tracking.webp' },
+      { id: 'osmo-stitch', title: '全景拼缝', stage: 'AI 影像', duration: '00:05', video: './assets/osmo-stitch.mp4', image: './assets/osmo-stitch.webp' },
+      { id: 'osmo-ae', title: '文件分段动效', stage: 'AE 后期', duration: '00:07', video: './assets/osmo-ae.mp4', image: './assets/osmo-ae.webp' },
     ],
   },
   {
@@ -104,7 +109,7 @@ export const projects = [
     role: 'AI 角色设定 · 生成式视觉特效 · 实拍融合',
     link: 'https://www.bilibili.com/video/BV1Untc6RETm/',
     characterSheet: {
-      image: './assets/lotus-character-turnaround.png',
+      image: './assets/lotus-character-turnaround.webp',
       title: '人物三视图与面部特写',
       note: '根据客户创意需求，将莲花汽车创始人柯林·查普曼（Colin Chapman）的 AI 角色形象融入影片叙事。',
       alt: '莲花汽车项目 AI 角色设定，展示人物正面、侧面、背面全身视图和面部特写',
@@ -150,20 +155,7 @@ export const projects = [
     role: '创意 · AI 制作 · 剪辑合成',
     portrait: true,
   },
-  {
-    id: 'cat',
-    number: '07',
-    title: '《我的甲方是只猫》· AI 短片',
-    english: 'AN UNEXPECTED CLIENT',
-    category: 'personal',
-    nature: '个人创作',
-    tags: ['创意剧情', 'AI 影像'],
-    duration: '02:47',
-    image: './assets/virtual-idol.webp',
-    video: './assets/virtual-idol.mp4',
-    description: '从日常工作里的甲方关系出发，用 AI 影像创作一段关于人与猫的故事。个人练习作品，独立创作。',
-    role: '创意 · AI 制作 · 剪辑合成',
-  },
+  nalouProject,
   ...additionalProjects,
   ...graphicProjects,
 ].map((project, index) => {

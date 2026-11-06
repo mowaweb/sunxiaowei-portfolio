@@ -1,0 +1,139 @@
+// Temporary one-time import. Only the exact bytes listed here may be written.
+export const partBytes = 8388608;
+export const importFilms = [
+  {
+    "slug": "drone",
+    "name": "drone.mp4",
+    "title": "大疆无人机 · 它竟然比我想象中更“野”",
+    "size": 168188822,
+    "sha256": "880f832fb5f42278fa8fc17ed51dadac1939ac8c99628d74060e6b939de4be60",
+    "parts": [
+      "2874f7a93330434fe11c753e47056f9fd34dbd75d3a63c7b57f2defe88e1607e",
+      "a36dd21cb1bc4a089b1a5a7e890e7e4ce186bd44d502a50661c378e988cc9435",
+      "70c3d86626f9efc6e198ef48933e6b5dd414a02e82689d3e36e799679bcde47c",
+      "24b44867db87db84a4f986332bd2910b6b4f6bf6a6932724410dd27cb2c81d7e",
+      "e015ef7ac1c215a59c22b4eb6d818fb0e1bacb3be49edb9d791c6cc7e0033faf",
+      "a78ceb08a45de0fda4a99b5201f80b76fe3c6cda29426659f85a7d3d54fa6ff3",
+      "ad7986af082c110ff91d470266e4201eb427b6a09766fb24bb6a0af82c0c0b19",
+      "a401136acfe8743b7d1ee2783a1b0de39f36bfc6fb75254f46bae2c2fa557ec7",
+      "ba8ecfe8e4c20eca5f177ee5108e8208bdcc301ff4fcba39f7b880044b63cc41",
+      "95113c2b9e59772bd5feba3bb74549e4d2aa6a1924cd8a7dd66c0eb93b983114",
+      "3ef8610fefbb1816d4f8d5d1c8bce8c1028ff29697afbfa454ef777285bc91e5",
+      "75c8a8284d612219d9e1ecab7f5fb393fd0733a8b832993078ac13a78abfebf6",
+      "fe148fc1478b79dd4041b089af356482770d994f6dfd0fd683399905a2629628",
+      "226d91081b66a7274e0faa552c0cd313ab1dde75b7b61ca704627af975684353",
+      "95fd5e304b32249fb37265ff01330d2d8cce79f4cf51063f3b5311f65a5c8b1b",
+      "05b696d41f5d0cd75bc77cb3bdb5b74f1f297aea5af58136f6753af7f999c7ae",
+      "42bfb326c417e286dac9eafb8ef4c08a14b607967a031fd6500e9793848c8bcf",
+      "a91f0243eeaf72c5a4978534cfb4dc63318555380da5e2e39daa3a0c78f0bcf0",
+      "ab1c293ac6ee2df480bd154b703b65389f7e79b400de20b2142b415114988bc8",
+      "c97852afc027f72a883bde0fc98f55e69c14a7f82c99fa2eaa7398af5a3b59de",
+      "185d4c033445570de831aa777be687e9705adf36e060e351057faa20b078a6cf"
+    ]
+  },
+  {
+    "slug": "osmo",
+    "name": "osmo.mp4",
+    "title": "大疆 Osmo 360 II · 全面实测",
+    "size": 124398348,
+    "sha256": "2da4d543fec5ef7d4af3dfd6136ac743a0b073d1ceedbb29cce4425a55984620",
+    "parts": [
+      "aff259dea5ea53ac102e72a04991ed506edf7b7c8fa4d8a6d2d5aeb7a1215aab",
+      "3111300a33018c2717c8618d27b344dfb63137f1caacd5293daa6adca58816ef",
+      "69b3037481746e73991cbe259ba81bb0c26bd7f789d1e0320e0e9e2e150a7136",
+      "c350b68cce28f7cc8fa0191191eeba5c16a16f9926d21c010717070b6f7e3c63",
+      "57f71c523c10f9b87e499c4349a22cdb3c10577f1f713e141519c91c03ebe798",
+      "256ea7ce40854c0663b6435d086ee0ae460a24e8c1fb317c5c229a68f810cbfa",
+      "94dea2b4ac47ae4595698e387d0a790938dc994728740cd8f32022f9f35273fc",
+      "fde3623b46cfe08e27936d968bb56cf58db577c21d7db708eeee0efcfc16cb03",
+      "770256f350fc3b294bfafdeefccd705e44dfd6f023c3df401e51b38fadd956e8",
+      "cfc0355fb761694fb2846a914044012e7346ecce04f22e5e45c4cf7a5583f7ad",
+      "712f3fa611cd9e75d894834ced78a0ba6244a38650f9c4e90970ae8b5566efe2",
+      "df224bd07b9511ed5a43e445e05f207c56a5ffcc1ef7c6e5cb09d439e34eca1f",
+      "08f71d6c1cf1a90519c1f116384842edefec4c5843ef16b74fec11a7e8a023a3",
+      "8f1bcb8443e9820e87b715089834d659e3d187363ddf3faa2d9daccb8bfd2bb9",
+      "228ab991551880bcb3a7506e4ccd4801bc96c954ff2b1206a804f382c9968df8"
+    ]
+  },
+  {
+    "slug": "bambu",
+    "name": "bambu.mp4",
+    "title": "拓竹 A1 · 一年使用体验",
+    "size": 53074116,
+    "sha256": "992f7f46d95368df6155404b6f2a2e8ad52fa67c261d4d865ef384fb0e75e205",
+    "parts": [
+      "42d56614a538cb9636d42647ae5d41b87fa29f286d3672897a3e8e08dd150a88",
+      "f78eeb6564fab660a04b84b11bca34d36f66e61af0b088007a242da106bec099",
+      "cbdc6af28673c87a21d730fe7fc0f4aff766cda1abf38cbaeccab892771b83ef",
+      "57751e0472777da487f92524b7f78e2e8971696fb82d76516a20c748129673f2",
+      "c1733cf5309a762ead250d628ef72e24302da99a20b7dae3d3bedbf16a202147",
+      "912855c3c2384ef0c3190fab33d9eee57df5d1b92464c0f7ab81d8a367150641",
+      "8f9deb85866a03193c99d34dff033dc7d6c94c0dfd2f00a467536ce4612564cd"
+    ]
+  },
+  {
+    "slug": "lotus",
+    "name": "lotus.mp4",
+    "title": "莲花汽车 · 纽北老炮，让我重新理解了操控",
+    "size": 190285834,
+    "sha256": "7f3de1b29cab3ff1ce9972de99732dbff1353db8d06f360e9ea5fe5b3ff77cc4",
+    "parts": [
+      "1b2aa0bdcfa0885688719168c602bbf12ade649ae5ed4fa2fee5480c9ac01086",
+      "37270a505775bb8c834d399e5d15f549368e9788bfe72ea01c7baee10023fdbf",
+      "9ab3c77e76497687cadd91bbb85dbd9c203624b91dc247d60ab44c65476de63a",
+      "df34ce19a249e6bd742913a7f547fbef7a7eb7d4c3fbbab3a69e5763972806ef",
+      "c758b84ae26ad8acbe5fa491ceed82533773fa24911f39f4e312265097af7426",
+      "3ea628ff9fc59e7aaddcb6e0c937a708ffbc53a14b9d11c64b933335e1ae5005",
+      "78d99634a7afd0116ed47b088d5fd8943e6882752da5d3adb71abcef522f9118",
+      "bf348385b065d4802746713f4a4aceab5cbd223632349822912445c7f392936a",
+      "133ed2b9a5824892f443d9246f6205e2937f97112342b00b9ff75a058a1726ed",
+      "92556cac4fe501bdee4b2555a4307520ccd783bdd304538e4ca30ff1d91aa39c",
+      "658b518f2c81b3cb979496cc7b0105517e4ed96a0cfd7e79adddc180ca60c08b",
+      "fe5abceb5a64e305f880ae1579af1488e8ab8d227ed8c5662cc25160bbf6f786",
+      "bcf2892ca50c063ca016f960a80e6384d16bb01ae18ddd77182f6a79a8fd109d",
+      "5b2f01f6e8a052b5fa7b9df481a283faa69e93c04d905bc3c23f29507cb8978c",
+      "d6492f49e90e3ad8818be7df97a3300e96c689012b130efd9e0141a8875f1a4f",
+      "9ed1c6d430e9a2f7ae6a8d338e5dd46182ff35d053c7251a817b10d6f986371e",
+      "ed6f82fa8ca75b4e559757194dfec2b168666de5c8ac9267f7850cc2998757d7",
+      "9467fd08868e1e8f04f6a1ccdf2fcdc67e79e15aaa883b5d4c475cc391abddbb",
+      "6f39b69fd3ec2e07cc69abb371e068025ba5580fa1a34be3de4839fd0958fd13",
+      "7a2d5fd5de9abd31cd97bfa90d4659478df8a4e53f3c9f1ffd1d4ddd0093c62c",
+      "bf4f97991a2a8b5b26b390fe88060b8f4cd0325328e0239f31b9daf82faa4293",
+      "c1142edf9ca7ff4fcb8487d20a3ecba7f5df29881623b563f173dd7af47fb691",
+      "f7fc30b87c93b5dfae30e6c7368f566c4c73939d920cf2fefad8bab310611849"
+    ]
+  },
+  {
+    "slug": "personal-ai-gt",
+    "name": "personal-ai-gt.mp4",
+    "title": "领克 GT 概念跑车",
+    "size": 8222607,
+    "sha256": "cf4b7b6f82b5d9be9d7986bfea19622b332aca5b1b54e011aaeed7fa8908f90f",
+    "parts": [
+      "cf4b7b6f82b5d9be9d7986bfea19622b332aca5b1b54e011aaeed7fa8908f90f"
+    ]
+  },
+  {
+    "slug": "personal-ai-exam",
+    "name": "personal-ai-exam.mp4",
+    "title": "满分考生争夺战",
+    "size": 21881917,
+    "sha256": "353abdee52134f7d2023e58ebaff4083874a2cebacba7cbd95559cf59127b301",
+    "parts": [
+      "fdcff1e6c71c4b750e1284a2dcbbb489eb7cab165b2d8d4ff5f29e9a3fc30d85",
+      "53f5e37599a1ff3f2406a74b753885c07adcb5e4fa329baa05f44f719b0ab6cd",
+      "da9d9a384f8e3576fe2f886c37217e8d179c43f711ccc2782e5fb8106dee5af2"
+    ]
+  },
+  {
+    "slug": "personal-ai-10086",
+    "name": "personal-ai-10086.mp4",
+    "title": "一线越千山｜10086 始终在线",
+    "size": 8423269,
+    "sha256": "d651f94dd35642ac1fca7231432639b1584ccb9f4ce81cb8fa811ef8e0ce1870",
+    "parts": [
+      "7ffea37a3e3fec8b99209546e4ccc80bc0b1ba78fb9512a17930c2a4627bf6b5",
+      "ca7934c4e312d1728fe6edb3034402b4322150fd6ac421f2418d94ebc91f463e"
+    ]
+  }
+];
