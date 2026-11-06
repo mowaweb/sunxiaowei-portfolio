@@ -79,7 +79,7 @@ function Hero({ onPlay }) {
       <div className="hero-intro"><p>以三维为基础，和 AI 一起拓展视觉的边界。<br />专注品牌产品视频、角色动画与创意影像。</p><span className="hero-discipline">3D · AIGC · MOTION</span></div>
       <div className="hero-actions"><a className="button button-light" href="#work">探索精选作品 <Arrow direction="down" /></a><button className="text-play" onClick={() => onPlay(projects[0])}><span className="play-ring"><PlayIcon /></span>播放作品片段<span className="play-length">00:10</span></button></div>
     </div>
-    <div className="hero-bottom shell"><a className="scroll-cue" href="#about"><span className="scroll-line" /><span>向下探索<br /><small>SCROLL TO DISCOVER</small></span></a><div className="hero-frame-label"><span className="tiny-cross">+</span><span>画面选自 / 无人机产品视频开场<br /><small>VISUAL & MOTION DESIGN BY SUN XIAOWEI</small></span></div><button className="background-control" onClick={toggle} aria-label={playing ? '暂停背景视频' : '播放背景视频'} title={playing ? '暂停背景视频' : '播放背景视频'}>{playing ? <span className="pause-icon"><i /><i /></span> : <PlayIcon />}<span>{playing ? 'PAUSE' : 'PLAY'}</span></button></div>
+    <div className="hero-bottom shell"><a className="scroll-cue" href="#about"><span className="scroll-line" /><span>向下探索<br /><small>SCROLL TO DISCOVER</small></span></a><div className="hero-frame-label"><span className="tiny-cross">+</span><span>画面选自 / 大疆无人机项目 · 雪山转场<br /><small>VISUAL & MOTION DESIGN BY SUN XIAOWEI</small></span></div><button className="background-control" onClick={toggle} aria-label={playing ? '暂停背景视频' : '播放背景视频'} title={playing ? '暂停背景视频' : '播放背景视频'}>{playing ? <span className="pause-icon"><i /><i /></span> : <PlayIcon />}<span>{playing ? 'PAUSE' : 'PLAY'}</span></button></div>
   </section>;
 }
 
@@ -105,7 +105,7 @@ function About({ onCopy }) {
 
 function ProjectCard({ project, onOpen }) {
   return <button className={`project-card ${project.featured ? 'featured' : ''} ${project.portrait ? 'portrait-project' : ''}`} onClick={() => onOpen(project)} aria-label={`播放${project.title}`}>
-    <div className="project-art"><img src={project.image} alt={project.title + '作品画面'} loading="lazy" decoding="async" />{project.portrait && <div className="portrait-cover-type" aria-hidden="true"><span>AI SHORT FILM</span><strong>孔乙己</strong><small>一个熟悉的故事，<br />一次新的影像表达。</small></div>}<div className="project-shade" /><div className="project-topline"><span>{project.number} / {project.nature}</span><span className="project-duration"><PlayIcon />{project.duration}</span></div><div className="project-art-footer"><span>{project.english}</span><span className="project-open"><Arrow /></span></div>{project.featured && <div className="featured-title"><span>三维 × AI · 产品开场设计</span><strong>越过想象的边界。</strong></div>}<span className="project-hover-play"><PlayIcon />播放作品</span></div>
+    <div className="project-art"><img src={project.image} alt={project.title + '作品画面'} loading="lazy" decoding="async" />{project.portrait && <div className="portrait-cover-type" aria-hidden="true"><span>AI SHORT FILM</span><strong>孔乙己</strong><small>一个熟悉的故事，<br />一次新的影像表达。</small></div>}<div className="project-shade" /><div className="project-topline"><span>{project.number} / {project.nature}</span><span className="project-duration"><PlayIcon />{project.clips ? `${project.clips.length} 段视频` : project.duration}</span></div><div className="project-art-footer"><span>{project.english}</span><span className="project-open"><Arrow /></span></div>{project.featured && <div className="featured-title"><span>三维 × AI · 产品影像制作</span><strong>越过想象的边界。</strong></div>}<span className="project-hover-play"><PlayIcon />播放作品</span></div>
     <div className="project-meta"><h3>{project.title}</h3><div>{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></div>
   </button>;
 }
@@ -131,6 +131,26 @@ function Contact({ onCopy }) {
   return <section className="contact" id="contact"><div className="contact-inner shell"><SectionLabel number="04">保持联系 / CONTACT</SectionLabel><div className="contact-lead"><div className="contact-eyebrow"><span className="status-dot" />关于工作、项目，或一个新想法。</div><h2>下一个画面，<br />一起<span>创造</span>。</h2><a className="contact-orb" href={`mailto:${profile.email}`} aria-label="发送邮件联系孙晓伟"><Arrow /></a></div><div className="contact-actions"><a className="contact-email" href={`mailto:${profile.email}`}>{profile.email}<Arrow /></a><button className="copy-email" onClick={() => onCopy(profile.email, '邮箱地址')} aria-label="复制邮箱地址"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.4" /><path d="M15 8V4H4v11h4" stroke="currentColor" strokeWidth="1.4" /></svg></button></div><div className="contact-secondary"><div><span>电话 / PHONE</span><button onClick={() => onCopy(profile.phone, '电话号码')}>+86 {profile.phone} <span aria-hidden="true">⧉</span></button></div><div><span>作品 / ARCHIVE</span><a href={profile.portfolioUrl} target="_blank" rel="noreferrer">语雀作品档案 <Arrow /></a></div><div><span>简历 / RÉSUMÉ</span><a href={profile.resume} download="孙晓伟简历.pdf">下载个人简历 <Arrow direction="down" /></a></div></div><footer className="footer"><a className="footer-brand" href="#home">孙晓伟 <span>SUN XIAOWEI</span></a><span>© {new Date().getFullYear()} · DESIGN IN MOTION</span><a href="#home">返回顶部 <Arrow /></a></footer></div></section>;
 }
 
+function ProjectPlayer({ project }) {
+  const [clipIndex, setClipIndex] = useState(0);
+  const clips = project.clips || [{ id: project.id, title: project.title, stage: '作品片段', video: project.video, image: project.image }];
+  const clip = clips[clipIndex];
+  return <>
+    <div className={`dialog-player ${project.portrait ? 'vertical-player' : ''}`}>
+      <video key={clip.id} src={clip.video} poster={clip.image} controls autoPlay playsInline preload="metadata" aria-label={`${project.title}：${clip.title} · ${clip.stage}视频`} />
+    </div>
+    {clips.length > 1 && <section className="project-clips" aria-label={`${project.title}的片段与制作过程`}>
+      <div className="clips-heading"><span>片段与制作过程</span><span>{String(clipIndex + 1).padStart(2, '0')} / {String(clips.length).padStart(2, '0')}</span></div>
+      <div className="clip-list" role="group" aria-label="选择视频片段">
+        {clips.map((item, i) => <button key={item.id} className={`clip-button ${i === clipIndex ? 'is-active' : ''}`} aria-pressed={i === clipIndex} aria-label={`播放${item.title} · ${item.stage}`} onClick={() => setClipIndex(i)}>
+          <span className="clip-thumbnail"><img src={item.image} alt="" loading="lazy" /><span className="clip-duration">{item.duration}</span><span className="clip-play"><PlayIcon /></span></span>
+          <span className="clip-title">{item.title}</span><span className="clip-stage">{item.stage}</span>
+        </button>)}
+      </div>
+    </section>}
+  </>;
+}
+
 function ProjectDialog({ project, onClose, onChange }) {
   const ref = useRef(null);
   const closeButton = useRef(null);
@@ -150,7 +170,14 @@ function ProjectDialog({ project, onClose, onChange }) {
   }, [Boolean(project)]);
   if (!project) return null;
   const index = projects.findIndex(p => p.id === project.id);
-  return <dialog className="project-dialog" ref={ref} aria-labelledby="dialog-project-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === ref.current) onClose(); }}><div className="dialog-content"><div className="dialog-heading"><span>SELECTED WORK / {project.number}</span><button ref={closeButton} className="dialog-close" onClick={onClose} aria-label="关闭作品视频"><span>关闭</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" stroke="currentColor" strokeWidth="1.5" /></svg></button></div><div className={`dialog-player ${project.portrait ? 'vertical-player' : ''}`}><video key={project.id} src={project.video} poster={project.image} controls autoPlay playsInline preload="metadata" aria-label={project.title + '视频'} /></div><div className="dialog-info"><div><span className="dialog-nature">{project.nature} / {project.tags.join(' · ')}</span><h2 id="dialog-project-title">{project.title}</h2><p>{project.description}</p><span className="dialog-role">我的工作：{project.role}</span></div>{project.link && <a className="inline-link" href={project.link} target="_blank" rel="noreferrer">查看发布视频 <Arrow /></a>}</div><div className="dialog-pagination"><button onClick={() => onChange(projects[(index - 1 + projects.length) % projects.length])}>← 上一个作品</button><span>{project.number} / 05</span><button onClick={() => onChange(projects[(index + 1) % projects.length])}>下一个作品 →</button></div></div></dialog>;
+  return <dialog className="project-dialog" ref={ref} aria-labelledby="dialog-project-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === ref.current) onClose(); }}>
+    <div className="dialog-content">
+      <div className="dialog-heading"><span>SELECTED WORK / {project.number}</span><button ref={closeButton} className="dialog-close" onClick={onClose} aria-label="关闭作品视频"><span>关闭</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" stroke="currentColor" strokeWidth="1.5" /></svg></button></div>
+      <ProjectPlayer key={project.id} project={project} />
+      <div className="dialog-info"><div><span className="dialog-nature">{project.nature} / {project.tags.join(' · ')}</span><h2 id="dialog-project-title">{project.title}</h2><p>{project.description}</p><span className="dialog-role">我的工作：{project.role}</span></div>{project.link && <a className="inline-link" href={project.link} target="_blank" rel="noreferrer">查看发布视频 <Arrow /></a>}</div>
+      <div className="dialog-pagination"><button onClick={() => onChange(projects[(index - 1 + projects.length) % projects.length])}>← 上一个作品</button><span>{project.number} / {String(projects.length).padStart(2, '0')}</span><button onClick={() => onChange(projects[(index + 1) % projects.length])}>下一个作品 →</button></div>
+    </div>
+  </dialog>;
 }
 
 function App() {
