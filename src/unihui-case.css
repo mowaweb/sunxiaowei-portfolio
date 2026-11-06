@@ -93,22 +93,7 @@ dialog.unihui-dialog {
 .uni-group-grid span { display: block; margin-top: 6px; font-size: 12px; line-height: 1.5; color: #474b48; }
 
 .graphic-project[data-project='graphic-unihui'] .project-art { background: #fff; }
-.project-card[data-project='graphic-unihui'] .project-art { container-type: inline-size; }
-.uni-cover-title {
-  position: absolute; left: 5%; top: 11%; z-index: 1; display: grid;
-  color: #181817; text-align: left; pointer-events: none;
-}
-.uni-cover-title b {
-  font: 700 clamp(20px,7cqw,55px)/.87 'DM Sans',Arial,sans-serif;
-  letter-spacing: -.075em;
-}
-.uni-cover-title small {
-  margin-top: 0.9em; font-size: clamp(8px,2cqw,13px); letter-spacing: .12em;
-}
-.project-card[data-project='graphic-unihui'] .project-topline {
-  left: auto; right: 4%; top: 5%; gap: 3px; align-items: end;
-  flex-direction: column; font-size: clamp(8px,1.8cqw,12px); letter-spacing: .03em;
-}
+.project-card[data-project='graphic-unihui'] :is(.project-topline,.project-art-footer) { display:none; }
 .graphic-project[data-project='graphic-unihui'] .project-art > img {
   display: block;
   width: 100%;

@@ -1,0 +1,118 @@
+/* Project labels and hit areas stay level; only the three picture planes turn. */
+.hero-preview-stage {
+  --screen-depth: clamp(225px, 27vw, 530px);
+  pointer-events: none;
+}
+
+.hero-editorial .hero-title-block {
+  pointer-events: none;
+}
+
+.hero-project-preview {
+  --screen-turn: 35deg;
+  --screen-scale: 1.06;
+  --screen-lift: 0px;
+  left: -.5%;
+  width: 23%;
+  pointer-events: auto;
+}
+
+.hero-project-preview:nth-child(2) {
+  --screen-turn: -23deg;
+  --screen-scale: .97;
+  left: 66.5%;
+  top: 14px;
+  width: 19.5%;
+}
+
+.hero-project-preview:nth-child(3) {
+  --screen-turn: -41deg;
+  --screen-scale: 1.1;
+  left: 87%;
+  top: -3px;
+  width: 21%;
+}
+
+.hero-preview-stage .hero-project-preview img {
+  display: block;
+  border: 1px solid rgb(223 255 234 / 28%);
+  border-radius: clamp(5px, .65vw, 13px);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 25%), 0 0 13px rgb(164 243 189 / 8%);
+  transform: perspective(var(--screen-depth)) translateY(var(--screen-lift)) rotateY(var(--screen-turn)) scale(var(--screen-scale));
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.hero-project-preview > span {
+  position: relative;
+  margin: clamp(9px, 1.1vw, 21px) 3% 0;
+  min-height: 22px;
+  color: #f6faf7;
+  text-shadow: 0 1px 5px rgb(0 0 0 / 90%);
+}
+
+.hero-project-preview > span small {
+  color: #ccdacf;
+}
+
+.hero-project-preview:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+@media (hover: hover) {
+  .hero-project-preview:hover { --screen-lift: -3px; }
+  .hero-preview-stage .hero-project-preview:hover img {
+    border-color: var(--accent);
+    box-shadow: 0 10px 26px rgb(0 0 0 / 30%), 0 0 17px rgb(164 243 189 / 21%);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-preview-stage {
+    --screen-depth: clamp(145px, 36vw, 220px);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: clamp(5px, 1.5vw, 10px);
+  }
+
+  .hero-project-preview,
+  .hero-project-preview:nth-child(2),
+  .hero-project-preview:nth-child(3) {
+    position: static;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+  }
+
+  .hero-project-preview {
+    --screen-turn: 27deg;
+    --screen-scale: 1;
+  }
+
+  .hero-project-preview:nth-child(2) {
+    --screen-turn: -6deg;
+    --screen-scale: .93;
+    padding-top: 4px;
+  }
+
+  .hero-project-preview:nth-child(3) {
+    --screen-turn: -32deg;
+    --screen-scale: 1.02;
+  }
+
+  .hero-project-preview > span {
+    gap: 3px;
+    margin: 8px 2px 0;
+    font-size: clamp(9px, 2.4vw, 12px);
+    line-height: 1.3;
+  }
+
+  .hero-project-preview small { font-size: 8px; }
+  .hero-project-preview > span > span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-project-preview:hover { --screen-lift: 0px; }
+  .hero-preview-stage .hero-project-preview img { transition: none; }
+}

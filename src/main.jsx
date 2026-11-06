@@ -5,11 +5,14 @@ import { IPCaseStudy, MaicaiCaseStudy } from './CaseStudies';
 import LiweikeCaseStudy from './LiweikeCaseStudy';
 import PosterCaseStudy from './PosterCaseStudy';
 import UniCaseStudy from './UniCaseStudy';
+import FriesCaseStudy from './FriesCaseStudy';
+import { FilmEditions, FilmViews, fullFilms, useLocalStream } from './FullFilm';
 import './styles.css';
 import './case-studies.css';
 import './liweike-case.css';
 import './poster-case.css';
 import './unihui-case.css';
+import './hero-perspective.css';
 
 function Arrow({ direction = 'up', ...props }) {
   return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props} style={{ transform: direction === 'down' ? 'rotate(90deg)' : direction === 'right' ? 'rotate(45deg)' : undefined, ...props.style }}><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -122,8 +125,9 @@ function ProjectCard({ project, onOpen }) {
   const countLabel = project.clips ? videoCount ? `${videoCount} 段视频` : `${project.clips.length} 组画面` : project.duration;
   const action = project.video ? '播放' : '查看';
   return <button data-project={project.id} className={`project-card ${project.featured ? 'featured' : ''} ${project.portrait ? 'portrait-project' : ''} ${project.category === 'graphic' ? 'graphic-project' : ''}`} onClick={() => onOpen(project)} aria-label={`${action}${project.title}`}>
-    <div className="project-art"><img src={project.image} alt={project.title + '作品画面'} loading="lazy" decoding="async" />{project.id === 'graphic-unihui' && <div className="uni-cover-title" aria-hidden="true"><b>RAINBOW<br />PONY</b><small>睡眠派对 / 彩虹马</small></div>}{project.portrait && <div className="portrait-cover-type" aria-hidden="true"><span>AI SHORT FILM</span><strong>孔乙己</strong><small>一个熟悉的故事，<br />一次新的影像表达。</small></div>}<div className="project-shade" /><div className="project-topline"><span>{project.number} / {project.nature}</span><span className="project-duration">{project.video ? <PlayIcon /> : <Arrow />}{countLabel}</span></div><div className="project-art-footer"><span>{project.english}</span><span className="project-open"><Arrow /></span></div>{project.featured && <div className="featured-title"><span>三维 × AI · 产品影像制作</span><strong>越过想象的边界。</strong></div>}<span className="project-hover-play">{project.video ? <PlayIcon /> : <Arrow />}{action}作品</span></div>
+    <div className="project-art"><img src={project.image} alt={project.title + '作品画面'} loading="lazy" decoding="async" />{project.portrait && <div className="portrait-cover-type" aria-hidden="true"><span>AI SHORT FILM</span><strong>孔乙己</strong><small>一个熟悉的故事，<br />一次新的影像表达。</small></div>}<div className="project-shade" /><div className="project-topline"><span>{project.number} / {project.nature}</span><span className="project-duration">{project.video ? <PlayIcon /> : <Arrow />}{fullFilms[project.id] ? '正片 + ' : ''}{countLabel}</span></div><div className="project-art-footer"><span>{project.english}</span><span className="project-open"><Arrow /></span></div>{project.featured && <div className="featured-title"><span>三维 × AI · 产品影像制作</span><strong>越过想象的边界。</strong></div>}<span className="project-hover-play">{project.video ? <PlayIcon /> : <Arrow />}{action}作品</span></div>
     <div className="project-meta"><h3>{project.title}</h3><div>{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></div>
+    {fullFilms[project.id] && <FilmViews film={fullFilms[project.id]} />}
   </button>;
 }
 
@@ -158,6 +162,7 @@ function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange
   const videoRef = useRef(null);
   const versions = clip.versions || [];
   const media = versions.find(item => item.id === version) || versions[0] || clip;
+  const stream = useLocalStream(videoRef, media.video);
   useEffect(() => {
     if (videoRef.current) videoRef.current.playbackRate = playbackRate;
   }, [media.video, playbackRate]);
@@ -172,7 +177,8 @@ function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange
     }
   };
   return <div className={`dialog-player ${(clip.portrait ?? project.portrait) ? 'vertical-player' : ''}`}>
-    {media.video ? <><video ref={videoRef} key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay={autoPlay} playsInline preload="metadata" onEnded={onEnded} onLoadedMetadata={event => { updateDuration(event); event.currentTarget.playbackRate = playbackRate; }} onDurationChange={updateDuration} onRateChange={event => { if (event.currentTarget.playbackRate !== playbackRate) onPlaybackRateChange(event.currentTarget.playbackRate); }} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
+    {media.video ? <><video ref={videoRef} key={`${clip.id}-${media.id}`} src={stream.playlist ? undefined : media.video} poster={media.image} controls autoPlay={autoPlay} playsInline preload="metadata" onEnded={onEnded} onLoadedMetadata={event => { updateDuration(event); event.currentTarget.playbackRate = playbackRate; }} onDurationChange={updateDuration} onRateChange={event => { if (event.currentTarget.playbackRate !== playbackRate) onPlaybackRateChange(event.currentTarget.playbackRate); }} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
+      {stream.failed && <p role="status" className="film-notice">正片暂未加载。<a href={project.link} target="_blank" rel="noreferrer">去 B 站观看 ↗</a></p>}
       <div className="video-transport" role="group" aria-label="视频播放控制">
         <div className="video-seek-actions"><button type="button" onClick={() => seekBy(-5)} disabled={!duration} aria-label="快退5秒">← 快退 5 秒</button><button type="button" onClick={() => seekBy(5)} disabled={!duration} aria-label="快进5秒">快进 5 秒 →</button></div>
         <label className="video-speed">倍速<select aria-label="播放速度" value={playbackRate} onChange={event => onPlaybackRateChange(Number(event.target.value))}>{[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map(rate => <option value={rate} key={rate}>{rate === 1 ? '1× 正常' : `${rate}×`}</option>)}</select></label>
@@ -232,7 +238,10 @@ function ProjectDialog({ project, onClose, onChange }) {
   let caseClass = '';
   if (caseKind === 'maicai') {
     const videos = { ...project, clips: project.clips.filter(clip => clip.video).map(clip => clip.id === 'brand-blindbox' ? { ...clip, image: './assets/maicai-case-video-poster.webp' } : clip) };
-    caseContent = <MaicaiCaseStudy project={project}><ProjectPlayer key={project.id} project={videos} autoPlay={false} playlistFirst /></MaicaiCaseStudy>;
+    caseContent = <MaicaiCaseStudy project={project}><ProjectPlayer key={project.id} project={videos} /></MaicaiCaseStudy>;
+  } else if (caseKind === 'fries') {
+    caseClass = 'fries-case-dialog';
+    caseContent = <FriesCaseStudy project={project} Player={ClipPlayer} />;
   } else if (caseKind === 'ip') {
     caseClass = 'ip-case-dialog';
     caseContent = <IPCaseStudy project={project} />;
@@ -249,7 +258,7 @@ function ProjectDialog({ project, onClose, onChange }) {
   return <dialog className={`project-dialog ${caseKind ? 'case-dialog' : ''} ${caseClass}`} ref={ref} aria-labelledby="dialog-project-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === ref.current) onClose(); }}>
     <div className="dialog-content">
       <div className="dialog-heading"><span>SELECTED WORK / {project.number}</span><button ref={closeButton} className="dialog-close" onClick={onClose} aria-label="关闭作品视频"><span>关闭</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" stroke="currentColor" strokeWidth="1.5" /></svg></button></div>
-      {caseContent || <><ProjectPlayer key={project.id} project={project} />
+      {caseContent || <><FilmEditions key={project.id} project={project} Player={ClipPlayer}><ProjectPlayer key={project.id} project={project} /></FilmEditions>
       <div className="dialog-info"><div><span className="dialog-nature">{project.nature} / {project.tags.join(' · ')}</span><h2 id="dialog-project-title">{project.title}</h2><p>{project.description}</p><span className="dialog-role">我的工作：{project.role}</span></div>{project.link && <a className="inline-link" href={project.link} target="_blank" rel="noreferrer">{project.linkLabel || '查看发布视频'} <Arrow /></a>}</div>
       {project.characterSheet && <figure className="character-sheet">
         <figcaption><div><span>AI 角色设定 / CHARACTER TURNAROUND</span><h3>{project.characterSheet.title}</h3></div><a className="inline-link" href={project.characterSheet.image} target="_blank" rel="noreferrer">查看原图 <Arrow /></a></figcaption>

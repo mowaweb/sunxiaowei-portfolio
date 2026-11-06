@@ -3,6 +3,7 @@ import { graphicProjects } from './graphic-projects.js';
 import { friesArt } from './fries-art.js';
 import { egretArt, egretCover } from './egret-art.js';
 import { unihuiPanels } from './unihui-panels.js';
+import { tmallElements } from './tmall-elements.js';
 
 export const profile = {
   name: '孙晓伟',
@@ -23,12 +24,11 @@ export const projects = [
     nature: '客户委托',
     tags: ['镜头设计', '三维 × AI'],
     duration: '00:10',
-    image: './assets/drone.webp',
+    image: './assets/drone-spotlight-cover.webp',
     video: './assets/drone.mp4',
     description: '根据客户需求，结合 C4D 预演、AI 生成与 AE 后期，完成无人机产品视频的相关镜头，包括旧款变新款、产品讲解、雪山转场及开场片段。',
     role: '镜头设计 · C4D 预演 · AI 生成 · AE 后期',
     link: 'https://www.bilibili.com/video/BV135hJ6WETi/',
-    featured: true,
     clips: [
       { id: 'drone-snow', title: '雪山转场', stage: '作品片段', duration: '00:10', video: './assets/drone.mp4', image: './assets/drone.webp' },
       { id: 'drone-opening', title: '开场镜头', stage: '作品片段', duration: '00:05', video: './assets/dji-opening.mp4', image: './assets/dji-opening.webp' },
@@ -168,10 +168,19 @@ export const projects = [
   ...graphicProjects,
 ].map((project, index) => {
   let item = project;
+  if (project.id === 'graphic-tmall-snake') item = {
+    ...project, image: './assets/tmall-snake-cover.webp',
+    description: '天猫与小蛇的节庆动作、毛绒造型，以及灯笼、鞭炮、花生等新春元素。',
+    clips: [...project.clips, ...tmallElements],
+    caseStudy: { ...project.caseStudy, sections: [...project.caseStudy.sections, {
+      kind: 'elements', title: '新春毛绒元素', english: 'LUNAR NEW YEAR / ELEMENTS',
+      items: [...tmallElements.filter(item => item.wide), ...tmallElements.filter(item => !item.wide)]
+    }] }
+  };
   if (project.id === 'fries-challenge') item = {
     ...project, image: friesArt[0].image,
     clips: project.clips.map(clip => clip.video ? { ...clip, image: friesArt[0].image } : clip),
-    caseStudy: { kind: 'poster', theme: 'fries', accent: '#f8bd69', art: friesArt }
+    caseStudy: { kind: 'fries', art: friesArt }
   };
   if (project.id === 'graphic-egret') item = {
     ...project, image: egretCover,
@@ -185,7 +194,7 @@ export const projects = [
 });
 
 export const heroProjects = [
-  { projectId: 'drone', label: '大疆无人机', caption: '雪山转场', video: './assets/hero.mp4', image: './assets/drone.webp' },
+  { projectId: 'drone', label: '大疆无人机', caption: '雪山转场', video: './assets/hero.mp4', image: './assets/drone-spotlight-cover.webp' },
   { projectId: 'osmo', label: 'Osmo 360 II', caption: '全景相机影像', video: './assets/hero-osmo.mp4', image: './assets/osmo-cover.webp' },
   { projectId: 'bambu-a1', label: '拓竹 A1', caption: '创意打印影像', video: './assets/hero-bambu.mp4', image: './assets/hero-bambu.webp' },
   { projectId: 'lotus', label: '莲花汽车', caption: '品牌开场', video: './assets/hero-lotus.mp4', image: './assets/hero-lotus.webp' },

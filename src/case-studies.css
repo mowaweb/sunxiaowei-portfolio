@@ -185,3 +185,56 @@
   .ip-art-title { left: 7px; bottom: 8px; font-size: 9px; }
   .ip-art.is-wide img { padding: 12px; }
 }
+
+/* The Tmall cover is a separate poster; the detail page keeps the original artwork. */
+.project-card[data-project="graphic-tmall-snake"] .project-art { border-radius: clamp(12px,1.6vw,24px); background:#b4e8ec; }
+.project-card[data-project="graphic-tmall-snake"] .project-art > img { padding:0; object-fit:cover; }
+.project-card[data-project="graphic-tmall-snake"] .project-shade { background:linear-gradient(to top,#18333c44,transparent 19%); }
+.project-card[data-project="graphic-tmall-snake"] .project-topline { top:auto; bottom:4%; left:4%; right:auto; gap:7px; padding:4px 8px; border-radius:16px; color:#fff; background:#13363bc9; }
+.project-card[data-project="graphic-tmall-snake"] .project-duration { background:transparent; padding:0; }
+.project-card[data-project="graphic-tmall-snake"] .project-art-footer { inset:auto 4% 4% auto; }
+.project-card[data-project="graphic-tmall-snake"] .project-art-footer > span:first-child { display:none; }
+.project-card[data-project="graphic-tmall-snake"] .project-open { color:#163637; border-color:#ffffffc4; background:#fffffff0; }
+.ip-element-section .ip-art-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.ip-element-section .ip-art:not(.is-wide) { grid-column:span 1; display:flex; flex-direction:column; aspect-ratio:auto; background:#f7f4ef; }
+.ip-element-section .ip-art:not(.is-wide) img { width:100%; height:auto; aspect-ratio:1; object-fit:contain; padding:8%; }
+.ip-element-section .ip-art:not(.is-wide) .ip-art-title { display:block; position:static; opacity:1; padding:0 8% 8%; color:#38322d; font-weight:600; background:none; }
+.ip-element-section .ip-art:not(.is-wide) .ip-art-title small { display:none; }
+.ip-element-section .ip-art-index { font-size:11px; color:#514339; left:8%; top:6%; }
+.ip-element-section .ip-art.is-wide { order:-1; background:#f7f4ef; }
+.ip-element-section .ip-art.is-wide img { display:block; padding:0; }
+.ip-element-section .ip-art.is-wide .ip-art-index { display:none; }
+@media(max-width:680px){.ip-element-section .ip-art-grid {grid-template-columns:repeat(2,minmax(0,1fr));}}
+
+/* Standalone poster and published film editions. */
+.project-card[data-project="graphic-tmall-snake"] .project-art { background:#100f0b; border-radius:0; }
+.project-card[data-project="graphic-tmall-snake"] :is(.project-topline,.project-art-footer) { display:none; }
+.project-card[data-project="graphic-tmall-snake"] .project-shade { background:none; }
+.film-selector { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:14px; }
+.film-selector > div { display:flex; padding:3px; border:1px solid #ffffff38; border-radius:24px; }
+.film-selector button { background:none; color:#dfe5db; border-radius:22px; padding:9px 14px; font-size:12px; }
+.film-selector button[aria-pressed=true] { background:#c2f8d9; color:#102618; }
+.film-selector small { margin-left:3px; font:10px var(--mono); }
+.film-views { display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 12px; line-height:1.45; color:#c9d7cb; font-size:11px; }
+.film-views b { font-weight:500; } .film-views time { font-size:10px; color:#a5b3a6; }
+.project-card > .film-views { margin-top:7px; }
+.released-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:16px 0 12px; }
+.released-heading span { font:11px var(--mono); color:#bbd5c2; }
+.released-heading h3 { font-size:clamp(14px,1.7vw,21px); font-weight:550; margin-top:4px; }
+.released-heading a,.film-notice a { white-space:nowrap; text-decoration:underline; color:#c2f8d9; font-size:12px; }
+.film-notice { padding:12px; font-size:12px; }
+.project-grid { align-items:start; }
+@media(max-width:640px){
+ .project-grid {grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px 10px;}
+ .project-meta {display:block;} .project-meta h3 {font-size:13px;line-height:1.45;} .project-meta > div {margin-top:3px;}
+ .project-card .project-art-footer > span:first-child {display:none;}
+ .project-card .project-topline {top:6px;left:6px;right:6px;justify-content:flex-end;} .project-card .project-topline > span:first-child {display:none;}
+ .project-card .project-duration {font-size:8px;padding:3px 4px;} .project-card .project-open {width:25px;height:25px;}
+ .project-card .project-art-footer {bottom:6px;right:6px;left:auto;}
+ .project-card > .film-views {gap:1px 5px;font-size:10px;}
+}
+.maicai-case .maicai-opening-film { margin:0; padding:0 clamp(8px,3vw,48px) 18px; background:#161914; }
+.maicai-opening-film .dialog-player video { max-height:62svh; }
+.maicai-opening-film .project-clips { padding-block:14px 0; }
+.maicai-opening-film .clips-heading,.maicai-opening-film .clip-button,.maicai-opening-film .clip-stage { color:#d6ded2; }
+.maicai-opening-film .clip-button.is-active {color:#bbf0cf; border-bottom-color:#bbf0cf;}

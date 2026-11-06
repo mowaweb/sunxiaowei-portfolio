@@ -1,0 +1,80 @@
+.fries-case { color: #20231f; background: #fff; }
+.fries-screen { background: #090a08; color: #eef0eb; }
+.fries-case .fries-screen video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 76svh;
+  aspect-ratio: 320 / 131;
+  object-fit: contain;
+}
+.fries-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.fries-board {
+  position: relative;
+  display: block;
+  width: 100%;
+  background: #1c1c1c;
+  cursor: zoom-in;
+}
+.fries-board img { display: block; width: 100%; height: auto; }
+.fries-board > span {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  padding: 5px 10px;
+  color: #242822;
+  background: #fffffff2;
+  border: 1px solid #18251a30;
+  border-radius: 999px;
+  font-size: 11px;
+}
+@media (hover: hover) {
+  .fries-board > span { opacity: 0; }
+  .fries-board:is(:hover, :focus-visible) > span { opacity: 1; }
+}
+.fries-case :is(a, summary):focus-visible { outline: 2px solid #246b72; outline-offset: -3px; }
+.fries-supplement { padding: 8px clamp(16px, 4vw, 56px) 22px; }
+.fries-supplement summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 15px 2px;
+  border-top: 1px solid #d4d8d3;
+  font-size: clamp(15px, 1.55vw, 21px);
+  font-weight: 500;
+  list-style: none;
+  cursor: pointer;
+}
+.fries-supplement summary::-webkit-details-marker { display: none; }
+.fries-supplement summary::after {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  aspect-ratio: 1;
+  border: 1px solid #c4c8c4;
+  border-radius: 50%;
+  font-size: 17px;
+  font-weight: 400;
+  content: '+';
+}
+.fries-supplement[open] summary::after { content: '−'; }
+.fries-supplement-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+.fries-supplement-grid a { min-width: 0; font-size: 12px; cursor: zoom-in; }
+.fries-supplement-grid img { width: 100%; height: auto; }
+.fries-supplement-grid span { display: block; padding: 7px 0; }
+.fries-source { display: inline-block; margin-top: 12px; color: #525a50; font-size: 12px; text-decoration: underline; }
+@media (max-width: 600px) {
+  .fries-supplement-grid { grid-template-columns: 1fr; }
+  .fries-supplement { padding-bottom: 12px; }
+}
