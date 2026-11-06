@@ -4,9 +4,9 @@ import './nalou-case.css';
 const number = value => String(value).padStart(2, '0');
 const posterFor = clip => clip.poster || clip.image;
 
-export default function NalouCaseStudy({ project, Player }) {
+export default function NalouCaseStudy({ project, Player, initialClipIndex = 0 }) {
   const clips = project.clips || [];
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(() => clips[initialClipIndex] ? initialClipIndex : 0);
   const [rate, setRate] = useState(1);
   const stage = useRef(null);
   const collage = useRef(null);

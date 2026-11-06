@@ -1,0 +1,38 @@
+.nalou-film-rail { min-width: 0; margin-top: clamp(30px, 3.3vw, 42px); }
+.nalou-rail-header { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+.nalou-rail-header h3 { font-size: clamp(17px, 2.1vw, 27px); font-weight: 480; letter-spacing: -.02em; }
+.nalou-rail-header > span { font-size: 11px; color: #b8c3ba; white-space: nowrap; }
+.nalou-rail-strip { display: flex; gap: clamp(10px, 1.45vw, 24px); overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; overflow-anchor: none; padding: 3px 1px; }
+.nalou-rail-strip::-webkit-scrollbar { display: none; }
+.nalou-rail-card { flex: 0 0 22.25%; min-width: 0; display: grid; grid-template-rows: auto 1fr; overflow: hidden; padding: 0; color: #edf2ed; background: #070807; }
+.nalou-rail-card:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.nalou-rail-picture { display: block; position: relative; overflow: hidden; width: 100%; aspect-ratio: 3/4; background: #050605; }
+.nalou-rail-picture img, .nalou-rail-picture video { position: absolute; inset: 0; width: 100%; height: 100%; }
+.nalou-rail-picture img { object-fit: cover; object-position: center 40%; }
+.nalou-rail-picture video { object-fit: contain; background: #070807; }
+.nalou-rail-title { display: grid; place-content: center; min-height: 4.4em; padding: .7em .8em; text-align: center; line-height: 1.5; font-size: clamp(12px, 1.05vw, 16px); overflow-wrap: anywhere; }
+.nalou-rail-footer { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: start; gap: clamp(15px, 2.6vw, 36px); margin-top: 16px; }
+.stats-strip { display: grid; grid-template-columns: repeat(4, max-content); align-items: stretch; gap: 8px 0; }
+.stats-strip > :is(div,button) { display: grid; align-content: start; justify-items: start; gap: 4px; min-width: 0; padding: 0 clamp(13px, 2.2vw, 36px); text-align: left; background: none; border-left: 1px solid var(--line); }
+.stats-strip > :first-child { padding-left: 0; border: 0; }
+.stats-strip strong { color: #eef3ed; font: 400 clamp(22px, 2.25vw, 32px)/1.05 var(--mono); letter-spacing: -.035em; white-space: nowrap; }
+.stats-strip strong > span { color: var(--accent); font-size: .68em; }
+.stats-strip > :is(div,button) > span { color: #abb7ae; font-size: clamp(9px, .83vw, 11px); line-height: 1.4; }
+.stats-strip > button:is(:hover,:focus-visible) strong { color: var(--accent); }
+.stats-strip time { grid-column: 1/-1; color: #929e94; font-size: 9px; line-height: 1.5; }
+.nalou-rail-arrows { display: flex; justify-content: flex-end; gap: 8px; grid-column: 2; }
+.nalou-rail-arrows button { display: grid; place-items: center; width: 43px; height: 43px; padding: 0; border: 1px solid #626b64; border-radius: 50%; color: #e9f2ea; background: #121613; font-size: 19px; }
+.nalou-rail-arrows button:is(:hover,:focus-visible) { background: var(--accent); border-color: var(--accent); color: #111a14; }
+@media (max-width: 900px) { .nalou-rail-card { flex-basis: 29%; } }
+@media (max-width: 640px) {
+  .nalou-film-rail { margin-top: 28px; }
+  .nalou-rail-header { margin-bottom: 12px; }
+  .nalou-rail-card { flex-basis: 45%; }
+  .nalou-rail-title { font-size: 11px; }
+  .nalou-rail-arrows button { width: 44px; height: 44px; }
+  .nalou-rail-footer { margin-top: 12px; gap: 10px; }
+  .stats-strip { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px 12px; }
+  .stats-strip > :is(div,button) { padding: 0; border: 0; gap: 2px; }
+  .stats-strip > :is(div,button) > span { font-size: 10px; }
+  .stats-strip time { font-size: 9px; }
+}

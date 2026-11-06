@@ -43,6 +43,10 @@ export const projects = [
         { id: 'ai', label: 'AI 生成', duration: '00:13', video: './assets/dji-explainer-ai.mp4', image: './assets/dji-explainer-ai.webp' },
       ] },
       { id: 'drone-compositing', title: 'AE 后期', stage: '后期片段', duration: '00:06', video: './assets/dji-compositing.mp4', image: './assets/dji-compositing.webp' },
+      { id: 'dji-bank-turn', title: '压弯转向', stage: '航拍跟随', duration: '00:10', video: './assets/dji-bank-turn.mp4', image: './assets/dji-bank-turn.webp' },
+      { id: 'dji-laser', title: '激光镭射眼', stage: '人物特效', duration: '00:02', video: './assets/dji-laser.mp4', image: './assets/dji-laser.webp' },
+      { id: 'dji-banana', title: '香蕉延时', stage: '延时镜头', duration: '00:10', video: './assets/dji-banana.mp4', image: './assets/dji-banana.webp' },
+      { id: 'dji-controller', title: '遥控器特写', stage: '产品镜头', duration: '00:01', video: './assets/dji-controller.mp4', image: './assets/dji-controller.webp' },
     ],
   },
   {
@@ -158,8 +162,8 @@ export const projects = [
   },
   nalouProject,
   ...additionalProjects,
-  ...graphicProjects,
   ...personalAiProjects,
+  ...graphicProjects,
 ].map((project, index) => {
   let item = project;
   if (project.id === 'graphic-tmall-snake') item = {

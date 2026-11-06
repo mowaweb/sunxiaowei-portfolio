@@ -8,12 +8,14 @@ import UniCaseStudy from './UniCaseStudy';
 import FriesCaseStudy from './FriesCaseStudy';
 import NalouCaseStudy from './NalouCaseStudy';
 import { nalouProject } from './nalou-project';
+import NalouFilmRail from './NalouFilmRail';
 import { FilmEditions, FilmViews, fullFilms } from './FullFilm';
 import './styles.css';
 import './case-studies.css';
 import './liweike-case.css';
 import './poster-case.css';
 import './unihui-case.css';
+import './hero-slide.css';
 
 function Arrow({ direction = 'up', ...props }) {
   return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props} style={{ transform: direction === 'down' ? 'rotate(90deg)' : direction === 'right' ? 'rotate(45deg)' : undefined, ...props.style }}><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -64,12 +66,31 @@ function Header({ active }) {
   </header>;
 }
 
+// Each picture moves only inside its own bay. The two neighboring projects
+// on either side cover any jump among five cyclic choices.
+const heroWindows = [
+  { side: 'left', bays: [1] }, { side: 'right', bays: [2, 3] },
+];
+const heroLayers = [-2, -1, 0, 1, 2];
+const heroIndex = position => (position % heroProjects.length + heroProjects.length) % heroProjects.length;
+
 function Hero({ onPlay, suspended = false }) {
   const videoRef = useRef(null);
   const sectionRef = useRef(null);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [position, setPosition] = useState(0);
+  const selectedIndex = heroIndex(position);
+  const selectProject = index => setPosition(current => {
+    const ahead = heroIndex(index - heroIndex(current));
+    return current + (ahead > heroProjects.length / 2 ? ahead - heroProjects.length : ahead);
+  });
   const selected = heroProjects[selectedIndex];
   const [playing, setPlaying] = useState(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const onChange = () => { if (preference.matches) setPlaying(false); };
+    preference.addEventListener?.('change', onChange);
+    return () => preference.removeEventListener?.('change', onChange);
+  }, []);
   useEffect(() => {
     const video = videoRef.current;
     let cancelled = false;
@@ -80,9 +101,8 @@ function Hero({ onPlay, suspended = false }) {
     observer.observe(sectionRef.current);
     return () => { cancelled = true; observer.disconnect(); video.pause(); };
   }, [playing, selected.projectId, suspended]);
-  const previews = [1, 2, 3].map(offset => ({ ...heroProjects[(selectedIndex + offset) % heroProjects.length], index: (selectedIndex + offset) % heroProjects.length }));
   return <section className="hero hero-editorial" id="home" ref={sectionRef} aria-label="孙晓伟个人作品集首页">
-    <div className="hero-media"><video key={selected.projectId} ref={videoRef} src={selected.video} poster={selected.image} autoPlay={playing && !suspended} muted playsInline preload="metadata" aria-hidden="true" onEnded={() => { if (playing && !suspended) setSelectedIndex(index => (index + 1) % heroProjects.length); }} onError={() => setPlaying(false)} /><div className="hero-shade" /></div>
+    <div className="hero-media"><video key={selected.projectId} ref={videoRef} src={selected.video} poster={selected.image} autoPlay={playing && !suspended} muted playsInline preload="metadata" aria-hidden="true" onEnded={() => { if (playing && !suspended) setPosition(current => current + 1); }} onError={() => setPlaying(false)} /><div className="hero-shade" /></div>
     <div className="hero-grid" aria-hidden="true" />
     <div className="hero-content shell">
       <div className="hero-eyebrow"><span className="status-dot" /><span>孙晓伟 / SUN XIAOWEI</span><span className="eyebrow-separator">—</span><span>独立视觉创作者</span></div>
@@ -90,11 +110,35 @@ function Hero({ onPlay, suspended = false }) {
       <h1>让想象，<br />成为<span className="hero-emphasis">画面<svg viewBox="0 0 340 25" preserveAspectRatio="none" aria-hidden="true"><path d="M2 16C105-1 243 0 337 6M14 23c83-9 207-10 307-8" /></svg></span>。</h1>
       <div className="hero-intro"><p>以三维为基础，和 AI 一起拓展视觉的边界。<br />专注品牌产品视频、角色动画与创意影像。</p><span className="hero-discipline">3D · AIGC · MOTION</span></div>
       </div>
-      <div className="hero-preview-stage" role="group" aria-label="接下来的视频项目">{previews.map(item => <button type="button" className="hero-project-preview" key={item.projectId} onClick={() => setSelectedIndex(item.index)} aria-label={`预览${item.label}`}><img src={item.image} alt="" width="320" height="180" /><span><small>{String(item.index + 1).padStart(2, '0')} /</small>{item.label}<span aria-hidden="true">↗</span></span></button>)}</div>
+      <div className="hero-preview-stage hero-slide-stage" role="group" aria-label="接下来的视频项目">
+        {heroWindows.map(({ side, bays }) => <div key={side}
+          className={`hero-slide-window hero-slide-window-${side}`}>
+          {bays.map(bay => <div key={bay} className="hero-slide-bay" data-bay={bay}>
+          {heroLayers.map(layer => {
+          const sequence = position + bay + layer;
+          const index = heroIndex(sequence);
+          const item = heroProjects[index];
+          const visible = layer === 0;
+          return <button key={sequence} type="button" data-slot={layer} data-project={item.projectId}
+            className={`hero-slide-card${visible ? ' hero-project-preview' : ''}`}
+            style={{ '--hero-side': Math.sign(layer) }}
+            tabIndex={visible ? 0 : -1} aria-hidden={!visible || undefined} aria-label={visible ? `预览${item.label}` : undefined}
+            onClick={event => {
+              if (!visible) return;
+              if (!event.detail) sectionRef.current?.querySelectorAll('.hero-project-choice')[index]?.focus({ preventScroll: true });
+              selectProject(index);
+            }}>
+            <img src={item.image} alt="" width="320" height="180" draggable="false" />
+            <span><small>{String(index + 1).padStart(2, '0')} /</small>{item.label}<span aria-hidden="true">↗</span></span>
+          </button>;
+        })}
+          </div>)}
+        </div>)}
+      </div>
       <div className="hero-actions"><a className="button button-light" href="#work">探索精选作品 <Arrow direction="down" /></a><button className="text-play" onClick={() => onPlay(selected.project)} aria-label={`播放${selected.project.title}`}><span className="play-ring"><PlayIcon /></span>播放当前项目<span className="play-length">{selected.project.duration}</span></button></div>
       <div className="hero-switcher">
         <div className="hero-switcher-heading"><span>{playing ? '自动连播 · 点击切换项目' : '点击切换项目'}</span><span aria-live="polite" aria-atomic="true">{String(selectedIndex + 1).padStart(2, '0')} / {String(heroProjects.length).padStart(2, '0')} · {selected.label}</span></div>
-        <div className="hero-projects" role="group" aria-label="切换首页视频项目">{heroProjects.map((item, index) => <button type="button" className="hero-project-choice" key={item.projectId} aria-pressed={selectedIndex === index} aria-label={`切换首页视频：${item.label}`} onClick={() => setSelectedIndex(index)}><img src={item.image} alt="" width="160" height="90" /><span>{item.label}</span></button>)}</div>
+        <div className="hero-projects" role="group" aria-label="切换首页视频项目">{heroProjects.map((item, index) => <button type="button" className="hero-project-choice" key={item.projectId} aria-pressed={selectedIndex === index} aria-label={`切换首页视频：${item.label}`} onClick={() => selectProject(index)}><img src={item.image} alt="" width="160" height="90" /><span>{item.label}</span></button>)}</div>
       </div>
     </div>
     <div className="hero-bottom shell"><a className="scroll-cue" href="#about"><span className="scroll-line" /><span>向下探索<br /><small>SCROLL TO DISCOVER</small></span></a><div className="hero-frame-label"><span className="tiny-cross">+</span><span>画面选自 / {selected.label} · {selected.caption}<br /><small>VISUAL & MOTION DESIGN BY SUN XIAOWEI</small></span></div><button className="background-control" onClick={() => setPlaying(current => !current)} aria-label={playing ? '暂停背景视频' : '播放背景视频'} title={playing ? '暂停背景视频' : '播放背景视频'}>{playing ? <span className="pause-icon"><i /><i /></span> : <PlayIcon />}<span>{playing ? 'PAUSE' : 'PLAY'}</span></button></div>
@@ -113,7 +157,7 @@ function Experience() {
 const accountProject = projects.find(project => project.id === nalouProject.id);
 const selectedProjects = projects.filter(project => project.id !== nalouProject.id);
 
-function About({ onCopy, onOpen }) {
+function About({ onCopy, onOpen, suspended = false }) {
   const openNalou = () => onOpen(accountProject);
   return <section className="about section shell" id="about">
     <SectionLabel number="01">关于我 / ABOUT</SectionLabel>
@@ -122,26 +166,15 @@ function About({ onCopy, onOpen }) {
       <div className="about-copy"><h2>创意有想法，<br />制作有章法<span className="accent">。</span></h2><h3>我是孙晓伟，也叫阿丸。</h3><p>从三维场景与角色制作，到品牌产品视频与 AI 短片，我喜欢把一个想法，变成有质感、有叙事的画面。</p><p>做客户项目，也独立创作。用三维控制画面，用 AI 探索可能，让创意落到最后一帧。</p><div className="about-links"><a href={`mailto:${profile.email}`}>{profile.email} <Arrow /></a><button onClick={() => onCopy(profile.phone, '电话号码')}>TEL. {profile.phone} <span className="copy-symbol" aria-hidden="true">⧉</span></button></div><Experience /></div>
     </div>
     <div className="account-stats" role="group" aria-label="作品与自营账号数据">
-    <div className="stats-strip">
-      <div><strong>{String(selectedProjects.length).padStart(2, '0')}<span> /</span></strong><span>精选项目案例</span></div>
-      <button type="button" onClick={openNalou}><strong>48</strong><span>自营账号作品</span></button>
-      <button type="button" onClick={openNalou}><strong>6,204</strong><span>自营账号粉丝</span></button>
-      <button type="button" onClick={openNalou}><strong>10<span>万+</span></strong><span>多条作品播放量</span></button>
-      <p><time dateTime="2026-11-06">抖音数据截至 2026.11.06</time></p>
-    </div>
-    <button type="button" className="account-project-card" data-project={accountProject.id}
-      onClick={openNalou} aria-label={`播放${accountProject.title}的 ${accountProject.clips.length} 部作品`}>
-      <span className="account-project-preview" aria-hidden="true">
-        <img src={accountProject.image} alt="" loading="lazy" decoding="async" />
-        <img src={accountProject.clips[2].image} alt="" loading="lazy" decoding="async" />
-      </span>
-      <span className="account-project-copy">
-        <small>{accountProject.nature}</small>
-        <strong>{accountProject.title}</strong>
-        <span>{accountProject.description}</span>
-      </span>
-      <span className="account-project-action"><span>{accountProject.clips.length} 部视频</span><i><PlayIcon /></i></span>
-    </button>
+      <NalouFilmRail project={accountProject} onSelect={index => onOpen(accountProject, index)} suspended={suspended}>
+        <div className="stats-strip">
+          <div><strong>{String(selectedProjects.length).padStart(2, '0')}<span> /</span></strong><span>精选项目案例</span></div>
+          <button type="button" onClick={openNalou}><strong>48</strong><span>自营账号作品</span></button>
+          <button type="button" onClick={openNalou}><strong>6,204</strong><span>自营账号粉丝</span></button>
+          <button type="button" onClick={openNalou}><strong>10<span>万+</span></strong><span>多条作品播放量</span></button>
+          <time dateTime="2026-11-06">抖音数据截至 2026.11.06</time>
+        </div>
+      </NalouFilmRail>
     </div>
   </section>;
 }
@@ -237,7 +270,7 @@ function ProjectPlayer({ project, autoPlay = true, playlistFirst = false }) {
   </>;
 }
 
-function ProjectDialog({ project, onClose, onChange }) {
+function ProjectDialog({ project, initialClipIndex = 0, onClose, onChange }) {
   const ref = useRef(null);
   const closeButton = useRef(null);
   useEffect(() => { if (ref.current) ref.current.scrollTop = 0; }, [project?.id]);
@@ -271,7 +304,7 @@ function ProjectDialog({ project, onClose, onChange }) {
     caseContent = <IPCaseStudy project={project} />;
   } else if (caseKind === 'nalou') {
     caseClass = 'nalou-dialog';
-    caseContent = <NalouCaseStudy project={project} Player={ClipPlayer} />;
+    caseContent = <NalouCaseStudy key={project.id} project={project} Player={ClipPlayer} initialClipIndex={initialClipIndex} />;
   } else if (caseKind === 'liweike') {
     caseClass = 'lw-dialog';
     caseContent = <LiweikeCaseStudy project={project} Player={ClipPlayer} />;
@@ -299,16 +332,22 @@ function ProjectDialog({ project, onClose, onChange }) {
 }
 
 function App() {
-  const [project, setSelectedProject] = useState(() => {
-    const id = new URLSearchParams(window.location.search).get('project');
-    return projects.find(item => item.id === id) || null;
+  const [selection, setSelection] = useState(() => {
+    const query = new URLSearchParams(window.location.search);
+    const project = projects.find(item => item.id === query.get('project')) || null;
+    const clipIndex = project?.clips?.findIndex(clip => clip.id === query.get('clip')) ?? -1;
+    return { project, clipIndex: Math.max(0, clipIndex) };
   });
-  function setProject(next) {
+  const project = selection.project;
+  function setProject(next, clipIndex = 0) {
     const url = new URL(window.location.href);
     if (next) url.searchParams.set('project', next.id);
     else url.searchParams.delete('project');
+    const clip = next?.clips?.[clipIndex];
+    if (next?.caseStudy?.kind === 'nalou' && clip) url.searchParams.set('clip', clip.id);
+    else url.searchParams.delete('clip');
     window.history.replaceState(window.history.state, '', url);
-    setSelectedProject(next);
+    setSelection({ project: next, clipIndex: clip ? clipIndex : 0 });
   }
   const [active, setActive] = useState('home');
   const [toast, setToast] = useState('');
@@ -331,7 +370,7 @@ function App() {
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(''), 3200);
   };
-  return <><a className="skip-link" href="#main-content">跳到主要内容</a><Header active={active} /><main id="main-content"><Hero onPlay={setProject} suspended={Boolean(project)} /><About onCopy={copy} onOpen={setProject} /><Work onOpen={setProject} /><Expertise /><Contact onCopy={copy} /></main><ProjectDialog project={project} onClose={() => setProject(null)} onChange={setProject} /><div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite">{toast && <><span>✓</span>{toast}</>}</div></>;
+  return <><a className="skip-link" href="#main-content">跳到主要内容</a><Header active={active} /><main id="main-content"><Hero onPlay={setProject} suspended={Boolean(project)} /><About onCopy={copy} onOpen={setProject} suspended={Boolean(project)} /><Work onOpen={setProject} /><Expertise /><Contact onCopy={copy} /></main><ProjectDialog project={project} initialClipIndex={selection.clipIndex} onClose={() => setProject(null)} onChange={setProject} /><div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite">{toast && <><span>✓</span>{toast}</>}</div></>;
 }
 
 const root = import.meta.hot?.data.root ?? createRoot(document.getElementById('root'));

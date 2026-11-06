@@ -18,7 +18,7 @@ pnpm build
 pnpm preview
 ```
 
-生产文件输出到 `dist/`，可以部署到任意静态网站托管平台。
+下载的完整项目包在 `local-media/` 中附有七部影片，运行开发服务器或预览即可播放。生产构建将网页输出到 `dist/client/`，将同站视频服务输出到 `dist/server/`。线上视频使用站点的 R2 存储，支持拖动进度和下载完整正片。
 
 ## 内容与素材
 
@@ -26,7 +26,8 @@ pnpm preview
 - `src/more-projects.js`：完整语雀作品集补充的三维、CG、AI 视觉、IP 与品牌项目，保留来源卡片编号用于核对。
 - `src/graphic-projects.js`：本地 IP 文件夹整理的三个平面项目，含动作、造型、多视图及场景分组。
 - `src/CaseStudies.jsx`、`src/case-studies.css`：淘宝买菜案例页、平面 IP 图集和首页编辑式布局。
-- `src/LiweikeCaseStudy.jsx`、`src/liweike-case.css`：李未可深色详情页。四部影片以三卡轮播呈现，点击后展开播放器；九张独立静帧按三排展示，支持查看大图。作品卡片和宣发合集使用同一张地球轨道镜头封面。
+- `src/LiweikeCaseStudy.jsx`、`src/liweike-case.css`：上方播放器打开时显示宣发合集，下方三张卡片可轮换选择四部影片。九张独立静帧支持查看原图。
+- `src/NalouFilmRail.jsx`、`src/NalouCaseStudy.jsx`：账号画廊按抖音发布页顺序展示六部作品，卡片可悬停预览，也可点击进入对应影片。
 - `src/PosterCaseStudy.jsx`：白鹭角色的斜列海报画廊，保留原图入口；`src/FriesCaseStudy.jsx`：整点薯条先播放动画，再展示 p06A 高清作品板。
 - `src/UniCaseStudy.jsx`、`src/unihui-case.css`：壹方汇详情以原始设计板 `P07IP附加.png` 的构图顺序展示睡眠派对、美陈周边及圣诞场景，另外保留独立作品图集。作品卡封面采用彩虹马正视图。
 - `src/main.jsx`：五个页面模块、视频弹窗和交互。
