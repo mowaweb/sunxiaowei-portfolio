@@ -99,21 +99,28 @@ function About({ onCopy }) {
       <div className="identity-panel"><div className="identity-top"><span>THE PERSON<br />BEHIND THE FRAMES</span><span className="identity-cross">✳</span></div><div className="avatar-composition"><span className="avatar-orbit orbit-one" /><span className="avatar-orbit orbit-two" /><div className="avatar-frame"><img src="./assets/avatar.jpg" alt="孙晓伟简历中的手绘头像" width="260" height="260" loading="lazy" /></div><span className="avatar-coordinate">PROFILE / SUN XIAOWEI</span></div><div className="identity-bottom"><span>阿丸 <small>A-WAN</small></span><span>3D & AIGC<br />VISUAL DESIGNER</span></div></div>
       <div className="about-copy"><h2>创意有想法，<br />制作有章法<span className="accent">。</span></h2><h3>我是孙晓伟，也叫阿丸。</h3><p>从三维场景与角色制作，到品牌产品视频与 AI 短片，我喜欢把一个想法，变成有质感、有叙事的画面。</p><p>做客户项目，也独立创作。用三维控制画面，用 AI 探索可能，让创意落到最后一帧。</p><div className="about-links"><a href={`mailto:${profile.email}`}>{profile.email} <Arrow /></a><button onClick={() => onCopy(profile.phone, '电话号码')}>TEL. {profile.phone} <span className="copy-symbol" aria-hidden="true">⧉</span></button></div><Experience /></div>
     </div>
-    <div className="stats-strip"><div><strong>{String(projects.length).padStart(2, '0')}<span> /</span></strong><span>精选影像案例</span></div><div><strong>48</strong><span>自营账号作品</span></div><div><strong>6,212</strong><span>自营账号粉丝</span></div><div><strong>10<span>万+</span></strong><span>多条作品播放量</span></div><p>抖音「Nalou 娜楼」<br />账号数据来自历史截图</p></div>
+    <div className="stats-strip"><div><strong>{String(projects.length).padStart(2, '0')}<span> /</span></strong><span>精选项目案例</span></div><div><strong>48</strong><span>自营账号作品</span></div><div><strong>6,212</strong><span>自营账号粉丝</span></div><div><strong>10<span>万+</span></strong><span>多条作品播放量</span></div><p>抖音「Nalou 娜楼」<br />账号数据来自历史截图</p></div>
   </section>;
 }
 
 function ProjectCard({ project, onOpen }) {
-  return <button className={`project-card ${project.featured ? 'featured' : ''} ${project.portrait ? 'portrait-project' : ''}`} onClick={() => onOpen(project)} aria-label={`播放${project.title}`}>
-    <div className="project-art"><img src={project.image} alt={project.title + '作品画面'} loading="lazy" decoding="async" />{project.portrait && <div className="portrait-cover-type" aria-hidden="true"><span>AI SHORT FILM</span><strong>孔乙己</strong><small>一个熟悉的故事，<br />一次新的影像表达。</small></div>}<div className="project-shade" /><div className="project-topline"><span>{project.number} / {project.nature}</span><span className="project-duration"><PlayIcon />{project.clips ? `${project.clips.length} 段视频` : project.duration}</span></div><div className="project-art-footer"><span>{project.english}</span><span className="project-open"><Arrow /></span></div>{project.featured && <div className="featured-title"><span>三维 × AI · 产品影像制作</span><strong>越过想象的边界。</strong></div>}<span className="project-hover-play"><PlayIcon />播放作品</span></div>
+  const videoCount = project.clips?.filter(clip => clip.video).length;
+  const countLabel = project.clips ? videoCount ? `${videoCount} 段视频` : `${project.clips.length} 组画面` : project.duration;
+  const action = project.video ? '播放' : '查看';
+  return <button className={`project-card ${project.featured ? 'featured' : ''} ${project.portrait ? 'portrait-project' : ''}`} onClick={() => onOpen(project)} aria-label={`${action}${project.title}`}>
+    <div className="project-art"><img src={project.image} alt={project.title + '作品画面'} loading="lazy" decoding="async" />{project.portrait && <div className="portrait-cover-type" aria-hidden="true"><span>AI SHORT FILM</span><strong>孔乙己</strong><small>一个熟悉的故事，<br />一次新的影像表达。</small></div>}<div className="project-shade" /><div className="project-topline"><span>{project.number} / {project.nature}</span><span className="project-duration">{project.video ? <PlayIcon /> : <Arrow />}{countLabel}</span></div><div className="project-art-footer"><span>{project.english}</span><span className="project-open"><Arrow /></span></div>{project.featured && <div className="featured-title"><span>三维 × AI · 产品影像制作</span><strong>越过想象的边界。</strong></div>}<span className="project-hover-play">{project.video ? <PlayIcon /> : <Arrow />}{action}作品</span></div>
     <div className="project-meta"><h3>{project.title}</h3><div>{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></div>
   </button>;
 }
 
+function matchesProjectFilter(project, filter) {
+  return filter === 'all' || (filter === 'cg' ? project.medium === 'cg' : project.category === filter);
+}
+
 function Work({ onOpen }) {
   const [filter, setFilter] = useState('all');
-  const filters = [{ id: 'all', name: '全部作品' }, { id: 'commercial', name: '商业视频' }, { id: 'personal', name: '个人创作' }].map(filter => ({ ...filter, count: String(projects.filter(project => filter.id === 'all' || project.category === filter.id).length).padStart(2, '0') }));
-  const visible = projects.filter(p => filter === 'all' || p.category === filter);
+  const filters = [{ id: 'all', name: '全部作品' }, { id: 'commercial', name: '商业视频' }, { id: 'cg', name: '三维 / CG' }, { id: 'personal', name: '个人创作' }].map(filter => ({ ...filter, count: String(projects.filter(project => matchesProjectFilter(project, filter.id)).length).padStart(2, '0') }));
+  const visible = projects.filter(project => matchesProjectFilter(project, filter));
   return <section className="work section shell" id="work">
     <SectionLabel number="02">精选作品 / SELECTED WORK</SectionLabel>
     <div className="section-heading work-heading"><h2>画面，是最好的表达<span className="accent">。</span></h2><p>商业制作与个人探索，<br />每一帧，都有自己的来处。</p></div>
@@ -135,8 +142,8 @@ function ClipPlayer({ project, clip, onEnded }) {
   const [version, setVersion] = useState('ai');
   const versions = clip.versions || [];
   const media = versions.find(item => item.id === version) || versions[0] || clip;
-  return <div className={`dialog-player ${project.portrait ? 'vertical-player' : ''}`}>
-    <video key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay playsInline preload="metadata" onEnded={onEnded} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
+  return <div className={`dialog-player ${(clip.portrait ?? project.portrait) ? 'vertical-player' : ''}`}>
+    {media.video ? <video key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay playsInline preload="metadata" onEnded={onEnded} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} /> : <a className="dialog-image-link" href={media.image} target="_blank" rel="noreferrer" aria-label={`打开${clip.title}原图`}><img className="dialog-still" src={media.image} alt={`${project.title}：${clip.title}`} decoding="async" /><span>查看原图 <Arrow /></span></a>}
     {versions.length > 1 && <div className="player-version-switch" role="group" aria-label="切换制作版本">
       {versions.map(item => <button key={item.id} aria-pressed={media.id === item.id} onClick={() => setVersion(item.id)}>{item.label}</button>)}
     </div>}
@@ -147,13 +154,15 @@ function ProjectPlayer({ project }) {
   const [clipIndex, setClipIndex] = useState(0);
   const clips = project.clips || [{ id: project.id, title: project.title, stage: '作品片段', video: project.video, image: project.image }];
   const clip = clips[clipIndex];
+  const hasImages = clips.some(item => !item.video);
+  const hasVideos = clips.some(item => item.video);
   return <>
     <ClipPlayer key={clip.id} project={project} clip={clip} onEnded={project.autoAdvanceClips ? () => setClipIndex(current => Math.min(current + 1, clips.length - 1)) : undefined} />
     {clips.length > 1 && <section className="project-clips" aria-label={`${project.title}的片段与制作过程`}>
-      <div className="clips-heading"><span>{project.autoAdvanceClips ? '片段顺序 · 自动连播' : '片段与制作过程'}</span><span aria-live="polite" aria-atomic="true">{String(clipIndex + 1).padStart(2, '0')} / {String(clips.length).padStart(2, '0')}</span></div>
-      <div className="clip-list" role="group" aria-label="选择视频片段">
-        {clips.map((item, i) => <button key={item.id} className={`clip-button ${i === clipIndex ? 'is-active' : ''}`} aria-pressed={i === clipIndex} aria-label={`播放${project.autoAdvanceClips ? String(i).padStart(2, '0') + ' ' : ''}${item.title} · ${item.stage}`} onClick={() => setClipIndex(i)}>
-          <span className="clip-thumbnail"><img src={item.image} alt="" loading="lazy" /><span className="clip-duration">{item.duration}</span><span className="clip-play"><PlayIcon /></span></span>
+      <div className="clips-heading"><span>{project.autoAdvanceClips ? '片段顺序 · 自动连播' : hasImages ? hasVideos ? '视频与项目画面' : '项目画面' : '片段与制作过程'}</span><span aria-live="polite" aria-atomic="true">{String(clipIndex + 1).padStart(2, '0')} / {String(clips.length).padStart(2, '0')}</span></div>
+      <div className="clip-list" role="group" aria-label={hasImages ? '选择项目内容' : '选择视频片段'}>
+        {clips.map((item, i) => <button key={item.id} className={`clip-button ${i === clipIndex ? 'is-active' : ''}`} aria-pressed={i === clipIndex} aria-label={`${item.video ? '播放' : '查看'}${project.autoAdvanceClips ? String(i).padStart(2, '0') + ' ' : ''}${item.title} · ${item.stage}`} onClick={() => setClipIndex(i)}>
+          <span className="clip-thumbnail"><img src={item.poster || item.image} alt="" loading="lazy" /><span className="clip-duration">{item.duration || (item.animated ? 'GIF' : '画面')}</span><span className="clip-play">{item.video ? <PlayIcon /> : <Arrow />}</span></span>
           <span className="clip-title">{project.autoAdvanceClips && <span className="clip-order">{String(i).padStart(2, '0')}</span>}{item.title}</span><span className="clip-stage">{item.stage}</span>
         </button>)}
       </div>
@@ -184,7 +193,7 @@ function ProjectDialog({ project, onClose, onChange }) {
     <div className="dialog-content">
       <div className="dialog-heading"><span>SELECTED WORK / {project.number}</span><button ref={closeButton} className="dialog-close" onClick={onClose} aria-label="关闭作品视频"><span>关闭</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" stroke="currentColor" strokeWidth="1.5" /></svg></button></div>
       <ProjectPlayer key={project.id} project={project} />
-      <div className="dialog-info"><div><span className="dialog-nature">{project.nature} / {project.tags.join(' · ')}</span><h2 id="dialog-project-title">{project.title}</h2><p>{project.description}</p><span className="dialog-role">我的工作：{project.role}</span></div>{project.link && <a className="inline-link" href={project.link} target="_blank" rel="noreferrer">查看发布视频 <Arrow /></a>}</div>
+      <div className="dialog-info"><div><span className="dialog-nature">{project.nature} / {project.tags.join(' · ')}</span><h2 id="dialog-project-title">{project.title}</h2><p>{project.description}</p><span className="dialog-role">我的工作：{project.role}</span></div>{project.link && <a className="inline-link" href={project.link} target="_blank" rel="noreferrer">{project.linkLabel || '查看发布视频'} <Arrow /></a>}</div>
       {project.characterSheet && <figure className="character-sheet">
         <figcaption><div><span>AI 角色设定 / CHARACTER TURNAROUND</span><h3>{project.characterSheet.title}</h3></div><a className="inline-link" href={project.characterSheet.image} target="_blank" rel="noreferrer">查看原图 <Arrow /></a></figcaption>
         <a className="character-sheet-image" href={project.characterSheet.image} target="_blank" rel="noreferrer" aria-label="打开人物三视图原图"><img src={project.characterSheet.image} alt={project.characterSheet.alt} width={project.characterSheet.width} height={project.characterSheet.height} loading="lazy" decoding="async" /></a>

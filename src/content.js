@@ -1,9 +1,11 @@
+import { additionalProjects } from './more-projects.js';
+
 export const profile = {
   name: '孙晓伟',
   alias: '阿丸',
   email: '13560469209@163.com',
   phone: '13560469209',
-  portfolioUrl: 'https://www.yuque.com/mowan-ktbjt/hl9q0l/goamsy26ifalfmae?singleDoc',
+  portfolioUrl: 'https://www.yuque.com/mowan-ktbjt/hl9q0l/xgmmxefywzughdf5',
   resume: './assets/resume.pdf',
 };
 
@@ -116,6 +118,7 @@ export const projects = [
   },
   {
     id: 'phone-stand',
+    medium: 'cg',
     number: '05',
     title: '手机支架 · 品牌宣传视频',
     english: 'FORM IN MOTION',
@@ -157,7 +160,8 @@ export const projects = [
     description: '从日常工作里的甲方关系出发，用 AI 影像创作一段关于人与猫的故事。个人练习作品，独立创作。',
     role: '创意 · AI 制作 · 剪辑合成',
   },
-];
+  ...additionalProjects,
+].map((project, index) => ({ ...project, number: String(index + 1).padStart(2, '0') }));
 
 export const experiences = [
   { period: '2025.05 — 至今', company: '自由设计', role: '三维 / AIGC 视频设计师', description: '承接产品视频、三维 KV 与 IP 视觉项目，对接客户需求，并组织 2—3 人协作完成相关制作。' },
