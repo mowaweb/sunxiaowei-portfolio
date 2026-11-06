@@ -169,7 +169,6 @@ export const heroProjects = [
   { projectId: 'bambu-a1', label: '拓竹 A1', caption: '创意打印影像', video: './assets/hero-bambu.mp4', image: './assets/hero-bambu.webp' },
   { projectId: 'lotus', label: '莲花汽车', caption: '品牌开场', video: './assets/hero-lotus.mp4', image: './assets/hero-lotus.webp' },
   { projectId: 'liweike-ar', label: '李未可', caption: '虚拟偶像宣发', video: './assets/hero-liweike.mp4', image: './assets/hero-liweike.webp' },
-  { projectId: 'maicai-blindbox', label: '淘宝买菜', caption: 'IP 盲盒动画', video: './assets/hero-maicai.mp4', image: './assets/hero-maicai.webp' },
 ].map(item => ({ ...item, project: projects.find(project => project.id === item.projectId) }));
 
 export const experiences = [
