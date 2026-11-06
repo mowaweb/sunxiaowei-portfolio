@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { capabilities, experiences, profile, projects } from './content';
+import { capabilities, experiences, heroProjects, profile, projects } from './content';
 import './styles.css';
 
 function Arrow({ direction = 'up', ...props }) {
@@ -55,31 +55,33 @@ function Header({ active }) {
 function Hero({ onPlay }) {
   const videoRef = useRef(null);
   const sectionRef = useRef(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const selected = heroProjects[selectedIndex];
   const [playing, setPlaying] = useState(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   useEffect(() => {
     const video = videoRef.current;
+    let cancelled = false;
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && playing) video.play().catch(() => {});
+      if (entry.isIntersecting && playing) video.play().catch(() => { if (!cancelled) setPlaying(false); });
       else video.pause();
     }, { threshold: 0.08 });
     observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, [playing]);
-  const toggle = () => {
-    const video = videoRef.current;
-    if (playing) { video.pause(); setPlaying(false); }
-    else video.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
-  };
+    return () => { cancelled = true; observer.disconnect(); video.pause(); };
+  }, [playing, selected.projectId]);
   return <section className="hero" id="home" ref={sectionRef} aria-label="孙晓伟个人作品集首页">
-    <div className="hero-media"><video ref={videoRef} src="./assets/hero.mp4" poster="./assets/drone.webp" muted loop playsInline preload="auto" aria-hidden="true" /><div className="hero-shade" /></div>
+    <div className="hero-media"><video key={selected.projectId} ref={videoRef} src={selected.video} poster={selected.image} autoPlay={playing} muted loop playsInline preload="metadata" aria-hidden="true" onError={() => setPlaying(false)} /><div className="hero-shade" /></div>
     <div className="hero-grid" aria-hidden="true" />
     <div className="hero-content shell">
       <div className="hero-eyebrow"><span className="status-dot" /><span>孙晓伟 / SUN XIAOWEI</span><span className="eyebrow-separator">—</span><span>独立视觉创作者</span></div>
       <h1>让想象，<br />成为<span className="hero-emphasis">画面<svg viewBox="0 0 340 25" preserveAspectRatio="none" aria-hidden="true"><path d="M2 16C105-1 243 0 337 6M14 23c83-9 207-10 307-8" /></svg></span>。</h1>
       <div className="hero-intro"><p>以三维为基础，和 AI 一起拓展视觉的边界。<br />专注品牌产品视频、角色动画与创意影像。</p><span className="hero-discipline">3D · AIGC · MOTION</span></div>
-      <div className="hero-actions"><a className="button button-light" href="#work">探索精选作品 <Arrow direction="down" /></a><button className="text-play" onClick={() => onPlay(projects[0])}><span className="play-ring"><PlayIcon /></span>播放作品片段<span className="play-length">00:10</span></button></div>
+      <div className="hero-actions"><a className="button button-light" href="#work">探索精选作品 <Arrow direction="down" /></a><button className="text-play" onClick={() => onPlay(selected.project)} aria-label={`播放${selected.project.title}`}><span className="play-ring"><PlayIcon /></span>播放当前项目<span className="play-length">{selected.project.duration}</span></button></div>
+      <div className="hero-switcher">
+        <div className="hero-switcher-heading"><span>点击切换项目</span><span aria-live="polite" aria-atomic="true">{String(selectedIndex + 1).padStart(2, '0')} / {String(heroProjects.length).padStart(2, '0')} · {selected.label}</span></div>
+        <div className="hero-projects" role="group" aria-label="切换首页视频项目">{heroProjects.map((item, index) => <button type="button" className="hero-project-choice" key={item.projectId} aria-pressed={selectedIndex === index} aria-label={`切换首页视频：${item.label}`} onClick={() => setSelectedIndex(index)}><img src={item.image} alt="" width="160" height="90" /><span>{item.label}</span></button>)}</div>
+      </div>
     </div>
-    <div className="hero-bottom shell"><a className="scroll-cue" href="#about"><span className="scroll-line" /><span>向下探索<br /><small>SCROLL TO DISCOVER</small></span></a><div className="hero-frame-label"><span className="tiny-cross">+</span><span>画面选自 / 大疆无人机项目 · 雪山转场<br /><small>VISUAL & MOTION DESIGN BY SUN XIAOWEI</small></span></div><button className="background-control" onClick={toggle} aria-label={playing ? '暂停背景视频' : '播放背景视频'} title={playing ? '暂停背景视频' : '播放背景视频'}>{playing ? <span className="pause-icon"><i /><i /></span> : <PlayIcon />}<span>{playing ? 'PAUSE' : 'PLAY'}</span></button></div>
+    <div className="hero-bottom shell"><a className="scroll-cue" href="#about"><span className="scroll-line" /><span>向下探索<br /><small>SCROLL TO DISCOVER</small></span></a><div className="hero-frame-label"><span className="tiny-cross">+</span><span>画面选自 / {selected.label} · {selected.caption}<br /><small>VISUAL & MOTION DESIGN BY SUN XIAOWEI</small></span></div><button className="background-control" onClick={() => setPlaying(current => !current)} aria-label={playing ? '暂停背景视频' : '播放背景视频'} title={playing ? '暂停背景视频' : '播放背景视频'}>{playing ? <span className="pause-icon"><i /><i /></span> : <PlayIcon />}<span>{playing ? 'PAUSE' : 'PLAY'}</span></button></div>
   </section>;
 }
 

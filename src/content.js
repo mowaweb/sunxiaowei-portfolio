@@ -163,6 +163,15 @@ export const projects = [
   ...additionalProjects,
 ].map((project, index) => ({ ...project, number: String(index + 1).padStart(2, '0') }));
 
+export const heroProjects = [
+  { projectId: 'drone', label: '大疆无人机', caption: '雪山转场', video: './assets/hero.mp4', image: './assets/drone.webp' },
+  { projectId: 'osmo', label: 'Osmo 360 II', caption: '全景相机影像', video: './assets/hero-osmo.mp4', image: './assets/hero-osmo.webp' },
+  { projectId: 'bambu-a1', label: '拓竹 A1', caption: '创意打印影像', video: './assets/hero-bambu.mp4', image: './assets/hero-bambu.webp' },
+  { projectId: 'lotus', label: '莲花汽车', caption: '品牌开场', video: './assets/hero-lotus.mp4', image: './assets/hero-lotus.webp' },
+  { projectId: 'liweike-ar', label: '李未可', caption: '虚拟偶像宣发', video: './assets/hero-liweike.mp4', image: './assets/hero-liweike.webp' },
+  { projectId: 'maicai-blindbox', label: '淘宝买菜', caption: 'IP 盲盒动画', video: './assets/hero-maicai.mp4', image: './assets/hero-maicai.webp' },
+].map(item => ({ ...item, project: projects.find(project => project.id === item.projectId) }));
+
 export const experiences = [
   { period: '2025.05 — 至今', company: '自由设计', role: '三维 / AIGC 视频设计师', description: '承接产品视频、三维 KV 与 IP 视觉项目，对接客户需求，并组织 2—3 人协作完成相关制作。' },
   { period: '2024.01 — 2025.04', company: '诚伯信息 · 杭州', role: '3D 设计师', description: '服务淘宝买菜、天猫超市相关业务，完成三维视频、场景渲染与卡通 IP 制作。' },
