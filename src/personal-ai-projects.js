@@ -23,7 +23,7 @@ export const personalAiProjects = [
     nature: '个人创作',
     tags: ['剧情短片', 'AI 影像'],
     duration: '03:44',
-    image: './assets/personal-ai-exam.webp',
+    image: './assets/personal-ai-exam-sword.webp',
     video: '/films/personal-ai-exam.mp4',
     description: '为争夺满分考生，招生现场变成了竞技场。人物在操场上各显神通，机械与特效镜头把这场争夺推向高潮。',
     role: '个人 AI 影像创作',

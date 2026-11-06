@@ -293,6 +293,17 @@ section[id] { scroll-margin-top: 100px; }
 .dialog-player { position: relative; background: #080a08; }
 .dialog-player video { width: 100%; max-height: 62svh; aspect-ratio: 16/9; object-fit: contain; }
 .video-transport { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 12px; border-top: 1px solid #ffffff15; background: #111710; }
+.video-timeline { flex: 1 0 100%; display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 10px; color: #c5d3c8; font-size: 11px; line-height: 1; }
+.video-timeline-clock { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.video-timeline input { appearance: none; width: 100%; min-width: 0; height: 28px; padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer; accent-color: var(--accent); touch-action: pan-y; }
+.video-timeline input:disabled { opacity: .4; cursor: default; }
+.video-timeline input::-webkit-slider-runnable-track { height: 4px; border-radius: 4px; background: linear-gradient(to right, var(--accent) var(--seek-percent), #566159 var(--seek-percent)); }
+.video-timeline input::-moz-range-track { height: 4px; border-radius: 4px; background: #566159; }
+.video-timeline input::-moz-range-progress { height: 4px; border-radius: 4px; background: var(--accent); }
+.video-timeline input::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; margin-top: -5px; border: 0; border-radius: 50%; background: #e2fbe9; }
+.video-timeline input::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: #e2fbe9; }
+/* Inline Chromium/Safari players use our persistent timeline; fullscreen keeps the native scrubber. */
+.dialog-player video:not(:fullscreen):not(:-webkit-full-screen)::-webkit-media-controls-timeline { display: none; }
 .video-seek-actions { display: flex; gap: 8px; }
 .video-seek-actions button { min-height: 34px; padding: 7px 10px; background: #20291f; border: 1px solid #ffffff28; color: #e2eddc; font-size: 11px; white-space: nowrap; }
 .video-seek-actions button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }

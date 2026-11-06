@@ -3,6 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'vite';
 import { importRelease } from './media-phase.mjs';
+import { createHash } from 'node:crypto';
+import { blockSize, clipBlockPath, clips } from '../worker/clip-catalog.js';
 
 const root = await fs.realpath(fileURLToPath(new URL('../', import.meta.url)));
 const dist = path.join(root, 'dist');
@@ -24,6 +26,17 @@ const publicRoot = path.join(root, 'public');
 await fs.cp(publicRoot, client, { recursive: true, filter: filename =>
   !excluded.has(path.relative(publicRoot, filename).split(path.sep).join('/')),
 });
+for (const clip of clips.values()) {
+  const bytes = await fs.readFile(path.join(client, 'assets', clip.file));
+  if (bytes.length !== clip.size || createHash('sha256').update(bytes).digest('hex') !== clip.sha256) {
+    throw new Error('Clip catalog does not match ' + clip.file);
+  }
+  for (let offset = 0; offset < bytes.length; offset += blockSize) {
+    const dest = path.join(client, clipBlockPath(clip, offset / blockSize));
+    if (!offset) await fs.mkdir(path.dirname(dest), {recursive: true});
+    await fs.writeFile(dest, bytes.subarray(offset, offset + blockSize));
+  }
+}
 const entry = path.join(root, 'worker', importRelease ? 'import-entry.js' : 'index.js');
 await build({ root, configFile: false, publicDir: false, build: {
   ssr: entry, target: 'es2022', outDir: server, copyPublicDir: false, minify: false,

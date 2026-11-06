@@ -3,7 +3,7 @@ const source = 'https://www.yuque.com/mowan-ktbjt/hl9q0l/xgmmxefywzughdf5';
 const videoAssets = {
   "19": {
     "id": "liweike-showreel",
-    "video": "./assets/extra-liweike-showreel.mp4",
+    "video": "/clips/liweike-showreel.mp4",
     "image": "./assets/liweike-orbit-cover.webp",
     "duration": "01:23",
     "portrait": false,
@@ -11,7 +11,7 @@ const videoAssets = {
   },
   "20": {
     "id": "liweike-clock",
-    "video": "./assets/extra-liweike-clock.mp4",
+    "video": "/clips/liweike-clock.mp4",
     "image": "./assets/extra-liweike-clock.webp",
     "duration": "00:10",
     "portrait": false,
@@ -19,7 +19,7 @@ const videoAssets = {
   },
   "22": {
     "id": "liweike-ar-01",
-    "video": "./assets/extra-liweike-ar-01.mp4",
+    "video": "/clips/liweike-ar-01.mp4",
     "image": "./assets/extra-liweike-ar-01.webp",
     "duration": "00:04",
     "portrait": false,
@@ -27,7 +27,7 @@ const videoAssets = {
   },
   "23": {
     "id": "liweike-ar-02",
-    "video": "./assets/extra-liweike-ar-02.mp4",
+    "video": "/clips/liweike-ar-02.mp4",
     "image": "./assets/extra-liweike-ar-02.webp",
     "duration": "00:04",
     "portrait": false,

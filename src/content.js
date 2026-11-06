@@ -196,8 +196,14 @@ export const heroProjects = [
   { projectId: 'osmo', label: 'Osmo 360 II', caption: '全景相机影像', video: './assets/hero-osmo.mp4', image: './assets/osmo-cover.webp' },
   { projectId: 'bambu-a1', label: '拓竹 A1', caption: '创意打印影像', video: './assets/hero-bambu.mp4', image: './assets/hero-bambu.webp' },
   { projectId: 'lotus', label: '莲花汽车', caption: '品牌开场', video: './assets/hero-lotus.mp4', image: './assets/hero-lotus.webp' },
-  { projectId: 'liweike-ar', label: '李未可', caption: '虚拟偶像宣发', video: './assets/hero-liweike.mp4', image: projects.find(project => project.id === 'liweike-ar').image },
-].map(item => ({ ...item, project: projects.find(project => project.id === item.projectId) }));
+  { projectId: 'liweike-ar', label: '李未可', caption: '虚拟偶像宣发', video: './assets/hero-liweike.mp4' },
+  { projectId: 'personal-ai-gt', label: '领克 GT', caption: '概念跑车 · 雨中赛道', video: './assets/hero-ai-gt.mp4' },
+  { projectId: 'personal-ai-exam', label: '满分考生', caption: '满分考生争夺战', video: './assets/hero-ai-exam.mp4' },
+  { projectId: 'personal-ai-10086', label: '10086', caption: '一线越千山', video: './assets/hero-ai-10086.mp4' },
+].map(item => {
+  const project = projects.find(project => project.id === item.projectId);
+  return { ...item, image: item.image || project.image, project };
+});
 
 export const experiences = [
   { period: '2025.05 — 至今', company: '自由设计', role: '三维 / AIGC 视频设计师', description: '承接产品视频、三维 KV 与 IP 视觉项目，对接客户需求，并组织 2—3 人协作完成相关制作。' },

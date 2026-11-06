@@ -1,0 +1,24 @@
+.awan-identity { position: relative; min-width: 0; }
+@media (max-width: 640px) {
+  .awan-identity { width: 100%; max-width: 480px; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .awan-identity .identity-panel {
+    overflow: visible;
+    transform-style: preserve-3d;
+    transform: perspective(1200px) rotateX(calc(var(--awan-y, 0) * -2deg)) rotateY(calc(var(--awan-x, 0) * 2.6deg));
+  }
+  .awan-identity .avatar-composition { transform-style: preserve-3d; }
+  .awan-identity .identity-panel, .awan-identity .avatar-frame, .awan-identity .avatar-orbit {
+    transition: transform .3s cubic-bezier(.2,.65,.3,1);
+  }
+  .awan-identity .avatar-frame {
+    transform: translate3d(calc(var(--awan-x, 0) * 7px), calc(var(--awan-y, 0) * 6px), calc(var(--awan-depth, 0) * 16px)) rotate(-5deg);
+  }
+  .awan-identity .orbit-one {
+    transform: translate3d(calc(var(--awan-x, 0) * -4px), calc(var(--awan-y, 0) * -3px), 0) rotate(-28deg);
+  }
+  .awan-identity .orbit-two {
+    transform: translate3d(calc(var(--awan-x, 0) * 2px), calc(var(--awan-y, 0) * 2px), calc(var(--awan-depth, 0) * 5px)) rotate(38deg);
+  }
+}

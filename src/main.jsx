@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import AWanIdentityCard from './AWanIdentityCard';
 import { capabilities, experiences, heroProjects, profile, projects } from './content';
 import { IPCaseStudy, MaicaiCaseStudy } from './CaseStudies';
 import LiweikeCaseStudy from './LiweikeCaseStudy';
@@ -9,6 +10,7 @@ import FriesCaseStudy from './FriesCaseStudy';
 import NalouCaseStudy from './NalouCaseStudy';
 import { nalouProject } from './nalou-project';
 import NalouFilmRail from './NalouFilmRail';
+import VideoTimeline from './VideoTimeline';
 import { FilmEditions, FilmViews, fullFilms } from './FullFilm';
 import './styles.css';
 import './case-studies.css';
@@ -162,7 +164,7 @@ function About({ onCopy, onOpen, suspended = false }) {
   return <section className="about section shell" id="about">
     <SectionLabel number="01">关于我 / ABOUT</SectionLabel>
     <div className="about-layout">
-      <div className="identity-panel"><div className="identity-top"><span>THE PERSON<br />BEHIND THE FRAMES</span><span className="identity-cross">✳</span></div><div className="avatar-composition"><span className="avatar-orbit orbit-one" /><span className="avatar-orbit orbit-two" /><div className="avatar-frame"><img src="./assets/avatar.jpg" alt="孙晓伟简历中的手绘头像" width="260" height="260" loading="lazy" /></div><span className="avatar-coordinate">PROFILE / SUN XIAOWEI</span></div><div className="identity-bottom"><span>阿丸 <small>A-WAN</small></span><span>3D & AIGC<br />VISUAL DESIGNER</span></div></div>
+      <AWanIdentityCard />
       <div className="about-copy"><h2>创意有想法，<br />制作有章法<span className="accent">。</span></h2><h3>我是孙晓伟，也叫阿丸。</h3><p>从三维场景与角色制作，到品牌产品视频与 AI 短片，我喜欢把一个想法，变成有质感、有叙事的画面。</p><p>做客户项目，也独立创作。用三维控制画面，用 AI 探索可能，让创意落到最后一帧。</p><div className="about-links"><a href={`mailto:${profile.email}`}>{profile.email} <Arrow /></a><button onClick={() => onCopy(profile.phone, '电话号码')}>TEL. {profile.phone} <span className="copy-symbol" aria-hidden="true">⧉</span></button></div><Experience /></div>
     </div>
     <div className="account-stats" role="group" aria-label="作品与自营账号数据">
@@ -237,6 +239,7 @@ function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange
   return <div className={`dialog-player ${(clip.portrait ?? project.portrait) ? 'vertical-player' : ''}`}>
     {media.video ? <><video ref={videoRef} key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay={autoPlay} playsInline preload="metadata" onEnded={onEnded} onLoadedMetadata={event => { updateDuration(event); event.currentTarget.playbackRate = playbackRate; }} onDurationChange={updateDuration} onRateChange={event => { if (event.currentTarget.playbackRate !== playbackRate) onPlaybackRateChange(event.currentTarget.playbackRate); }} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
       <div className="video-transport" role="group" aria-label="视频播放控制">
+        <VideoTimeline key={media.video} videoRef={videoRef} duration={duration} />
         <div className="video-seek-actions"><button type="button" onClick={() => seekBy(-5)} disabled={!duration} aria-label="快退5秒">← 快退 5 秒</button><button type="button" onClick={() => seekBy(5)} disabled={!duration} aria-label="快进5秒">快进 5 秒 →</button></div>
         <label className="video-speed">倍速<select aria-label="播放速度" value={playbackRate} onChange={event => onPlaybackRateChange(Number(event.target.value))}>{[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map(rate => <option value={rate} key={rate}>{rate === 1 ? '1× 正常' : `${rate}×`}</option>)}</select></label>
       </div></> : <a className="dialog-image-link" href={media.image} target="_blank" rel="noreferrer" aria-label={`打开${clip.title}原图`}><img className="dialog-still" src={media.image} alt={`${project.title}：${clip.title}`} decoding="async" /><span>查看原图 <Arrow /></span></a>}
