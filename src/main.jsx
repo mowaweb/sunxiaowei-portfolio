@@ -2,8 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { capabilities, experiences, heroProjects, profile, projects } from './content';
 import { IPCaseStudy, MaicaiCaseStudy } from './CaseStudies';
+import LiweikeCaseStudy from './LiweikeCaseStudy';
+import PosterCaseStudy from './PosterCaseStudy';
+import UniCaseStudy from './UniCaseStudy';
 import './styles.css';
 import './case-studies.css';
+import './liweike-case.css';
+import './poster-case.css';
+import './unihui-case.css';
 
 function Arrow({ direction = 'up', ...props }) {
   return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props} style={{ transform: direction === 'down' ? 'rotate(90deg)' : direction === 'right' ? 'rotate(45deg)' : undefined, ...props.style }}><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -115,8 +121,8 @@ function ProjectCard({ project, onOpen }) {
   const videoCount = project.clips?.filter(clip => clip.video).length;
   const countLabel = project.clips ? videoCount ? `${videoCount} 段视频` : `${project.clips.length} 组画面` : project.duration;
   const action = project.video ? '播放' : '查看';
-  return <button className={`project-card ${project.featured ? 'featured' : ''} ${project.portrait ? 'portrait-project' : ''} ${project.category === 'graphic' ? 'graphic-project' : ''}`} onClick={() => onOpen(project)} aria-label={`${action}${project.title}`}>
-    <div className="project-art"><img src={project.image} alt={project.title + '作品画面'} loading="lazy" decoding="async" />{project.portrait && <div className="portrait-cover-type" aria-hidden="true"><span>AI SHORT FILM</span><strong>孔乙己</strong><small>一个熟悉的故事，<br />一次新的影像表达。</small></div>}<div className="project-shade" /><div className="project-topline"><span>{project.number} / {project.nature}</span><span className="project-duration">{project.video ? <PlayIcon /> : <Arrow />}{countLabel}</span></div><div className="project-art-footer"><span>{project.english}</span><span className="project-open"><Arrow /></span></div>{project.featured && <div className="featured-title"><span>三维 × AI · 产品影像制作</span><strong>越过想象的边界。</strong></div>}<span className="project-hover-play">{project.video ? <PlayIcon /> : <Arrow />}{action}作品</span></div>
+  return <button data-project={project.id} className={`project-card ${project.featured ? 'featured' : ''} ${project.portrait ? 'portrait-project' : ''} ${project.category === 'graphic' ? 'graphic-project' : ''}`} onClick={() => onOpen(project)} aria-label={`${action}${project.title}`}>
+    <div className="project-art"><img src={project.image} alt={project.title + '作品画面'} loading="lazy" decoding="async" />{project.id === 'graphic-unihui' && <div className="uni-cover-title" aria-hidden="true"><b>RAINBOW<br />PONY</b><small>睡眠派对 / 彩虹马</small></div>}{project.portrait && <div className="portrait-cover-type" aria-hidden="true"><span>AI SHORT FILM</span><strong>孔乙己</strong><small>一个熟悉的故事，<br />一次新的影像表达。</small></div>}<div className="project-shade" /><div className="project-topline"><span>{project.number} / {project.nature}</span><span className="project-duration">{project.video ? <PlayIcon /> : <Arrow />}{countLabel}</span></div><div className="project-art-footer"><span>{project.english}</span><span className="project-open"><Arrow /></span></div>{project.featured && <div className="featured-title"><span>三维 × AI · 产品影像制作</span><strong>越过想象的边界。</strong></div>}<span className="project-hover-play">{project.video ? <PlayIcon /> : <Arrow />}{action}作品</span></div>
     <div className="project-meta"><h3>{project.title}</h3><div>{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></div>
   </button>;
 }
@@ -222,11 +228,28 @@ function ProjectDialog({ project, onClose, onChange }) {
   if (!project) return null;
   const index = projects.findIndex(p => p.id === project.id);
   const caseKind = project.caseStudy?.kind;
-  const caseVideos = caseKind === 'maicai' ? { ...project, clips: project.clips.filter(clip => clip.video).map(clip => clip.id === 'brand-blindbox' ? { ...clip, image: './assets/maicai-case-video-poster.webp' } : clip) } : null;
-  return <dialog className={`project-dialog ${caseKind ? 'case-dialog' : ''} ${caseKind === 'ip' ? 'ip-case-dialog' : ''}`} ref={ref} aria-labelledby="dialog-project-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === ref.current) onClose(); }}>
+  let caseContent = null;
+  let caseClass = '';
+  if (caseKind === 'maicai') {
+    const videos = { ...project, clips: project.clips.filter(clip => clip.video).map(clip => clip.id === 'brand-blindbox' ? { ...clip, image: './assets/maicai-case-video-poster.webp' } : clip) };
+    caseContent = <MaicaiCaseStudy project={project}><ProjectPlayer key={project.id} project={videos} autoPlay={false} playlistFirst /></MaicaiCaseStudy>;
+  } else if (caseKind === 'ip') {
+    caseClass = 'ip-case-dialog';
+    caseContent = <IPCaseStudy project={project} />;
+  } else if (caseKind === 'liweike') {
+    caseClass = 'lw-dialog';
+    caseContent = <LiweikeCaseStudy project={project} Player={ClipPlayer} />;
+  } else if (caseKind === 'poster') {
+    caseClass = 'poster-dialog';
+    caseContent = <PosterCaseStudy key={project.id} project={project} Player={ClipPlayer} />;
+  } else if (caseKind === 'unihui') {
+    caseClass = 'unihui-dialog';
+    caseContent = <UniCaseStudy project={project} />;
+  }
+  return <dialog className={`project-dialog ${caseKind ? 'case-dialog' : ''} ${caseClass}`} ref={ref} aria-labelledby="dialog-project-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === ref.current) onClose(); }}>
     <div className="dialog-content">
       <div className="dialog-heading"><span>SELECTED WORK / {project.number}</span><button ref={closeButton} className="dialog-close" onClick={onClose} aria-label="关闭作品视频"><span>关闭</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" stroke="currentColor" strokeWidth="1.5" /></svg></button></div>
-      {caseKind === 'maicai' ? <MaicaiCaseStudy project={project}><ProjectPlayer key={project.id} project={caseVideos} autoPlay={false} playlistFirst /></MaicaiCaseStudy> : caseKind === 'ip' ? <IPCaseStudy project={project} /> : <><ProjectPlayer key={project.id} project={project} />
+      {caseContent || <><ProjectPlayer key={project.id} project={project} />
       <div className="dialog-info"><div><span className="dialog-nature">{project.nature} / {project.tags.join(' · ')}</span><h2 id="dialog-project-title">{project.title}</h2><p>{project.description}</p><span className="dialog-role">我的工作：{project.role}</span></div>{project.link && <a className="inline-link" href={project.link} target="_blank" rel="noreferrer">{project.linkLabel || '查看发布视频'} <Arrow /></a>}</div>
       {project.characterSheet && <figure className="character-sheet">
         <figcaption><div><span>AI 角色设定 / CHARACTER TURNAROUND</span><h3>{project.characterSheet.title}</h3></div><a className="inline-link" href={project.characterSheet.image} target="_blank" rel="noreferrer">查看原图 <Arrow /></a></figcaption>

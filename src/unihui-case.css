@@ -1,0 +1,152 @@
+/* Let the original campaign board read as one continuous sheet. */
+dialog.unihui-dialog {
+  color: #1a1d1e;
+  background: white;
+  scrollbar-color: #a5a5a5 #fff;
+}
+.unihui-dialog .dialog-heading {
+  color: #242726;
+  background: #fffffff5;
+  border-color: #16191719;
+}
+.unihui-dialog .dialog-heading > span { color: #606765; }
+.unihui-dialog .dialog-pagination { border-color: #16191726; }
+.unihui-dialog .dialog-pagination button,
+.unihui-dialog .dialog-pagination > span { color: #545955; }
+.unihui-case { background: #fff; }
+.unihui-case a:focus-visible, .uni-archive summary:focus-visible {
+  outline: 2px solid #254994;
+  outline-offset: -3px;
+}
+.uni-sr-only, .uni-panel-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.uni-board { width: 100%; margin: 0; }
+.uni-panel, .uni-panel > a, .uni-panel img { display: block; width: 100%; }
+.uni-panel > a { position: relative; cursor: zoom-in; }
+.uni-panel img { height: auto; }
+.uni-enlarge {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  padding: 6px 10px;
+  background: #ffffffed;
+  color: #232824;
+  border: 1px solid #25342934;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+@media (hover: hover) {
+  .uni-enlarge { opacity: 0; }
+  .uni-panel > a:is(:hover, :focus-visible) > .uni-enlarge { opacity: 1; }
+}
+.uni-archive { margin: 12px clamp(16px, 4vw, 64px) 30px; }
+.uni-archive summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0;
+  border-top: 1px solid #d8dcd8;
+  list-style: none;
+  cursor: pointer;
+}
+.uni-archive summary::-webkit-details-marker { display: none; }
+.uni-archive summary strong { font-size: clamp(15px, 1.8vw, 22px); font-weight: 550; }
+.uni-archive summary span { margin-inline-start: auto; font-size: 12px; color: #5e615e; }
+.uni-archive summary::after {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  aspect-ratio: 1;
+  border: 1px solid #d2d6d2;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  content: '+';
+}
+.uni-archive[open] summary::after { content: '−'; }
+.uni-group { margin-block: 12px 32px; }
+.uni-group h3 { margin-bottom: 12px; font-size: clamp(15px, 1.4vw, 20px); font-weight: 500; }
+.uni-group-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px 12px;
+}
+.uni-group-grid a { display: block; min-width: 0; cursor: zoom-in; }
+.uni-group-grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.5;
+  background: #f6f6f4;
+  object-fit: contain;
+}
+.uni-group-grid span { display: block; margin-top: 6px; font-size: 12px; line-height: 1.5; color: #474b48; }
+
+.graphic-project[data-project='graphic-unihui'] .project-art { background: #fff; }
+.project-card[data-project='graphic-unihui'] .project-art { container-type: inline-size; }
+.uni-cover-title {
+  position: absolute; left: 5%; top: 11%; z-index: 1; display: grid;
+  color: #181817; text-align: left; pointer-events: none;
+}
+.uni-cover-title b {
+  font: 700 clamp(20px,7cqw,55px)/.87 'DM Sans',Arial,sans-serif;
+  letter-spacing: -.075em;
+}
+.uni-cover-title small {
+  margin-top: 0.9em; font-size: clamp(8px,2cqw,13px); letter-spacing: .12em;
+}
+.project-card[data-project='graphic-unihui'] .project-topline {
+  left: auto; right: 4%; top: 5%; gap: 3px; align-items: end;
+  flex-direction: column; font-size: clamp(8px,1.8cqw,12px); letter-spacing: .03em;
+}
+.graphic-project[data-project='graphic-unihui'] .project-art > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: white;
+  object-fit: cover;
+  filter: none;
+}
+.graphic-project[data-project='graphic-unihui'] .project-shade { background: transparent; }
+.graphic-project[data-project='graphic-unihui'] .project-topline,
+.graphic-project[data-project='graphic-unihui'] .project-art-footer { color: #212622; }
+.graphic-project[data-project='graphic-unihui'] .project-topline > span,
+.graphic-project[data-project='graphic-unihui'] .project-art-footer > span:first-child {
+  padding: 4px 7px;
+  background: #fffffff0;
+  border-radius: 3px;
+}
+.graphic-project[data-project='graphic-unihui'] .project-open {
+  border-color: #292d2580;
+  background: #fffffff0;
+}
+@media (max-width: 690px) {
+  .uni-panel-heading {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 12px 16px 3px;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+    font-size: 15px;
+    font-weight: 550;
+    line-height: 1.5;
+    color: #262b27;
+  }
+  .uni-group-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px 9px; }
+  .uni-enlarge { right: 9px; bottom: 7px; font-size: 10px; padding: 4px 8px; }
+  .uni-archive { margin-bottom: 12px; }
+}

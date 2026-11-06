@@ -1,5 +1,8 @@
 import { additionalProjects } from './more-projects.js';
 import { graphicProjects } from './graphic-projects.js';
+import { friesArt } from './fries-art.js';
+import { egretArt, egretCover } from './egret-art.js';
+import { unihuiPanels } from './unihui-panels.js';
 
 export const profile = {
   name: '孙晓伟',
@@ -163,14 +166,30 @@ export const projects = [
   },
   ...additionalProjects,
   ...graphicProjects,
-].map((project, index) => ({ ...project, number: String(index + 1).padStart(2, '0') }));
+].map((project, index) => {
+  let item = project;
+  if (project.id === 'fries-challenge') item = {
+    ...project, image: friesArt[0].image,
+    clips: project.clips.map(clip => clip.video ? { ...clip, image: friesArt[0].image } : clip),
+    caseStudy: { kind: 'poster', theme: 'fries', accent: '#f8bd69', art: friesArt }
+  };
+  if (project.id === 'graphic-egret') item = {
+    ...project, image: egretCover,
+    caseStudy: { kind: 'poster', theme: 'egret', accent: '#c5d887', art: egretArt }
+  };
+  if (project.id === 'graphic-unihui') item = {
+    ...project, image: './assets/unihui-rainbow-cover.webp',
+    caseStudy: { ...project.caseStudy, kind: 'unihui', panels: unihuiPanels }
+  };
+  return { ...item, number: String(index + 1).padStart(2, '0') };
+});
 
 export const heroProjects = [
   { projectId: 'drone', label: '大疆无人机', caption: '雪山转场', video: './assets/hero.mp4', image: './assets/drone.webp' },
   { projectId: 'osmo', label: 'Osmo 360 II', caption: '全景相机影像', video: './assets/hero-osmo.mp4', image: './assets/osmo-cover.webp' },
   { projectId: 'bambu-a1', label: '拓竹 A1', caption: '创意打印影像', video: './assets/hero-bambu.mp4', image: './assets/hero-bambu.webp' },
   { projectId: 'lotus', label: '莲花汽车', caption: '品牌开场', video: './assets/hero-lotus.mp4', image: './assets/hero-lotus.webp' },
-  { projectId: 'liweike-ar', label: '李未可', caption: '虚拟偶像宣发', video: './assets/hero-liweike.mp4', image: './assets/hero-liweike.webp' },
+  { projectId: 'liweike-ar', label: '李未可', caption: '虚拟偶像宣发', video: './assets/hero-liweike.mp4', image: projects.find(project => project.id === 'liweike-ar').image },
 ].map(item => ({ ...item, project: projects.find(project => project.id === item.projectId) }));
 
 export const experiences = [

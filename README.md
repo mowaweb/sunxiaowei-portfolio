@@ -26,6 +26,9 @@ pnpm preview
 - `src/more-projects.js`：完整语雀作品集补充的三维、CG、AI 视觉、IP 与品牌项目，保留来源卡片编号用于核对。
 - `src/graphic-projects.js`：本地 IP 文件夹整理的三个平面项目，含动作、造型、多视图及场景分组。
 - `src/CaseStudies.jsx`、`src/case-studies.css`：淘宝买菜案例页、平面 IP 图集和首页编辑式布局。
+- `src/LiweikeCaseStudy.jsx`、`src/liweike-case.css`：李未可深色详情页。四部影片以三卡轮播呈现，点击后展开播放器；九张独立静帧按三排展示，支持查看大图。作品卡片和宣发合集使用同一张地球轨道镜头封面。
+- `src/PosterCaseStudy.jsx`、`src/poster-case.css`：「整点薯条」与白鹭角色的斜列海报页。可点击缩略图、左右切换或在手机上滑动；点击当前海报可看完整原图。薯条使用五张原始作品图和原有成片，白鹭使用九张原稿及适配画幅的展示图。
+- `src/UniCaseStudy.jsx`、`src/unihui-case.css`：壹方汇详情以原始设计板 `P07IP附加.png` 的构图顺序展示睡眠派对、美陈周边及圣诞场景，另外保留独立作品图集。作品卡封面采用彩虹马正视图。
 - `src/main.jsx`：五个页面模块、视频弹窗和交互。
 - `src/styles.css`：颜色、字体、版心、各尺寸布局。
 - `public/assets/`：本站使用的作品视频、封面、简历和字体。
