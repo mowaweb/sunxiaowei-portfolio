@@ -99,7 +99,7 @@ function About({ onCopy }) {
       <div className="identity-panel"><div className="identity-top"><span>THE PERSON<br />BEHIND THE FRAMES</span><span className="identity-cross">✳</span></div><div className="avatar-composition"><span className="avatar-orbit orbit-one" /><span className="avatar-orbit orbit-two" /><div className="avatar-frame"><img src="./assets/avatar.jpg" alt="孙晓伟简历中的手绘头像" width="260" height="260" loading="lazy" /></div><span className="avatar-coordinate">PROFILE / SUN XIAOWEI</span></div><div className="identity-bottom"><span>阿丸 <small>A-WAN</small></span><span>3D & AIGC<br />VISUAL DESIGNER</span></div></div>
       <div className="about-copy"><h2>创意有想法，<br />制作有章法<span className="accent">。</span></h2><h3>我是孙晓伟，也叫阿丸。</h3><p>从三维场景与角色制作，到品牌产品视频与 AI 短片，我喜欢把一个想法，变成有质感、有叙事的画面。</p><p>做客户项目，也独立创作。用三维控制画面，用 AI 探索可能，让创意落到最后一帧。</p><div className="about-links"><a href={`mailto:${profile.email}`}>{profile.email} <Arrow /></a><button onClick={() => onCopy(profile.phone, '电话号码')}>TEL. {profile.phone} <span className="copy-symbol" aria-hidden="true">⧉</span></button></div><Experience /></div>
     </div>
-    <div className="stats-strip"><div><strong>05<span> /</span></strong><span>精选影像案例</span></div><div><strong>48</strong><span>自营账号作品</span></div><div><strong>6,212</strong><span>自营账号粉丝</span></div><div><strong>10<span>万+</span></strong><span>多条作品播放量</span></div><p>抖音「Nalou 娜楼」<br />账号数据来自历史截图</p></div>
+    <div className="stats-strip"><div><strong>{String(projects.length).padStart(2, '0')}<span> /</span></strong><span>精选影像案例</span></div><div><strong>48</strong><span>自营账号作品</span></div><div><strong>6,212</strong><span>自营账号粉丝</span></div><div><strong>10<span>万+</span></strong><span>多条作品播放量</span></div><p>抖音「Nalou 娜楼」<br />账号数据来自历史截图</p></div>
   </section>;
 }
 
@@ -112,7 +112,7 @@ function ProjectCard({ project, onOpen }) {
 
 function Work({ onOpen }) {
   const [filter, setFilter] = useState('all');
-  const filters = [{ id: 'all', name: '全部作品', count: '05' }, { id: 'commercial', name: '商业视频', count: '03' }, { id: 'personal', name: '个人创作', count: '02' }];
+  const filters = [{ id: 'all', name: '全部作品' }, { id: 'commercial', name: '商业视频' }, { id: 'personal', name: '个人创作' }].map(filter => ({ ...filter, count: String(projects.filter(project => filter.id === 'all' || project.category === filter.id).length).padStart(2, '0') }));
   const visible = projects.filter(p => filter === 'all' || p.category === filter);
   return <section className="work section shell" id="work">
     <SectionLabel number="02">精选作品 / SELECTED WORK</SectionLabel>
@@ -206,4 +206,6 @@ function App() {
   return <><a className="skip-link" href="#main-content">跳到主要内容</a><Header active={active} /><main id="main-content"><Hero onPlay={setProject} /><About onCopy={copy} /><Work onOpen={setProject} /><Expertise /><Contact onCopy={copy} /></main><ProjectDialog project={project} onClose={() => setProject(null)} onChange={setProject} /><div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite">{toast && <><span>✓</span>{toast}</>}</div></>;
 }
 
-createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
+const root = import.meta.hot?.data.root ?? createRoot(document.getElementById('root'));
+if (import.meta.hot) import.meta.hot.data.root = root;
+root.render(<React.StrictMode><App /></React.StrictMode>);
