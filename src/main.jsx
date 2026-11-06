@@ -138,26 +138,46 @@ function Contact({ onCopy }) {
   return <section className="contact" id="contact"><div className="contact-inner shell"><SectionLabel number="04">保持联系 / CONTACT</SectionLabel><div className="contact-lead"><div className="contact-eyebrow"><span className="status-dot" />关于工作、项目，或一个新想法。</div><h2>下一个画面，<br />一起<span>创造</span>。</h2><a className="contact-orb" href={`mailto:${profile.email}`} aria-label="发送邮件联系孙晓伟"><Arrow /></a></div><div className="contact-actions"><a className="contact-email" href={`mailto:${profile.email}`}>{profile.email}<Arrow /></a><button className="copy-email" onClick={() => onCopy(profile.email, '邮箱地址')} aria-label="复制邮箱地址"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.4" /><path d="M15 8V4H4v11h4" stroke="currentColor" strokeWidth="1.4" /></svg></button></div><div className="contact-secondary"><div><span>电话 / PHONE</span><button onClick={() => onCopy(profile.phone, '电话号码')}>+86 {profile.phone} <span aria-hidden="true">⧉</span></button></div><div><span>作品 / ARCHIVE</span><a href={profile.portfolioUrl} target="_blank" rel="noreferrer">语雀作品档案 <Arrow /></a></div><div><span>简历 / RÉSUMÉ</span><a href={profile.resume} download="孙晓伟简历.pdf">下载个人简历 <Arrow direction="down" /></a></div></div><footer className="footer"><a className="footer-brand" href="#home">孙晓伟 <span>SUN XIAOWEI</span></a><span>© {new Date().getFullYear()} · DESIGN IN MOTION</span><a href="#home">返回顶部 <Arrow /></a></footer></div></section>;
 }
 
-function ClipPlayer({ project, clip, onEnded }) {
+function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange }) {
   const [version, setVersion] = useState('ai');
+  const [duration, setDuration] = useState(0);
+  const videoRef = useRef(null);
   const versions = clip.versions || [];
   const media = versions.find(item => item.id === version) || versions[0] || clip;
+  useEffect(() => {
+    if (videoRef.current) videoRef.current.playbackRate = playbackRate;
+  }, [media.video, playbackRate]);
+  const updateDuration = event => {
+    const seconds = event.currentTarget.duration;
+    setDuration(Number.isFinite(seconds) ? Math.max(0, seconds) : 0);
+  };
+  const seekBy = seconds => {
+    const video = videoRef.current;
+    if (video && Number.isFinite(video.duration) && video.duration > 0) {
+      video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
+    }
+  };
   return <div className={`dialog-player ${(clip.portrait ?? project.portrait) ? 'vertical-player' : ''}`}>
-    {media.video ? <video key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay playsInline preload="metadata" onEnded={onEnded} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} /> : <a className="dialog-image-link" href={media.image} target="_blank" rel="noreferrer" aria-label={`打开${clip.title}原图`}><img className="dialog-still" src={media.image} alt={`${project.title}：${clip.title}`} decoding="async" /><span>查看原图 <Arrow /></span></a>}
+    {media.video ? <><video ref={videoRef} key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay playsInline preload="metadata" onEnded={onEnded} onLoadedMetadata={event => { updateDuration(event); event.currentTarget.playbackRate = playbackRate; }} onDurationChange={updateDuration} onRateChange={event => { if (event.currentTarget.playbackRate !== playbackRate) onPlaybackRateChange(event.currentTarget.playbackRate); }} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
+      <div className="video-transport" role="group" aria-label="视频播放控制">
+        <div className="video-seek-actions"><button type="button" onClick={() => seekBy(-5)} disabled={!duration} aria-label="快退5秒">← 快退 5 秒</button><button type="button" onClick={() => seekBy(5)} disabled={!duration} aria-label="快进5秒">快进 5 秒 →</button></div>
+        <label className="video-speed">倍速<select aria-label="播放速度" value={playbackRate} onChange={event => onPlaybackRateChange(Number(event.target.value))}>{[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map(rate => <option value={rate} key={rate}>{rate === 1 ? '1× 正常' : `${rate}×`}</option>)}</select></label>
+      </div></> : <a className="dialog-image-link" href={media.image} target="_blank" rel="noreferrer" aria-label={`打开${clip.title}原图`}><img className="dialog-still" src={media.image} alt={`${project.title}：${clip.title}`} decoding="async" /><span>查看原图 <Arrow /></span></a>}
     {versions.length > 1 && <div className="player-version-switch" role="group" aria-label="切换制作版本">
-      {versions.map(item => <button key={item.id} aria-pressed={media.id === item.id} onClick={() => setVersion(item.id)}>{item.label}</button>)}
+      {versions.map(item => <button key={item.id} aria-pressed={media.id === item.id} onClick={() => { if (media.id !== item.id) { setDuration(0); setVersion(item.id); } }}>{item.label}</button>)}
     </div>}
   </div>;
 }
 
 function ProjectPlayer({ project }) {
   const [clipIndex, setClipIndex] = useState(0);
+  const [playbackRate, setPlaybackRate] = useState(1);
   const clips = project.clips || [{ id: project.id, title: project.title, stage: '作品片段', video: project.video, image: project.image }];
   const clip = clips[clipIndex];
   const hasImages = clips.some(item => !item.video);
   const hasVideos = clips.some(item => item.video);
   return <>
-    <ClipPlayer key={clip.id} project={project} clip={clip} onEnded={project.autoAdvanceClips ? () => setClipIndex(current => Math.min(current + 1, clips.length - 1)) : undefined} />
+    <ClipPlayer key={clip.id} project={project} clip={clip} playbackRate={playbackRate} onPlaybackRateChange={setPlaybackRate} onEnded={project.autoAdvanceClips ? () => setClipIndex(current => Math.min(current + 1, clips.length - 1)) : undefined} />
     {clips.length > 1 && <section className="project-clips" aria-label={`${project.title}的片段与制作过程`}>
       <div className="clips-heading"><span>{project.autoAdvanceClips ? '片段顺序 · 自动连播' : hasImages ? hasVideos ? '视频与项目画面' : '项目画面' : '片段与制作过程'}</span><span aria-live="polite" aria-atomic="true">{String(clipIndex + 1).padStart(2, '0')} / {String(clips.length).padStart(2, '0')}</span></div>
       <div className="clip-list" role="group" aria-label={hasImages ? '选择项目内容' : '选择视频片段'}>
