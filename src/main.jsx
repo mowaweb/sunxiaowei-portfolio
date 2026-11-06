@@ -131,20 +131,30 @@ function Contact({ onCopy }) {
   return <section className="contact" id="contact"><div className="contact-inner shell"><SectionLabel number="04">保持联系 / CONTACT</SectionLabel><div className="contact-lead"><div className="contact-eyebrow"><span className="status-dot" />关于工作、项目，或一个新想法。</div><h2>下一个画面，<br />一起<span>创造</span>。</h2><a className="contact-orb" href={`mailto:${profile.email}`} aria-label="发送邮件联系孙晓伟"><Arrow /></a></div><div className="contact-actions"><a className="contact-email" href={`mailto:${profile.email}`}>{profile.email}<Arrow /></a><button className="copy-email" onClick={() => onCopy(profile.email, '邮箱地址')} aria-label="复制邮箱地址"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.4" /><path d="M15 8V4H4v11h4" stroke="currentColor" strokeWidth="1.4" /></svg></button></div><div className="contact-secondary"><div><span>电话 / PHONE</span><button onClick={() => onCopy(profile.phone, '电话号码')}>+86 {profile.phone} <span aria-hidden="true">⧉</span></button></div><div><span>作品 / ARCHIVE</span><a href={profile.portfolioUrl} target="_blank" rel="noreferrer">语雀作品档案 <Arrow /></a></div><div><span>简历 / RÉSUMÉ</span><a href={profile.resume} download="孙晓伟简历.pdf">下载个人简历 <Arrow direction="down" /></a></div></div><footer className="footer"><a className="footer-brand" href="#home">孙晓伟 <span>SUN XIAOWEI</span></a><span>© {new Date().getFullYear()} · DESIGN IN MOTION</span><a href="#home">返回顶部 <Arrow /></a></footer></div></section>;
 }
 
+function ClipPlayer({ project, clip, onEnded }) {
+  const [version, setVersion] = useState('ai');
+  const versions = clip.versions || [];
+  const media = versions.find(item => item.id === version) || versions[0] || clip;
+  return <div className={`dialog-player ${project.portrait ? 'vertical-player' : ''}`}>
+    <video key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay playsInline preload="metadata" onEnded={onEnded} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
+    {versions.length > 1 && <div className="player-version-switch" role="group" aria-label="切换制作版本">
+      {versions.map(item => <button key={item.id} aria-pressed={media.id === item.id} onClick={() => setVersion(item.id)}>{item.label}</button>)}
+    </div>}
+  </div>;
+}
+
 function ProjectPlayer({ project }) {
   const [clipIndex, setClipIndex] = useState(0);
   const clips = project.clips || [{ id: project.id, title: project.title, stage: '作品片段', video: project.video, image: project.image }];
   const clip = clips[clipIndex];
   return <>
-    <div className={`dialog-player ${project.portrait ? 'vertical-player' : ''}`}>
-      <video key={clip.id} src={clip.video} poster={clip.image} controls autoPlay playsInline preload="metadata" aria-label={`${project.title}：${clip.title} · ${clip.stage}视频`} />
-    </div>
+    <ClipPlayer key={clip.id} project={project} clip={clip} onEnded={project.autoAdvanceClips ? () => setClipIndex(current => Math.min(current + 1, clips.length - 1)) : undefined} />
     {clips.length > 1 && <section className="project-clips" aria-label={`${project.title}的片段与制作过程`}>
-      <div className="clips-heading"><span>片段与制作过程</span><span>{String(clipIndex + 1).padStart(2, '0')} / {String(clips.length).padStart(2, '0')}</span></div>
+      <div className="clips-heading"><span>{project.autoAdvanceClips ? '片段顺序 · 自动连播' : '片段与制作过程'}</span><span aria-live="polite" aria-atomic="true">{String(clipIndex + 1).padStart(2, '0')} / {String(clips.length).padStart(2, '0')}</span></div>
       <div className="clip-list" role="group" aria-label="选择视频片段">
-        {clips.map((item, i) => <button key={item.id} className={`clip-button ${i === clipIndex ? 'is-active' : ''}`} aria-pressed={i === clipIndex} aria-label={`播放${item.title} · ${item.stage}`} onClick={() => setClipIndex(i)}>
+        {clips.map((item, i) => <button key={item.id} className={`clip-button ${i === clipIndex ? 'is-active' : ''}`} aria-pressed={i === clipIndex} aria-label={`播放${project.autoAdvanceClips ? String(i).padStart(2, '0') + ' ' : ''}${item.title} · ${item.stage}`} onClick={() => setClipIndex(i)}>
           <span className="clip-thumbnail"><img src={item.image} alt="" loading="lazy" /><span className="clip-duration">{item.duration}</span><span className="clip-play"><PlayIcon /></span></span>
-          <span className="clip-title">{item.title}</span><span className="clip-stage">{item.stage}</span>
+          <span className="clip-title">{project.autoAdvanceClips && <span className="clip-order">{String(i).padStart(2, '0')}</span>}{item.title}</span><span className="clip-stage">{item.stage}</span>
         </button>)}
       </div>
     </section>}
@@ -175,6 +185,11 @@ function ProjectDialog({ project, onClose, onChange }) {
       <div className="dialog-heading"><span>SELECTED WORK / {project.number}</span><button ref={closeButton} className="dialog-close" onClick={onClose} aria-label="关闭作品视频"><span>关闭</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" stroke="currentColor" strokeWidth="1.5" /></svg></button></div>
       <ProjectPlayer key={project.id} project={project} />
       <div className="dialog-info"><div><span className="dialog-nature">{project.nature} / {project.tags.join(' · ')}</span><h2 id="dialog-project-title">{project.title}</h2><p>{project.description}</p><span className="dialog-role">我的工作：{project.role}</span></div>{project.link && <a className="inline-link" href={project.link} target="_blank" rel="noreferrer">查看发布视频 <Arrow /></a>}</div>
+      {project.characterSheet && <figure className="character-sheet">
+        <figcaption><div><span>AI 角色设定 / CHARACTER TURNAROUND</span><h3>{project.characterSheet.title}</h3></div><a className="inline-link" href={project.characterSheet.image} target="_blank" rel="noreferrer">查看原图 <Arrow /></a></figcaption>
+        <a className="character-sheet-image" href={project.characterSheet.image} target="_blank" rel="noreferrer" aria-label="打开人物三视图原图"><img src={project.characterSheet.image} alt={project.characterSheet.alt} width={project.characterSheet.width} height={project.characterSheet.height} loading="lazy" decoding="async" /></a>
+        <p>正面 · 侧面 · 背面 · 面部特写</p>
+      </figure>}
       <div className="dialog-pagination"><button onClick={() => onChange(projects[(index - 1 + projects.length) % projects.length])}>← 上一个作品</button><span>{project.number} / {String(projects.length).padStart(2, '0')}</span><button onClick={() => onChange(projects[(index + 1) % projects.length])}>下一个作品 →</button></div>
     </div>
   </dialog>;
