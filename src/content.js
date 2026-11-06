@@ -48,15 +48,15 @@ export const projects = [
     nature: '客户委托',
     tags: ['产品影像', '三维 × AI'],
     duration: '00:13',
-    image: './assets/osmo.webp',
+    image: './assets/osmo-cover.webp',
     video: './assets/osmo.mp4',
     description: '大疆 Osmo 360 II 产品视频开场。以 C4D 白膜预演规划产品与镜头运动，再结合 AI 完成视觉制作，展示本人制作的成片片段和对应预演。',
     role: '镜头设计 · C4D 预演 · 三维与 AI 制作',
     link: 'https://www.bilibili.com/video/BV1NSgp6vEEV/',
     clips: [
-      { id: 'osmo-opening', title: 'Osmo 360 II', stage: '三维 × AI', duration: '00:13', video: './assets/osmo.mp4', image: './assets/osmo.webp', versions: [
+      { id: 'osmo-opening', title: 'Osmo 360 II', stage: '三维 × AI', duration: '00:13', video: './assets/osmo.mp4', image: './assets/osmo-cover.webp', versions: [
         { id: 'previz', label: '白膜预演', duration: '00:13', video: './assets/osmo-360-previz.mp4', image: './assets/osmo-360-previz.webp' },
-        { id: 'ai', label: 'AI 生成', duration: '00:13', video: './assets/osmo.mp4', image: './assets/osmo.webp' },
+        { id: 'ai', label: 'AI 生成', duration: '00:13', video: './assets/osmo.mp4', image: './assets/osmo-cover.webp' },
       ] },
     ],
   },
@@ -165,7 +165,7 @@ export const projects = [
 
 export const heroProjects = [
   { projectId: 'drone', label: '大疆无人机', caption: '雪山转场', video: './assets/hero.mp4', image: './assets/drone.webp' },
-  { projectId: 'osmo', label: 'Osmo 360 II', caption: '全景相机影像', video: './assets/hero-osmo.mp4', image: './assets/hero-osmo.webp' },
+  { projectId: 'osmo', label: 'Osmo 360 II', caption: '全景相机影像', video: './assets/hero-osmo.mp4', image: './assets/osmo-cover.webp' },
   { projectId: 'bambu-a1', label: '拓竹 A1', caption: '创意打印影像', video: './assets/hero-bambu.mp4', image: './assets/hero-bambu.webp' },
   { projectId: 'lotus', label: '莲花汽车', caption: '品牌开场', video: './assets/hero-lotus.mp4', image: './assets/hero-lotus.webp' },
   { projectId: 'liweike-ar', label: '李未可', caption: '虚拟偶像宣发', video: './assets/hero-liweike.mp4', image: './assets/hero-liweike.webp' },
