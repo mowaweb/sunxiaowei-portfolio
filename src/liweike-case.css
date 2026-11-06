@@ -201,7 +201,7 @@ dialog.lw-dialog {
 }
 .lw-screen {
   width: min(calc(100% - 2 * var(--lw-inset)), 924px);
-  margin: clamp(28px, 4vw, 55px) auto 0;
+  margin: 0 auto clamp(22px, 3vw, 40px);
   scroll-margin-top: 80px;
 }
 .lw-screen .dialog-player {

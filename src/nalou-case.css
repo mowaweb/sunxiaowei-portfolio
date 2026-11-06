@@ -137,6 +137,16 @@
 .nalou-peek.peek-2 { right: 3.9%; top: 43%; aspect-ratio: .92; transform: rotate(3deg); }
 .nalou-collage.is-portrait .peek-1 { left: 14%; }
 .nalou-collage.is-portrait .peek-2 { right: 14%; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .nalou-peek.peek-1 { --drift-x: -12px; --drift-y: -8px; --tilt: 3deg; --rest: -3deg; }
+  .nalou-peek.peek-2 { --drift-x: 16px; --drift-y: 10px; --tilt: -4deg; --rest: 3deg; }
+  .nalou-collage .nalou-peek {
+    transform: perspective(700px)
+      translate3d(calc(var(--nalou-pointer-x, 0) * var(--drift-x)), calc(var(--nalou-pointer-y, 0) * var(--drift-y)), 0)
+      rotateX(calc(var(--nalou-pointer-y, 0) * var(--tilt))) rotateY(calc(-1 * var(--nalou-pointer-x, 0) * var(--tilt))) rotateZ(var(--rest));
+    transition: transform .28s cubic-bezier(.2,.65,.3,1), border-color .18s;
+  }
+}
 .nalou-works { margin-top: 15px; padding: 0 clamp(16px, 4vw, 60px) 28px; }
 .nalou-works-heading {
   display: flex;

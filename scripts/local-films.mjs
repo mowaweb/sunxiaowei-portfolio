@@ -14,11 +14,13 @@ export function localFilms() {
     const film = match && catalog.get(match[1]);
     if (!film) { res.writeHead(404).end(); return; }
     const manifest = process.env.PORTFOLIO_FILM_SOURCES;
-    if (!manifest) { res.writeHead(503, { 'Content-Type': 'text/plain; charset=utf-8' }).end('Local source manifest is not configured.'); return; }
     try {
-      const source = JSON.parse(await fs.promises.readFile(manifest, 'utf8')).files
-        .find(file => file.slug === film.slug && file.size === film.size && file.sha256 === film.sha256);
-      if (!source || !path.isAbsolute(source.path) || (await fs.promises.stat(source.path)).size !== film.size) {
+      let filename = path.resolve('local-media', film.slug + '.mp4');
+      if (manifest) {
+        const { files } = JSON.parse(await fs.promises.readFile(manifest, 'utf8'));
+        filename = files.find(file => file.slug === film.slug && file.size === film.size && file.sha256 === film.sha256)?.path;
+      }
+      if (!filename || !path.isAbsolute(filename) || (await fs.promises.stat(filename)).size !== film.size) {
         res.writeHead(503).end(); return;
       }
       const request = new Request(url, { method: req.method, headers: new Headers(req.headers) });
@@ -26,7 +28,7 @@ export function localFilms() {
       const meta = result.response || result.init;
       res.writeHead(meta.status, Object.fromEntries(meta.headers));
       if (result.response) { res.end(); return; }
-      await pipeline(fs.createReadStream(source.path, { start: result.start, end: result.end }), res);
+      await pipeline(fs.createReadStream(filename, { start: result.start, end: result.end }), res);
     } catch {
       if (!res.headersSent) res.writeHead(503).end();
       else res.destroy();

@@ -110,20 +110,38 @@ function Experience() {
   </div>;
 }
 
+const accountProject = projects.find(project => project.id === nalouProject.id);
+const selectedProjects = projects.filter(project => project.id !== nalouProject.id);
+
 function About({ onCopy, onOpen }) {
-  const openNalou = () => onOpen(projects.find(project => project.id === nalouProject.id));
+  const openNalou = () => onOpen(accountProject);
   return <section className="about section shell" id="about">
     <SectionLabel number="01">关于我 / ABOUT</SectionLabel>
     <div className="about-layout">
       <div className="identity-panel"><div className="identity-top"><span>THE PERSON<br />BEHIND THE FRAMES</span><span className="identity-cross">✳</span></div><div className="avatar-composition"><span className="avatar-orbit orbit-one" /><span className="avatar-orbit orbit-two" /><div className="avatar-frame"><img src="./assets/avatar.jpg" alt="孙晓伟简历中的手绘头像" width="260" height="260" loading="lazy" /></div><span className="avatar-coordinate">PROFILE / SUN XIAOWEI</span></div><div className="identity-bottom"><span>阿丸 <small>A-WAN</small></span><span>3D & AIGC<br />VISUAL DESIGNER</span></div></div>
       <div className="about-copy"><h2>创意有想法，<br />制作有章法<span className="accent">。</span></h2><h3>我是孙晓伟，也叫阿丸。</h3><p>从三维场景与角色制作，到品牌产品视频与 AI 短片，我喜欢把一个想法，变成有质感、有叙事的画面。</p><p>做客户项目，也独立创作。用三维控制画面，用 AI 探索可能，让创意落到最后一帧。</p><div className="about-links"><a href={`mailto:${profile.email}`}>{profile.email} <Arrow /></a><button onClick={() => onCopy(profile.phone, '电话号码')}>TEL. {profile.phone} <span className="copy-symbol" aria-hidden="true">⧉</span></button></div><Experience /></div>
     </div>
+    <div className="account-stats" role="group" aria-label="作品与自营账号数据">
     <div className="stats-strip">
-      <div><strong>{String(projects.length).padStart(2, '0')}<span> /</span></strong><span>精选项目案例</span></div>
+      <div><strong>{String(selectedProjects.length).padStart(2, '0')}<span> /</span></strong><span>精选项目案例</span></div>
       <button type="button" onClick={openNalou}><strong>48</strong><span>自营账号作品</span></button>
       <button type="button" onClick={openNalou}><strong>6,204</strong><span>自营账号粉丝</span></button>
       <button type="button" onClick={openNalou}><strong>10<span>万+</span></strong><span>多条作品播放量</span></button>
-      <p><button type="button" className="nalou-link" onClick={openNalou}>查看「Nalou 娜楼」作品 ↗</button><br /><time dateTime="2026-11-06">抖音数据截至 2026.11.06</time></p>
+      <p><time dateTime="2026-11-06">抖音数据截至 2026.11.06</time></p>
+    </div>
+    <button type="button" className="account-project-card" data-project={accountProject.id}
+      onClick={openNalou} aria-label={`播放${accountProject.title}的 ${accountProject.clips.length} 部作品`}>
+      <span className="account-project-preview" aria-hidden="true">
+        <img src={accountProject.image} alt="" loading="lazy" decoding="async" />
+        <img src={accountProject.clips[2].image} alt="" loading="lazy" decoding="async" />
+      </span>
+      <span className="account-project-copy">
+        <small>{accountProject.nature}</small>
+        <strong>{accountProject.title}</strong>
+        <span>{accountProject.description}</span>
+      </span>
+      <span className="account-project-action"><span>{accountProject.clips.length} 部视频</span><i><PlayIcon /></i></span>
+    </button>
     </div>
   </section>;
 }
@@ -145,8 +163,8 @@ function matchesProjectFilter(project, filter) {
 
 function Work({ onOpen }) {
   const [filter, setFilter] = useState('all');
-  const filters = [{ id: 'all', name: '全部作品' }, { id: 'commercial', name: '商业视频' }, { id: 'cg', name: '三维 / CG' }, { id: 'graphic', name: '平面 / IP' }, { id: 'personal', name: '个人创作' }].map(filter => ({ ...filter, count: String(projects.filter(project => matchesProjectFilter(project, filter.id)).length).padStart(2, '0') }));
-  const visible = projects.filter(project => matchesProjectFilter(project, filter));
+  const filters = [{ id: 'all', name: '全部作品' }, { id: 'commercial', name: '商业视频' }, { id: 'cg', name: '三维 / CG' }, { id: 'graphic', name: '平面 / IP' }, { id: 'personal', name: '个人创作' }].map(filter => ({ ...filter, count: String(selectedProjects.filter(project => matchesProjectFilter(project, filter.id)).length).padStart(2, '0') }));
+  const visible = selectedProjects.filter(project => matchesProjectFilter(project, filter));
   return <section className="work section shell" id="work">
     <SectionLabel number="02">精选作品 / SELECTED WORK</SectionLabel>
     <div className="section-heading work-heading"><h2>画面，是最好的表达<span className="accent">。</span></h2><p>商业制作与个人探索，<br />每一帧，都有自己的来处。</p></div>

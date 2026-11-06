@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './nalou-case.css';
 
 const number = value => String(value).padStart(2, '0');
@@ -9,7 +9,44 @@ export default function NalouCaseStudy({ project, Player }) {
   const [selected, setSelected] = useState(0);
   const [rate, setRate] = useState(1);
   const stage = useRef(null);
+  const collage = useRef(null);
   const clip = clips[selected];
+  useEffect(() => {
+    const element = collage.current;
+    if (!element) return;
+    const motion = window.matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)');
+    let frame = 0;
+    let point;
+    const reset = () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      element.style.removeProperty('--nalou-pointer-x');
+      element.style.removeProperty('--nalou-pointer-y');
+    };
+    const update = () => {
+      frame = 0;
+      const rect = element.getBoundingClientRect();
+      const axis = (coordinate, origin, length) => Math.max(-1, Math.min(1, (coordinate - origin) / Math.max(1, length) * 2 - 1));
+      element.style.setProperty('--nalou-pointer-x', axis(point.x, rect.left, rect.width).toFixed(3));
+      element.style.setProperty('--nalou-pointer-y', axis(point.y, rect.top, rect.height).toFixed(3));
+    };
+    const move = event => {
+      if (!motion.matches || event.pointerType !== 'mouse') return;
+      point = { x: event.clientX, y: event.clientY };
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    element.addEventListener('pointermove', move, { passive: true });
+    element.addEventListener('pointerleave', reset);
+    element.addEventListener('pointercancel', reset);
+    motion.addEventListener?.('change', reset);
+    return () => {
+      reset();
+      element.removeEventListener('pointermove', move);
+      element.removeEventListener('pointerleave', reset);
+      element.removeEventListener('pointercancel', reset);
+      motion.removeEventListener?.('change', reset);
+    };
+  }, [Boolean(clip)]);
   if (!clip) return <h2 id="dialog-project-title">{project.title}</h2>;
 
   const poster = posterFor(clip) || project.image;
@@ -34,7 +71,7 @@ export default function NalouCaseStudy({ project, Player }) {
         <span>{project.nature}</span>
         {project.link && <a href={project.link} target="_blank" rel="noreferrer">抖音主页 ↗</a>}
       </header>
-      <div className={'nalou-collage' + (portrait ? ' is-portrait' : '')}>
+      <div className={'nalou-collage' + (portrait ? ' is-portrait' : '')} ref={collage}>
         <div className="nalou-identity">
           <h2 id="dialog-project-title">{project.title}</h2>
           {project.role && <p>{project.role}</p>}

@@ -239,3 +239,5 @@
 .maicai-opening-film .project-clips { padding-block:14px 0; }
 .maicai-opening-film .clips-heading,.maicai-opening-film .clip-button,.maicai-opening-film .clip-stage { color:#d6ded2; }
 .maicai-opening-film .clip-button.is-active {color:#bbf0cf; border-bottom-color:#bbf0cf;}
+
+.film-links { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:6px 16px; }

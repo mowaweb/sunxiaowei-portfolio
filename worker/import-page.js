@@ -22,7 +22,7 @@ export const importScript = String.raw`(async function importClient() {
   const result = document.querySelector('#result');
   const progress = document.querySelector('#progress');
   const rows = new Map();
-  let films = [], partBytes = 0;
+  let films = [], partBytes = 0, ready = false;
   async function query(route, options) {
     const response = await fetch(root + route, { cache: 'no-store', credentials: 'same-origin', ...options });
     const body = await response.json().catch(() => ({}));
@@ -38,12 +38,15 @@ export const importScript = String.raw`(async function importClient() {
     let count = 0;
     for (const film of films) {
       const row = document.createElement('li'); rows.set(film.slug, row); list.append(row);
+      setRow(film,'检查中');
+    }
+    for (const film of films) {
       const state = await query('/' + film.slug);
       setRow(film, state.verified ? '已校验' : '待导入');
       count += Number(state.verified);
     }
     result.textContent = '已校验 ' + count + ' / ' + films.length + ' 部。';
-    submit.disabled = !picker.files.length;
+    ready = true; submit.disabled = !picker.files.length;
   }
   async function inspect(file, film) {
     for (let n = 0; n < film.parts.length; n++) {
@@ -52,7 +55,7 @@ export const importScript = String.raw`(async function importClient() {
       if (digest !== film.parts[n]) throw new Error('所选文件和原片不一致：' + file.name);
     }
   }
-  picker.addEventListener('change', () => { submit.disabled = !picker.files.length || !films.length; });
+  picker.addEventListener('change', () => { submit.disabled = !picker.files.length || !ready; });
   submit.addEventListener('click', async () => {
     picker.disabled = submit.disabled = true;
     try {

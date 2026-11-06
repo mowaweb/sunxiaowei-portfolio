@@ -6,3 +6,4 @@ dist/
 !.env.example
 # These three complete videos are imported into the site's media bucket.
 /public/assets/personal-ai-*.mp4
+/local-media/

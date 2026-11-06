@@ -5,6 +5,7 @@ import { egretArt, egretCover } from './egret-art.js';
 import { unihuiPanels } from './unihui-panels.js';
 import { tmallElements } from './tmall-elements.js';
 import { nalouProject } from './nalou-project.js';
+import { personalAiProjects } from './personal-ai-projects.js';
 
 export const profile = {
   name: '孙晓伟',
@@ -158,6 +159,7 @@ export const projects = [
   nalouProject,
   ...additionalProjects,
   ...graphicProjects,
+  ...personalAiProjects,
 ].map((project, index) => {
   let item = project;
   if (project.id === 'graphic-tmall-snake') item = {

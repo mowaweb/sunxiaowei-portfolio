@@ -6,7 +6,7 @@ export default function LiweikeCaseStudy({ project, Player }) {
   const films = project.clips.filter(clip => clip.video);
   const stills = project.clips.filter(clip => !clip.video);
   const [selected, setSelected] = useState(0);
-  const [showPlayer, setShowPlayer] = useState(false);
+  const [showPlayer, setShowPlayer] = useState(true);
   const [rate, setRate] = useState(1);
   const screen = useRef(null);
   const track = useRef(null);
@@ -34,6 +34,10 @@ export default function LiweikeCaseStudy({ project, Player }) {
       <h2 id="dialog-project-title"><span>李未可</span> <em>Liweike</em><small>AR 眼镜与虚拟偶像宣发</small></h2>
       <p>从眼镜的内部结构，到虚拟偶像登场的瞬间。</p>
     </header>
+    {showPlayer && <section className="lw-screen" ref={screen} tabIndex="-1" aria-label={`正在播放：${film.title}`}>
+      <div className="lw-section-heading"><h3>{film.title}</h3><button type="button" onClick={closePlayer}>收起播放器 <span aria-hidden="true">↑</span></button></div>
+      <Player key={film.id} project={project} clip={film} playbackRate={rate} onPlaybackRateChange={setRate} />
+    </section>}
     <section className="lw-films" aria-label="项目影片，选择卡片播放">
       <div className="lw-film-track" ref={track}>
         {[-1, 0, 1].map(offset => {
@@ -51,10 +55,6 @@ export default function LiweikeCaseStudy({ project, Player }) {
       <button type="button" className="lw-prev" aria-label="上一个片段" onClick={() => setSelected(i => wrap(i - 1))}>←</button>
       <button type="button" className="lw-next" aria-label="下一个片段" onClick={() => setSelected(i => wrap(i + 1))}>→</button>
     </section>
-    {showPlayer && <section className="lw-screen" ref={screen} tabIndex="-1" aria-label={`正在播放：${film.title}`}>
-      <div className="lw-section-heading"><h3>{film.title}</h3><button type="button" onClick={closePlayer}>收起播放器 <span aria-hidden="true">↑</span></button></div>
-      <Player key={film.id} project={project} clip={film} playbackRate={rate} onPlaybackRateChange={setRate} />
-    </section>}
     <section className="lw-gallery" aria-label="角色与场景静帧">
       <div className="lw-section-heading"><h3>角色与场景静帧</h3><span>STILL FRAMES / {number(stills.length)}</span></div>
       <div className="lw-gallery-rows">{Array.from({ length: Math.ceil(stills.length / 3) }, (_, row) =>

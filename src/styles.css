@@ -633,5 +633,39 @@ section[id] { scroll-margin-top: 100px; }
 }
 
 .stats-strip > button { text-align: left; align-items: flex-start; color: inherit; background: none; }
-.stats-strip button:hover, .stats-strip button:focus-visible, .stats-strip .nalou-link { color: var(--accent); }
-.stats-strip .nalou-link { padding: 0; background: none; font: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.stats-strip button:hover, .stats-strip button:focus-visible { color: var(--accent); }
+
+.account-project-card {
+  display: grid;
+  grid-template-columns: clamp(144px,22vw,292px) minmax(0,1fr) auto;
+  width: 100%;
+  margin-top: 18px;
+  align-items: stretch;
+  gap: clamp(18px,3vw,50px);
+  padding: 0 clamp(16px,3vw,44px) 0 0;
+  border: 1px solid var(--line);
+  background: #191e1b;
+  color: #edf2ed;
+  text-align: left;
+}
+.account-project-card:is(:hover,:focus-visible) { border-color: #84b79c; }
+.account-project-preview { display: grid; grid-template-columns: .72fr 1fr; min-width: 0; min-height: 112px; gap: 3px; contain: size; overflow: hidden; }
+.account-project-preview img { width: 100%; height: 100%; min-width: 0; object-fit: cover; object-position: center 36%; }
+.account-project-copy { display: grid; align-content: center; gap: 5px; padding-block: 24px; }
+.account-project-copy small { color: #a8cdb7; font-size: 11px; letter-spacing: .1em; }
+.account-project-copy strong { font-size: clamp(18px,2.1vw,32px); font-weight: 500; line-height: 1.3; }
+.account-project-copy > span { color: #bac4bc; font-size: 12px; }
+.account-project-action { display: flex; align-items: center; gap: 12px; color: #d8e1da; font-size: 12px; white-space: nowrap; }
+.account-project-action i { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid #65766a; border-radius: 50%; }
+.account-project-action svg { width: 16px; height: 16px; }
+.account-project-card:is(:hover,:focus-visible) .account-project-action i { color: #152219; background: var(--accent); border-color: var(--accent); }
+@media (max-width:640px) {
+  .account-project-card { position: relative; grid-template-columns: clamp(78px,24vw,122px) minmax(0,1fr); column-gap: 14px; }
+  .account-project-preview { grid-template-columns: 1fr; grid-row: span 2; }
+  .account-project-preview img:nth-child(2) { display: none; }
+  .account-project-copy { padding: 17px 0 0; gap: 5px; }
+  .account-project-copy > span { display: none; }
+  .account-project-action { padding-bottom: 16px; margin-top: 10px; gap: 8px; font-size: 11px; }
+  .account-project-action i { width: 24px; height: 24px; }
+  .account-project-action svg { width: 12px; height: 12px; }
+}
