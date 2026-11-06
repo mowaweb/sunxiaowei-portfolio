@@ -323,6 +323,7 @@ section[id] { scroll-margin-top: 100px; }
 .character-sheet-image { display: block; cursor: zoom-in; background: #fff; border: 1px solid #ffffff26; }
 .character-sheet-image img { display: block; width: 100%; height: auto; }
 .character-sheet > p { margin-top: 12px; margin-bottom: 0; color: #9aae93; font-size: 10px; letter-spacing: 1px; }
+.character-sheet > .character-sheet-note { max-width: 880px; color: #b5c2af; font-size: 12px; line-height: 1.9; letter-spacing: .3px; }
 .dialog-pagination { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); padding-block: 17px; }
 .dialog-pagination button { background: none; font-size: 10px; padding: 5px 0; color: #c8d4c2; }
 .dialog-pagination > span { font: 10px var(--mono); color: #89a07f; }
@@ -582,6 +583,7 @@ section[id] { scroll-margin-top: 100px; }
   .character-sheet figcaption > div > span { font-size: 7px; letter-spacing: .3px; }
   .character-sheet h3 { font-size: 16px; line-height: 1.5; }
   .character-sheet .inline-link { font-size: 9px; gap: 6px; }
+  .character-sheet > .character-sheet-note { font-size: 11px; }
   .dialog-info { flex-direction: column; gap: 20px; padding-block: 20px; }
   .dialog-info h2 { font-size: 19px; }
   .dialog-info p { font-size: 11px; line-height: 1.9; }

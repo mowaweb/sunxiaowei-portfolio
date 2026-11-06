@@ -100,6 +100,7 @@ export const projects = [
     characterSheet: {
       image: './assets/lotus-character-turnaround.png',
       title: '人物三视图与面部特写',
+      note: '根据客户创意需求，将莲花汽车创始人柯林·查普曼（Colin Chapman）的 AI 角色形象融入影片叙事。',
       alt: '莲花汽车项目 AI 角色设定，展示人物正面、侧面、背面全身视图和面部特写',
       width: 5404,
       height: 3040,

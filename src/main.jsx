@@ -189,6 +189,7 @@ function ProjectDialog({ project, onClose, onChange }) {
         <figcaption><div><span>AI 角色设定 / CHARACTER TURNAROUND</span><h3>{project.characterSheet.title}</h3></div><a className="inline-link" href={project.characterSheet.image} target="_blank" rel="noreferrer">查看原图 <Arrow /></a></figcaption>
         <a className="character-sheet-image" href={project.characterSheet.image} target="_blank" rel="noreferrer" aria-label="打开人物三视图原图"><img src={project.characterSheet.image} alt={project.characterSheet.alt} width={project.characterSheet.width} height={project.characterSheet.height} loading="lazy" decoding="async" /></a>
         <p>正面 · 侧面 · 背面 · 面部特写</p>
+        {project.characterSheet.note && <p className="character-sheet-note">{project.characterSheet.note}</p>}
       </figure>}
       <div className="dialog-pagination"><button onClick={() => onChange(projects[(index - 1 + projects.length) % projects.length])}>← 上一个作品</button><span>{project.number} / {String(projects.length).padStart(2, '0')}</span><button onClick={() => onChange(projects[(index + 1) % projects.length])}>下一个作品 →</button></div>
     </div>
