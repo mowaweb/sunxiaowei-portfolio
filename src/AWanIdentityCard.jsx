@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import BorderGlow from './BorderGlow';
 import './a-wan-identity.css';
 
 const pointerMotion = '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)';
@@ -19,6 +20,7 @@ export default function AWanIdentityCard() {
       surface.style.removeProperty('--awan-x');
       surface.style.removeProperty('--awan-y');
       surface.style.removeProperty('--awan-depth');
+      surface.style.removeProperty('--awan-edge');
     }
 
     function renderPosition() {
@@ -26,9 +28,16 @@ export default function AWanIdentityCard() {
       // Only the inner panel transforms. The hit surface always has its original geometry.
       const { left, top, width, height } = surface.getBoundingClientRect();
       if (!width || !height) return;
-      surface.style.setProperty('--awan-x', clamp((mouseX - left) / width * 2 - 1).toFixed(3));
-      surface.style.setProperty('--awan-y', clamp((mouseY - top) / height * 2 - 1).toFixed(3));
+      const dx = mouseX - left - width / 2;
+      const dy = mouseY - top - height / 2;
+      const x = clamp(2 * dx / width);
+      const y = clamp(2 * dy / height);
+      surface.style.setProperty('--awan-x', x.toFixed(3));
+      surface.style.setProperty('--awan-y', y.toFixed(3));
       surface.style.setProperty('--awan-depth', '1');
+      const proximity = Math.max(Math.abs(x), Math.abs(y));
+      surface.style.setProperty('--awan-edge', Math.max(0, (proximity - .30) / .70).toFixed(3));
+      surface.style.setProperty('--awan-angle', (Math.atan2(dy, dx) * 180 / Math.PI + 90).toFixed(2) + 'deg');
     }
 
     function follow(event) {
@@ -59,6 +68,7 @@ export default function AWanIdentityCard() {
   return (
     <div className="awan-identity" ref={surfaceRef}>
       <div className="identity-panel">
+        <BorderGlow />
         <div className="identity-top">
           <span>THE PERSON<br />BEHIND THE FRAMES</span><span className="identity-cross">✳</span>
         </div>

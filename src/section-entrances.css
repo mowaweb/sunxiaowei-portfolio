@@ -1,0 +1,44 @@
+.below-hero .entrance-line-mask,
+.below-hero .entrance-line {
+  display: block;
+}
+.below-hero .entrance-line-mask {
+  overflow: clip;
+  color: inherit;
+}
+.below-hero .section-entry-label {
+  display: grid;
+  grid-template-columns: auto max-content max-content minmax(0,1fr);
+  column-gap: clamp(12px,1.5vw,24px);
+  align-items: center;
+}
+.below-hero .entrance-label-words {
+  overflow: clip;
+  font: 500 clamp(36px,5.3vw,82px)/1.06 'Space Grotesk','DM Sans',sans-serif;
+  letter-spacing: -.055em;
+  color: var(--text);
+}
+.below-hero .entrance-language-zh {
+  color: #b9beb8;
+  font-size: clamp(11px,1vw,14px);
+  white-space: nowrap;
+}
+.below-hero .entrance-language-zh,
+.below-hero .entrance-language-en {
+  display: inline-block;
+}
+.below-hero .section-label .label-rule { transform-origin: left center; }
+@media (max-width:640px) {
+  .below-hero .section-entry-label {
+    grid-template-columns: auto auto minmax(0,1fr);
+    gap: 8px 12px;
+  }
+  .below-hero .entrance-label-words {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    font-size: clamp(33px,8vw,48px);
+  }
+}
+
+/* Individual project images enter as they reach the viewport, including after filtering. */
+.below-hero .project-grid { animation: none; }

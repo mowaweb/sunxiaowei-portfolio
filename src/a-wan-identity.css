@@ -1,8 +1,39 @@
 .awan-identity { position: relative; min-width: 0; }
+.awan-identity .identity-panel { border-radius: 16px; }
+.awan-identity .identity-panel::before { border-radius: inherit; }
+.awan-border-glow { display: none; }
 @media (max-width: 640px) {
   .awan-identity { width: 100%; max-width: 480px; }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .awan-border-glow {
+    --glow-padding: 28px;
+    display: block;
+    position: absolute;
+    inset: calc(-1 * var(--glow-padding) - 1px);
+    border-radius: calc(16px + var(--glow-padding));
+    z-index: 2;
+    pointer-events: none;
+    opacity: var(--awan-edge, 0);
+    transition: opacity .24s ease-out;
+    mask-image: conic-gradient(from var(--awan-angle, 0deg), #000 0deg 15deg, transparent 68deg 292deg, #000 345deg);
+  }
+  .awan-border-halo, .awan-border-rim {
+    position: absolute;
+    inset: var(--glow-padding);
+    border-radius: 16px;
+  }
+  .awan-border-halo {
+    box-shadow: inset 0 0 8px #baf6ce38, inset 0 0 23px #88d6a31f,
+      0 0 5px #baf6ce75, 0 0 14px #8edeb466, 0 0 25px #70ae8a3d;
+  }
+  .awan-border-rim {
+    padding: 2px;
+    background: linear-gradient(125deg, #dbf9c1, #8fddc3 43%, var(--accent) 70%, #96ac84);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+  }
+  .awan-identity:not(:hover) .awan-border-glow { transition-duration: .55s; }
   .awan-identity .identity-panel {
     overflow: visible;
     transform-style: preserve-3d;

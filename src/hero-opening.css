@@ -1,0 +1,63 @@
+.hero-heading-line { display: block; }
+.hero-heading-ink {
+  display: block;
+  width: max-content;
+  white-space: nowrap;
+  transform-origin: left bottom;
+}
+
+/* Normal styles are the finished page. Only the first visit at the hero gets
+   this short entrance; project switching animates inside the existing bays. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero[data-opening] .hero-heading-line {
+    --line-delay: 140ms;
+    animation: hero-opening-mask 850ms step-end var(--line-delay) backwards;
+  }
+  .hero[data-opening] .hero-heading-line + .hero-heading-line { --line-delay: 305ms; }
+  .hero[data-opening] .hero-heading-ink {
+    animation: hero-opening-title 850ms cubic-bezier(.19,.82,.19,1) var(--line-delay) backwards;
+  }
+  .hero[data-opening] .hero-emphasis svg {
+    transform-origin: left center;
+    animation: hero-opening-underline 600ms cubic-bezier(.22,.73,.2,1) 860ms backwards;
+  }
+
+  .hero[data-opening] :is(.hero-eyebrow, .hero-project-kicker, .hero-intro, .hero-actions, .hero-switcher, .hero-bottom) {
+    animation: hero-opening-copy 540ms cubic-bezier(.16,.8,.24,1) var(--opening-delay, 0ms) backwards;
+  }
+  .hero[data-opening] .hero-project-kicker { display: inline-block; --opening-delay: 90ms; }
+  .hero[data-opening] .hero-intro { --opening-delay: 620ms; }
+  .hero[data-opening] .hero-actions { --opening-delay: 805ms; }
+  .hero[data-opening] .hero-switcher { --opening-delay: 995ms; }
+  .hero[data-opening] .hero-bottom { --opening-delay: 1100ms; }
+
+  /* Animate the bay, not the button: thumbnails retain the full horizontal
+     travel and bounds of their regular project-switch transitions. */
+  .hero[data-opening] .hero-slide-bay {
+    animation: hero-opening-preview 570ms ease-out var(--preview-delay, 710ms) backwards;
+  }
+  .hero[data-opening] [data-bay='2'] { --preview-delay: 815ms; }
+  .hero[data-opening] [data-bay='3'] { --preview-delay: 925ms; }
+}
+
+@keyframes hero-opening-mask {
+  from { clip-path: inset(-.14em -.13em -.11em -.1em); }
+  to { clip-path: none; }
+}
+@keyframes hero-opening-title {
+  0% { transform: translateY(124%) scaleX(.91); }
+  78% { transform: translateY(-.012em) scaleX(1.006); }
+  100% { transform: none; }
+}
+@keyframes hero-opening-underline {
+  from { transform: scaleX(0); }
+  to { transform: none; }
+}
+@keyframes hero-opening-copy {
+  from { opacity: 0; transform: translateY(9px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hero-opening-preview {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

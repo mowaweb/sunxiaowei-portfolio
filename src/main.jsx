@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { EntranceHeading, useSectionEntrances } from './SectionEntrances';
 import AWanIdentityCard from './AWanIdentityCard';
 import { capabilities, experiences, heroProjects, profile, projects } from './content';
 import { IPCaseStudy, MaicaiCaseStudy } from './CaseStudies';
@@ -18,6 +19,9 @@ import './liweike-case.css';
 import './poster-case.css';
 import './unihui-case.css';
 import './hero-slide.css';
+import './hero-opening.css';
+import './page-atmosphere.css';
+import './about-career.css';
 
 function Arrow({ direction = 'up', ...props }) {
   return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props} style={{ transform: direction === 'down' ? 'rotate(90deg)' : direction === 'right' ? 'rotate(45deg)' : undefined, ...props.style }}><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -37,7 +41,10 @@ function CapabilityIcon({ type }) {
 }
 
 function SectionLabel({ number, children }) {
-  return <div className="section-label"><span className="section-index">{number}</span><span>{children}</span><span className="label-rule" /></div>;
+  const [chinese, english] = children.split(' / ');
+  return <div className="section-label section-entry-label"><span className="section-index">{number}</span>
+    <span className="entrance-label-words"><span className="entrance-language-en" lang="en">{english}</span></span>
+    <span className="entrance-language-zh">{chinese}</span><span className="label-rule" /></div>;
 }
 
 function Header({ active }) {
@@ -79,6 +86,20 @@ const heroIndex = position => (position % heroProjects.length + heroProjects.len
 function Hero({ onPlay, suspended = false }) {
   const videoRef = useRef(null);
   const sectionRef = useRef(null);
+  const [opening, setOpening] = useState(() =>
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+    (!window.location.hash || window.location.hash === '#home')
+  );
+  useEffect(() => {
+    if (!opening) return;
+    const finish = () => setOpening(false);
+    const timer = window.setTimeout(finish, 1750);
+    window.addEventListener('hashchange', finish);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('hashchange', finish);
+    };
+  }, [opening]);
   const [position, setPosition] = useState(0);
   const selectedIndex = heroIndex(position);
   const selectProject = index => setPosition(current => {
@@ -89,7 +110,9 @@ function Hero({ onPlay, suspended = false }) {
   const [playing, setPlaying] = useState(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const onChange = () => { if (preference.matches) setPlaying(false); };
+    const onChange = () => {
+      if (preference.matches) { setOpening(false); setPlaying(false); }
+    };
     preference.addEventListener?.('change', onChange);
     return () => preference.removeEventListener?.('change', onChange);
   }, []);
@@ -103,13 +126,18 @@ function Hero({ onPlay, suspended = false }) {
     observer.observe(sectionRef.current);
     return () => { cancelled = true; observer.disconnect(); video.pause(); };
   }, [playing, selected.projectId, suspended]);
-  return <section className="hero hero-editorial" id="home" ref={sectionRef} aria-label="孙晓伟个人作品集首页">
+  return <section className="hero hero-editorial" id="home" ref={sectionRef} data-opening={opening || undefined}
+    onFocusCapture={opening ? () => setOpening(false) : undefined}
+    onPointerDownCapture={opening ? () => setOpening(false) : undefined} aria-label="孙晓伟个人作品集首页">
     <div className="hero-media"><video key={selected.projectId} ref={videoRef} src={selected.video} poster={selected.image} autoPlay={playing && !suspended} muted playsInline preload="metadata" aria-hidden="true" onEnded={() => { if (playing && !suspended) setPosition(current => current + 1); }} onError={() => setPlaying(false)} /><div className="hero-shade" /></div>
     <div className="hero-grid" aria-hidden="true" />
     <div className="hero-content shell">
       <div className="hero-eyebrow"><span className="status-dot" /><span>孙晓伟 / SUN XIAOWEI</span><span className="eyebrow-separator">—</span><span>独立视觉创作者</span></div>
       <div className="hero-title-block"><span className="hero-project-kicker">CREATIVE MOTION / {String(selectedIndex + 1).padStart(2, '0')} · {selected.label}</span>
-      <h1>让想象，<br />成为<span className="hero-emphasis">画面<svg viewBox="0 0 340 25" preserveAspectRatio="none" aria-hidden="true"><path d="M2 16C105-1 243 0 337 6M14 23c83-9 207-10 307-8" /></svg></span>。</h1>
+      <h1 aria-label="让想象，成为画面。">
+        <span className="hero-heading-line"><span className="hero-heading-ink">让想象，</span></span>
+        <span className="hero-heading-line"><span className="hero-heading-ink">成为<span className="hero-emphasis">画面<svg viewBox="0 0 340 25" preserveAspectRatio="none" aria-hidden="true"><path d="M2 16C105-1 243 0 337 6M14 23c83-9 207-10 307-8" /></svg></span>。</span></span>
+      </h1>
       <div className="hero-intro"><p>以三维为基础，和 AI 一起拓展视觉的边界。<br />专注品牌产品视频、角色动画与创意影像。</p><span className="hero-discipline">3D · AIGC · MOTION</span></div>
       </div>
       <div className="hero-preview-stage hero-slide-stage" role="group" aria-label="接下来的视频项目">
@@ -148,12 +176,24 @@ function Hero({ onPlay, suspended = false }) {
 }
 
 function Experience() {
-  const [all, setAll] = useState(false);
-  return <div className="experience-block">
-    <div className="experience-heading"><span>经历 / EXPERIENCE</span><a href={profile.resume} download="孙晓伟简历.pdf">下载简历 <Arrow /></a></div>
-    <div className="experience-list">{experiences.slice(0, all ? experiences.length : 3).map((item, i) => <details className="experience-item" key={item.company} open={i === 0 ? true : undefined}><summary><span className="experience-period">{item.period}</span><span className="experience-company">{item.company}<small>{item.role}</small></span><span className="experience-plus" aria-hidden="true">+</span></summary><p>{item.description}</p></details>)}</div>
-    <button className="more-experience" onClick={() => setAll(!all)} aria-expanded={all}>{all ? '收起早期经历' : '查看早期经历'}<span aria-hidden="true">{all ? '−' : '+'}</span></button>
-  </div>;
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? experiences : experiences.slice(0, 3);
+  return <section className="career-history" aria-labelledby="career-history-title">
+    <header className="career-history-heading">
+      <div><span lang="en">CAREER PATH</span><h3 id="career-history-title">工作经历</h3></div>
+      <a href={profile.resume} download="孙晓伟简历.pdf">下载简历 <Arrow /></a>
+    </header>
+    <ol className="career-timeline" id="career-timeline">
+      {visible.map(item => <li className="career-stop" key={item.company}>
+        <span className="career-period">{item.period}</span>
+        <h4>{item.company}</h4>
+        <span className="career-role">{item.role}</span>
+        <p>{item.description}</p>
+      </li>)}
+    </ol>
+    {experiences.length > 3 && <button type="button" className="career-expand" aria-expanded={expanded} aria-controls="career-timeline"
+      onClick={() => setExpanded(value => !value)}>{expanded ? '收起早期经历' : '查看早期经历'} <span aria-hidden="true">{expanded ? '−' : '+'}</span></button>}
+  </section>;
 }
 
 const accountProject = projects.find(project => project.id === nalouProject.id);
@@ -162,11 +202,29 @@ const selectedProjects = projects.filter(project => project.id !== nalouProject.
 function About({ onCopy, onOpen, suspended = false }) {
   const openNalou = () => onOpen(accountProject);
   return <section className="about section shell" id="about">
-    <SectionLabel number="01">关于我 / ABOUT</SectionLabel>
-    <div className="about-layout">
+    <SectionLabel number="01">个人经历 / WORK EXPERIENCE</SectionLabel>
+    <div className="about-layout career-profile">
       <AWanIdentityCard />
-      <div className="about-copy"><h2>创意有想法，<br />制作有章法<span className="accent">。</span></h2><h3>我是孙晓伟，也叫阿丸。</h3><p>从三维场景与角色制作，到品牌产品视频与 AI 短片，我喜欢把一个想法，变成有质感、有叙事的画面。</p><p>做客户项目，也独立创作。用三维控制画面，用 AI 探索可能，让创意落到最后一帧。</p><div className="about-links"><a href={`mailto:${profile.email}`}>{profile.email} <Arrow /></a><button onClick={() => onCopy(profile.phone, '电话号码')}>TEL. {profile.phone} <span className="copy-symbol" aria-hidden="true">⧉</span></button></div><Experience /></div>
+      <div className="career-copy">
+        <span className="career-kicker" lang="en">ABOUT ME</span>
+        <EntranceHeading>Hi，我是{profile.name}。</EntranceHeading>
+        <p className="career-bio">也可以叫我{profile.alias}。从三维场景与角色制作，到品牌产品视频与 AI 短片，我喜欢把一个想法变成有质感、有叙事的画面。</p>
+        <p className="career-bio">做客户项目，也独立创作。用三维控制画面，用 AI 探索可能，让创意落到最后一帧。</p>
+        <dl className="career-facts">
+          <div><dt>当前身份</dt><dd>独立视觉创作者</dd></div>
+          <div><dt>服务方向</dt><dd>品牌影像 / 三维 / AI</dd></div>
+          <div><dt>手机</dt><dd><button type="button" onClick={() => onCopy(profile.phone, '电话号码')} aria-label={'复制电话号码 ' + profile.phone}>{profile.phone} <span aria-hidden="true">⧉</span></button></dd></div>
+          <div><dt>邮箱</dt><dd><a href={'mailto:' + profile.email}>{profile.email} ↗</a></dd></div>
+        </dl>
+        <dl className="career-counts">
+          <div><dt>精选项目</dt><dd>{selectedProjects.length}<small> 项</small></dd></div>
+          <div><dt>商业视频</dt><dd>{selectedProjects.filter(p => p.category === 'commercial').length}<small> 项</small></dd></div>
+          <div><dt>平面 / IP</dt><dd>{selectedProjects.filter(p => p.category === 'graphic').length}<small> 项</small></dd></div>
+        </dl>
+        <div className="career-fields" aria-label="创作领域"><span>产品影像</span><span>角色动画</span><span>AI 叙事短片</span></div>
+      </div>
     </div>
+    <Experience />
     <div className="account-stats" role="group" aria-label="作品与自营账号数据">
       <NalouFilmRail project={accountProject} onSelect={index => onOpen(accountProject, index)} suspended={suspended}>
         <div className="stats-strip">
@@ -202,7 +260,7 @@ function Work({ onOpen }) {
   const visible = selectedProjects.filter(project => matchesProjectFilter(project, filter));
   return <section className="work section shell" id="work">
     <SectionLabel number="02">精选作品 / SELECTED WORK</SectionLabel>
-    <div className="section-heading work-heading"><h2>画面，是最好的表达<span className="accent">。</span></h2><p>商业制作与个人探索，<br />每一帧，都有自己的来处。</p></div>
+    <div className="section-heading work-heading"><EntranceHeading>画面，是最好的表达<span className="accent">。</span></EntranceHeading><p>商业制作与个人探索，<br />每一帧，都有自己的来处。</p></div>
     <div className="work-toolbar"><div className="project-filters" aria-label="筛选作品">{filters.map(f => <button key={f.id} aria-pressed={filter === f.id} className={filter === f.id ? 'selected' : ''} onClick={() => setFilter(f.id)}>{f.name}<sup>{f.count}</sup></button>)}</div><span className="work-note">SELECTED FRAMES, SELECTED STORIES.</span></div>
     <div className="project-grid" key={filter}>{visible.map(project => <ProjectCard key={project.id} project={project} onOpen={onOpen} />)}</div>
     <div className="work-bottom"><span>还有更多画面，正在发生。</span><a className="inline-link" href={profile.portfolioUrl} target="_blank" rel="noreferrer">查看完整作品档案 <Arrow /></a></div>
@@ -210,11 +268,11 @@ function Work({ onOpen }) {
 }
 
 function Expertise() {
-  return <section className="expertise-wrap" id="expertise"><div className="expertise section shell"><SectionLabel number="03">我的能力 / EXPERTISE</SectionLabel><div className="expertise-layout"><div className="expertise-intro"><h2>从一个念头，<br />到最后一帧<span className="accent">。</span></h2><p>创意、制作、沟通。<br />让它们在同一条线上，向前走。</p><div className="expertise-signature"><span className="signature-mark">s×w</span><span>IDEA TO IMAGE.<br />FRAME BY FRAME.</span></div></div><div className="capabilities-grid">{capabilities.map(cap => <article className="capability-card" key={cap.id}><div className="capability-top"><span>{cap.id} /</span><CapabilityIcon type={cap.icon} /></div><span className="capability-english">{cap.english}</span><h3>{cap.title}</h3><p>{cap.text}</p><div className="capability-tools">{cap.tools}</div></article>)}</div></div></div></section>;
+  return <section className="expertise-wrap" id="expertise"><div className="expertise section shell"><SectionLabel number="03">我的能力 / EXPERTISE</SectionLabel><div className="expertise-layout"><div className="expertise-intro"><EntranceHeading>从一个念头，<br />到最后一帧<span className="accent">。</span></EntranceHeading><p>创意、制作、沟通。<br />让它们在同一条线上，向前走。</p><div className="expertise-signature"><span className="signature-mark">s×w</span><span>IDEA TO IMAGE.<br />FRAME BY FRAME.</span></div></div><div className="capabilities-grid">{capabilities.map(cap => <article className="capability-card" key={cap.id}><div className="capability-top"><span>{cap.id} /</span><CapabilityIcon type={cap.icon} /></div><span className="capability-english">{cap.english}</span><h3>{cap.title}</h3><p>{cap.text}</p><div className="capability-tools">{cap.tools}</div></article>)}</div></div></div></section>;
 }
 
 function Contact({ onCopy }) {
-  return <section className="contact" id="contact"><div className="contact-inner shell"><SectionLabel number="04">保持联系 / CONTACT</SectionLabel><div className="contact-lead"><div className="contact-eyebrow"><span className="status-dot" />关于工作、项目，或一个新想法。</div><h2>下一个画面，<br />一起<span>创造</span>。</h2><a className="contact-orb" href={`mailto:${profile.email}`} aria-label="发送邮件联系孙晓伟"><Arrow /></a></div><div className="contact-actions"><a className="contact-email" href={`mailto:${profile.email}`}>{profile.email}<Arrow /></a><button className="copy-email" onClick={() => onCopy(profile.email, '邮箱地址')} aria-label="复制邮箱地址"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.4" /><path d="M15 8V4H4v11h4" stroke="currentColor" strokeWidth="1.4" /></svg></button></div><div className="contact-secondary"><div><span>电话 / PHONE</span><button onClick={() => onCopy(profile.phone, '电话号码')}>+86 {profile.phone} <span aria-hidden="true">⧉</span></button></div><div><span>作品 / ARCHIVE</span><a href={profile.portfolioUrl} target="_blank" rel="noreferrer">语雀作品档案 <Arrow /></a></div><div><span>简历 / RÉSUMÉ</span><a href={profile.resume} download="孙晓伟简历.pdf">下载个人简历 <Arrow direction="down" /></a></div></div><footer className="footer"><a className="footer-brand" href="#home">孙晓伟 <span>SUN XIAOWEI</span></a><span>© {new Date().getFullYear()} · DESIGN IN MOTION</span><a href="#home">返回顶部 <Arrow /></a></footer></div></section>;
+  return <section className="contact" id="contact"><div className="contact-inner shell"><SectionLabel number="04">保持联系 / CONTACT</SectionLabel><div className="contact-lead"><div className="contact-eyebrow"><span className="status-dot" />关于工作、项目，或一个新想法。</div><EntranceHeading>下一个画面，<br />一起<span className="accent">创造</span>。</EntranceHeading><a className="contact-orb" href={`mailto:${profile.email}`} aria-label="发送邮件联系孙晓伟"><Arrow /></a></div><div className="contact-actions"><a className="contact-email" href={`mailto:${profile.email}`}>{profile.email}<Arrow /></a><button className="copy-email" onClick={() => onCopy(profile.email, '邮箱地址')} aria-label="复制邮箱地址"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.4" /><path d="M15 8V4H4v11h4" stroke="currentColor" strokeWidth="1.4" /></svg></button></div><div className="contact-secondary"><div><span>电话 / PHONE</span><button onClick={() => onCopy(profile.phone, '电话号码')}>+86 {profile.phone} <span aria-hidden="true">⧉</span></button></div><div><span>作品 / ARCHIVE</span><a href={profile.portfolioUrl} target="_blank" rel="noreferrer">语雀作品档案 <Arrow /></a></div><div><span>简历 / RÉSUMÉ</span><a href={profile.resume} download="孙晓伟简历.pdf">下载个人简历 <Arrow direction="down" /></a></div></div><footer className="footer"><a className="footer-brand" href="#home">孙晓伟 <span>SUN XIAOWEI</span></a><span>© {new Date().getFullYear()} · DESIGN IN MOTION</span><a href="#home">返回顶部 <Arrow /></a></footer></div></section>;
 }
 
 function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange, autoPlay = true }) {
@@ -335,6 +393,7 @@ function ProjectDialog({ project, initialClipIndex = 0, onClose, onChange }) {
 }
 
 function App() {
+  useSectionEntrances();
   const [selection, setSelection] = useState(() => {
     const query = new URLSearchParams(window.location.search);
     const project = projects.find(item => item.id === query.get('project')) || null;
@@ -360,7 +419,7 @@ function App() {
       const entry = entries.find(item => item.isIntersecting);
       if (entry) setActive(entry.target.id);
     }, { rootMargin: '-15% 0px -65% 0px', threshold: 0 });
-    document.querySelectorAll('main > section[id]').forEach(section => observer.observe(section));
+    document.querySelectorAll('#home, #about, #work, #expertise, #contact').forEach(section => observer.observe(section));
     return () => { observer.disconnect(); clearTimeout(toastTimer.current); };
   }, []);
   const copy = async (value, label) => {
@@ -373,7 +432,24 @@ function App() {
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(''), 3200);
   };
-  return <><a className="skip-link" href="#main-content">跳到主要内容</a><Header active={active} /><main id="main-content"><Hero onPlay={setProject} suspended={Boolean(project)} /><About onCopy={copy} onOpen={setProject} suspended={Boolean(project)} /><Work onOpen={setProject} /><Expertise /><Contact onCopy={copy} /></main><ProjectDialog project={project} initialClipIndex={selection.clipIndex} onClose={() => setProject(null)} onChange={setProject} /><div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite">{toast && <><span>✓</span>{toast}</>}</div></>;
+  return <>
+    <a className="skip-link" href="#main-content">跳到主要内容</a>
+    <Header active={active} />
+    <main id="main-content">
+      <Hero onPlay={setProject} suspended={Boolean(project)} />
+      <div className="below-hero">
+        <div className="page-atmosphere" aria-hidden="true">
+          <div className="atmosphere-window"><span className="atmosphere-grain" /></div>
+        </div>
+        <About onCopy={copy} onOpen={setProject} suspended={Boolean(project)} />
+        <Work onOpen={setProject} />
+        <Expertise />
+        <Contact onCopy={copy} />
+      </div>
+    </main>
+    <ProjectDialog project={project} initialClipIndex={selection.clipIndex} onClose={() => setProject(null)} onChange={setProject} />
+    <div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite">{toast && <><span>✓</span>{toast}</>}</div>
+  </>;
 }
 
 const root = import.meta.hot?.data.root ?? createRoot(document.getElementById('root'));
