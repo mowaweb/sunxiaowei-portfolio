@@ -57,13 +57,13 @@ export default function NalouFilmRail({ project, onSelect, suspended = false, ch
   useEffect(() => {
     if (reduced || suspended || !visible || !pageVisible || touching || pointed !== null || clips.length < 2) return;
     const strip = rail.current;
-    let step = cardStep(strip), last = 0, fraction = 0, frame;
-    const resize = () => { step = cardStep(strip); };
-    window.addEventListener('resize', resize);
+    let step = 0, canLoop = false, last = 0, fraction = 0, frame = null;
     const advance = now => {
+      frame = null;
+      if (!canLoop) return;
       const elapsed = last ? Math.min(now-last, 64) : 0;
       last = now;
-      if (now >= manualUntil.current && step > 0 && strip.scrollWidth - strip.clientWidth >= step) {
+      if (now >= manualUntil.current) {
         fraction += elapsed * .021;
         const pixels = Math.floor(fraction);
         if (pixels) {
@@ -78,8 +78,24 @@ export default function NalouFilmRail({ project, onSelect, suspended = false, ch
       }
       frame = window.requestAnimationFrame(advance);
     };
-    frame = window.requestAnimationFrame(advance);
-    return () => { window.cancelAnimationFrame(frame); window.removeEventListener('resize', resize); };
+    const measure = () => {
+      // Cache layout dimensions between resizes. Each tick only reads the actual
+      // scroll position, so wheel/touch/keyboard navigation keeps its place.
+      step = cardStep(strip);
+      canLoop = step > 0 && strip.scrollWidth - strip.clientWidth >= step;
+      if (canLoop && frame === null) { last = 0; frame = window.requestAnimationFrame(advance); }
+      else if (!canLoop && frame !== null) { window.cancelAnimationFrame(frame); frame = null; }
+    };
+    const resize = window.ResizeObserver ? new window.ResizeObserver(measure) : null;
+    resize?.observe(strip);
+    resize?.observe(strip.children[0]);
+    if (!resize) window.addEventListener('resize', measure);
+    measure();
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      resize?.disconnect();
+      if (!resize) window.removeEventListener('resize', measure);
+    };
   }, [reduced, suspended, visible, pageVisible, touching, pointed, clips.length]);
 
   function delayAutomatic() { manualUntil.current = window.performance.now() + 1200; }

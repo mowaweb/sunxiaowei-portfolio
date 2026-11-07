@@ -1,4 +1,4 @@
-import React, { Children, isValidElement, useEffect } from 'react';
+import React, { Children, isValidElement, useEffect, useRef } from 'react';
 import './section-entrances.css';
 
 export function EntranceHeading({ children }) {
@@ -25,7 +25,12 @@ const revealMedia = [{ opacity: .38, clipPath: 'inset(0 0 36% 0)' }, { opacity: 
 const revealType = [{ transform: 'translateY(105%)' }, { transform: 'translateY(0)' }];
 const easing = 'cubic-bezier(.16,.75,.22,1)';
 
-export function useSectionEntrances() {
+export function useSectionEntrances(suspended = false) {
+  const gate = useRef({ suspended, update: null });
+  useEffect(() => {
+    gate.current.suspended = suspended;
+    gate.current.update?.();
+  }, [suspended]);
   useEffect(() => {
     const scope = document.querySelector('main > .below-hero');
     // All content is visible in its final position without any observer or animation.
@@ -33,6 +38,7 @@ export function useSectionEntrances() {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     const seen = new WeakSet();
     const playing = new Map();
+    const waiting = new Set();
 
     function stop(unit) {
       const animations = playing.get(unit);
@@ -88,11 +94,13 @@ export function useSectionEntrances() {
       const siblings = new Map();
       for (const entry of entries) {
         const unit = entry.target;
-        if (!entry.isIntersecting || !scope.contains(unit)) continue;
+        if (!entry.isIntersecting || !scope.contains(unit)) { waiting.delete(unit); continue; }
+        if (gate.current.suspended || document.hidden) { waiting.add(unit); continue; }
+        waiting.delete(unit);
         observer.unobserve(unit);
         if (seen.has(unit)) continue;
         seen.add(unit);
-        if (document.hidden || reduced.matches || unit.contains(document.activeElement) || isAnchorHeading(unit)) continue;
+        if (reduced.matches || unit.contains(document.activeElement) || isAnchorHeading(unit)) continue;
         const parent = unit.parentElement;
         const count = siblings.get(parent) || 0;
         siblings.set(parent, count + 1);
@@ -110,7 +118,7 @@ export function useSectionEntrances() {
     const changes = new window.MutationObserver(records => {
       for (const { removedNodes, addedNodes } of records) {
         for (const node of removedNodes) {
-          if (!scope.contains(node)) visitUnits(node, unit => { observer.unobserve(unit); stop(unit); });
+          if (!scope.contains(node)) visitUnits(node, unit => { observer.unobserve(unit); waiting.delete(unit); stop(unit); });
         }
         for (const node of addedNodes) if (scope.contains(node)) visitUnits(node, observe);
       }
@@ -119,19 +127,33 @@ export function useSectionEntrances() {
 
     function focus(event) {
       for (let unit = event.target; unit && unit !== scope; unit = unit.parentElement) {
-        if (unit.matches(unitSelector)) { seen.add(unit); observer.unobserve(unit); stop(unit); }
+        if (unit.matches(unitSelector)) { seen.add(unit); waiting.delete(unit); observer.unobserve(unit); stop(unit); }
       }
     }
     function anchor() { for (const unit of playing.keys()) if (isAnchorHeading(unit)) stop(unit); }
     function stopAll() { for (const unit of playing.keys()) stop(unit); }
+    function updateVisibility() {
+      if (document.hidden || gate.current.suspended) { stopAll(); return; }
+      // Re-observing only queued units asks the browser for their current intersection.
+      // It avoids layout reads and preserves entrances that occurred behind a dialog.
+      for (const unit of waiting) {
+        if (scope.contains(unit) && !seen.has(unit)) { observer.unobserve(unit); observer.observe(unit); }
+      }
+      waiting.clear();
+    }
+    gate.current.update = updateVisibility;
     scope.addEventListener('focusin', focus);
+    document.addEventListener('visibilitychange', updateVisibility);
     window.addEventListener('hashchange', anchor);
     window.addEventListener('beforeprint', stopAll);
     reduced.addEventListener?.('change', stopAll);
     return () => {
       observer.disconnect();
       changes.disconnect();
+      waiting.clear();
+      gate.current.update = null;
       scope.removeEventListener('focusin', focus);
+      document.removeEventListener('visibilitychange', updateVisibility);
       window.removeEventListener('hashchange', anchor);
       window.removeEventListener('beforeprint', stopAll);
       reduced.removeEventListener?.('change', stopAll);

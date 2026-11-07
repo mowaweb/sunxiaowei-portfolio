@@ -121,6 +121,9 @@ section[id] { scroll-margin-top: 100px; }
 .scroll-cue small { font: 8px var(--mono); letter-spacing: 1.3px; color: #b1b7b0; }
 .scroll-line { width: 1px; height: 43px; background: #ffffff3d; position: relative; overflow: hidden; }
 .scroll-line::after { content: ''; position: absolute; top: -20px; width: 1px; height: 20px; background: var(--accent); animation: scroll-line 2.8s ease-in-out infinite; }
+.hero[data-motion-active="false"] .scroll-line::after { animation-play-state: paused; }
+.project-loading { padding: 64px 24px; text-align: center; color: inherit; }
+.project-loading button { padding: 10px 18px; background: var(--accent); color: var(--bg); }
 .hero-frame-label { margin-left: auto; display: flex; align-items: center; gap: 18px; font-size: 10px; line-height: 1.8; color: #d4dcd5; }
 .hero-frame-label small { font: 8px var(--mono); letter-spacing: .8px; color: #a7b3aa; }
 .tiny-cross { font: 300 34px var(--mono); color: var(--accent); }

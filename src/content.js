@@ -1,4 +1,5 @@
 import { additionalProjects } from './more-projects.js';
+import { heroPreviews } from './responsive-media.js';
 import { graphicProjects } from './graphic-projects.js';
 import { friesArt } from './fries-art.js';
 import { egretArt, egretCover } from './egret-art.js';
@@ -202,7 +203,7 @@ export const heroProjects = [
   { projectId: 'personal-ai-10086', label: '10086', caption: '一线越千山', video: './assets/hero-ai-10086.mp4' },
 ].map(item => {
   const project = projects.find(project => project.id === item.projectId);
-  return { ...item, image: item.image || project.image, project };
+  return { ...item, image: item.image || project.image, previewImage: heroPreviews[item.projectId], project };
 });
 
 export const experiences = [

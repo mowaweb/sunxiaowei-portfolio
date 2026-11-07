@@ -37,19 +37,26 @@
   position: absolute;
   /* Overscan keeps the moving layers' rectangular edges outside the viewport. */
   inset: -32%;
+  animation-play-state: paused;
 }
 
 .atmosphere-window::before {
   background: radial-gradient(ellipse 37% 23% at 26% 52%,
     #788c6259 0%, #586d463c 37%, #344b3826 67%, transparent 100%);
   animation: sage-drift 18s cubic-bezier(.45, 0, .55, 1) -4s infinite;
-  will-change: transform, opacity;
+  animation-play-state: paused;
 }
 
 .atmosphere-window::after {
   background: radial-gradient(ellipse 41% 21% at 74% 49%,
     #a2dbbb55 0%, #76a58e3b 31%, #486f602e 57%, transparent 100%);
   animation: mint-drift 22s cubic-bezier(.45, 0, .55, 1) -11s infinite;
+  animation-play-state: paused;
+}
+
+.page-atmosphere[data-running="true"] .atmosphere-window::before,
+.page-atmosphere[data-running="true"] .atmosphere-window::after {
+  animation-play-state: running;
   will-change: transform, opacity;
 }
 
@@ -86,4 +93,6 @@
     animation: none;
     will-change: auto;
   }
+  .page-atmosphere[data-running="true"] .atmosphere-window::before,
+  .page-atmosphere[data-running="true"] .atmosphere-window::after { will-change: auto; }
 }
