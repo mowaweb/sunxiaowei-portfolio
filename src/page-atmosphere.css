@@ -41,13 +41,15 @@
 .atmosphere-window::before {
   background: radial-gradient(ellipse 54% 33% at 11% 53%,
     #788c6259 0%, #586d463c 37%, #344b3826 67%, transparent 100%);
-  animation: sage-drift 25s ease-in-out infinite alternate;
+  animation: sage-drift 18s cubic-bezier(.45, 0, .55, 1) -4s infinite;
+  will-change: transform, opacity;
 }
 
 .atmosphere-window::after {
   background: radial-gradient(ellipse 60% 31% at 92% 48%,
     #a2dbbb55 0%, #76a58e3b 31%, #486f602e 57%, transparent 100%);
-  animation: mint-drift 32s ease-in-out infinite alternate;
+  animation: mint-drift 22s cubic-bezier(.45, 0, .55, 1) -11s infinite;
+  will-change: transform, opacity;
 }
 
 /* A small stationary grain tile keeps the light soft when it moves. */
@@ -61,20 +63,26 @@
 }
 
 @keyframes sage-drift {
-  from { transform: translate(-2%, -3%) scale(.99); }
-  to   { transform: translate(2.2%, 3.5%) scale(1.07); }
+  0%, 100% { transform: translate(-12%, -8%) scale(.96, 1.08); opacity: .78; }
+  25%      { transform: translate(1%, 7%) scale(1.09, .96); opacity: 1; }
+  50%      { transform: translate(15%, 1%) scale(1.06, 1.16); opacity: .92; }
+  75%      { transform: translate(2%, -11%) scale(.95, 1.04); opacity: .84; }
 }
 
 @keyframes mint-drift {
-  from { transform: translate(2.5%, 1.8%) scale(1.04); }
-  to   { transform: translate(-2%, -3.8%) scale(.98); }
+  0%, 100% { transform: translate(12%, 9%) scale(1.07, .98); opacity: .88; }
+  25%      { transform: translate(-3%, -8%) scale(.96, 1.14); opacity: 1; }
+  50%      { transform: translate(-16%, 3%) scale(1.1, 1.06); opacity: .82; }
+  75%      { transform: translate(-1%, 12%) scale(1.02, .94); opacity: .96; }
 }
 
 @media (max-width: 640px) {
-  .atmosphere-window::before { opacity: .78; }
-  .atmosphere-window::after { opacity: .72; }
+  .atmosphere-window { opacity: .76; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .atmosphere-window::before, .atmosphere-window::after { animation: none; }
+  .atmosphere-window::before, .atmosphere-window::after {
+    animation: none;
+    will-change: auto;
+  }
 }
