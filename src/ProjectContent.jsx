@@ -22,10 +22,22 @@ function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange
   useEffect(() => {
     if (videoRef.current) videoRef.current.playbackRate = playbackRate;
   }, [media.video, playbackRate]);
-  const updateDuration = event => {
-    const seconds = event.currentTarget.duration;
-    setDuration(Number.isFinite(seconds) ? Math.max(0, seconds) : 0);
-  };
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const syncDuration = () => {
+      const seconds = video.duration;
+      setDuration(Number.isFinite(seconds) ? Math.max(0, seconds) : 0);
+    };
+    // Cached media can have metadata before React attaches its event handlers.
+    video.addEventListener('loadedmetadata', syncDuration);
+    video.addEventListener('durationchange', syncDuration);
+    syncDuration();
+    return () => {
+      video.removeEventListener('loadedmetadata', syncDuration);
+      video.removeEventListener('durationchange', syncDuration);
+    };
+  }, [media.video, clip.id, media.id]);
   const seekBy = seconds => {
     const video = videoRef.current;
     if (video && Number.isFinite(video.duration) && video.duration > 0) {
@@ -33,7 +45,7 @@ function ClipPlayer({ project, clip, onEnded, playbackRate, onPlaybackRateChange
     }
   };
   return <div className={`dialog-player ${(clip.portrait ?? project.portrait) ? 'vertical-player' : ''}`}>
-    {media.video ? <><video ref={videoRef} key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay={autoPlay} playsInline preload="metadata" onEnded={onEnded} onLoadedMetadata={event => { updateDuration(event); event.currentTarget.playbackRate = playbackRate; }} onDurationChange={updateDuration} onRateChange={event => { if (event.currentTarget.playbackRate !== playbackRate) onPlaybackRateChange(event.currentTarget.playbackRate); }} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
+    {media.video ? <><video ref={videoRef} key={`${clip.id}-${media.id}`} src={media.video} poster={media.image} controls autoPlay={autoPlay} playsInline preload="metadata" onEnded={onEnded} onLoadedMetadata={event => { event.currentTarget.playbackRate = playbackRate; }} onRateChange={event => { if (event.currentTarget.playbackRate !== playbackRate) onPlaybackRateChange(event.currentTarget.playbackRate); }} aria-label={`${project.title}：${clip.title} · ${media.label || clip.stage}视频`} />
       <div className="video-transport" role="group" aria-label="视频播放控制">
         <VideoTimeline key={media.video} videoRef={videoRef} duration={duration} />
         <div className="video-seek-actions"><button type="button" onClick={() => seekBy(-5)} disabled={!duration} aria-label="快退5秒">← 快退 5 秒</button><button type="button" onClick={() => seekBy(5)} disabled={!duration} aria-label="快进5秒">快进 5 秒 →</button></div>
