@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import EgretProposal from './EgretProposal';
 
 const positions = ['enter-before', 'before', 'current', 'next', 'after', 'enter-after'];
 const restMs = 5800;
@@ -143,6 +144,7 @@ export default function PosterCaseStudy({ project, Player }) {
         <img src={item.thumb || item.plate || item.image} alt="" loading="lazy" decoding="async" /><span>{number(i + 1)} / {item.title}</span>
       </button>)}</div>
     </section>
+    {isEgret && <EgretProposal />}
     {film && <section className="poster-film" aria-label="项目完整视频">
       <div className="poster-section-title"><h3>动画与制作过程</h3><span>MOTION / {film.duration}</span></div>
       <Player project={project} clip={film} autoPlay={false} playbackRate={rate} onPlaybackRateChange={setRate} />

@@ -135,7 +135,8 @@ export const projects = [
     id: 'phone-stand',
     medium: 'cg',
     number: '05',
-    title: '手机支架 · 品牌宣传视频',
+    title: 'Fuzzi · 三维产品影像',
+    contentLabel: '3 段视频',
     english: 'FORM IN MOTION',
     category: 'commercial',
     nature: '客户委托',
@@ -143,8 +144,9 @@ export const projects = [
     duration: '00:30',
     image: './assets/phone-stand.webp',
     video: './assets/phone-stand.mp4',
-    description: '以三维制作完成手机支架品牌宣传视频，用产品、材质与镜头运动组织画面。项目未使用 AI。',
-    role: '三维视频制作',
+    description: 'Fuzzi 手机支架的三维产品影像，展示产品建模、材质渲染与镜头预演，从结构细节到系列陈列呈现制作过程。',
+    role: '产品建模、渲染与三维视频制作',
+    caseStudy: { kind: 'fuzzi' },
   },
   {
     id: 'kongyiji',
@@ -182,7 +184,7 @@ export const projects = [
     caseStudy: { kind: 'fries', art: friesArt }
   };
   if (project.id === 'graphic-egret') item = {
-    ...project, image: egretCover,
+    ...project, image: egretCover, contentLabel: '14 组画面',
     caseStudy: { kind: 'poster', theme: 'egret', accent: '#c5d887', art: egretArt }
   };
   if (project.id === 'graphic-unihui') item = {

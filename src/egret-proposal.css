@@ -1,0 +1,17 @@
+.egret-proposal { margin: clamp(30px, 4vw, 56px) var(--poster-margin); }
+.egret-proposal-intro { max-width: 52em; margin: 0 0 28px; color: #bdc1b2; font-size: 13px; line-height: 1.9; }
+.egret-proposal-pages { display: grid; gap: clamp(26px, 4vw, 48px); }
+.egret-proposal-page { min-width: 0; margin: 0; }
+.egret-proposal-page figcaption { display: flex; gap: 14px; align-items: baseline; margin-bottom: 15px; }
+.egret-proposal-number { color: var(--poster-accent); font: 11px/1.5 var(--mono); }
+.egret-proposal-page h4 { margin: 0; font-size: 19px; line-height: 1.5; font-weight: 500; }
+.egret-proposal-page p { margin: 5px 0 0; color: #bdc1b2; font-size: 12px; line-height: 1.8; }
+.egret-proposal-enlarge { margin-left: auto; flex-shrink: 0; font-size: 11px; color: #c5d887; }
+.egret-proposal-page a { display: block; cursor: zoom-in; }
+.egret-proposal-page img { display: block; width: 100%; height: auto; }
+@media (max-width: 600px) {
+  .egret-proposal-page figcaption { flex-wrap: wrap; gap: 6px 10px; }
+  .egret-proposal-page figcaption > div { flex: 1; }
+  .egret-proposal-page h4 { font-size: 17px; }
+  .egret-proposal-enlarge { width: 100%; text-align: right; }
+}

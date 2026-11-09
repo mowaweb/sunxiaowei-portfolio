@@ -7,6 +7,7 @@ import PosterCaseStudy from './PosterCaseStudy';
 import UniCaseStudy from './UniCaseStudy';
 import FriesCaseStudy from './FriesCaseStudy';
 import NalouCaseStudy from './NalouCaseStudy';
+import FuzziCaseStudy from './FuzziCaseStudy';
 import VideoTimeline from './VideoTimeline';
 import './liweike-case.css';
 import './poster-case.css';
@@ -71,7 +72,9 @@ function ProjectPlayer({ project, autoPlay = true, playlistFirst = false }) {
 export default function ProjectContent({ project, initialClipIndex = 0 }) {
   const caseKind = project.caseStudy?.kind;
   let caseContent = null;
-  if (caseKind === 'maicai') {
+  if (caseKind === 'fuzzi') {
+    caseContent = <FuzziCaseStudy key={project.id} project={project} Player={ClipPlayer} />;
+  } else if (caseKind === 'maicai') {
     const videos = { ...project, clips: project.clips.filter(clip => clip.video).map(clip => clip.id === 'brand-blindbox' ? { ...clip, image: './assets/maicai-case-video-poster.webp' } : clip) };
     caseContent = <MaicaiCaseStudy project={project}><ProjectPlayer key={project.id} project={videos} /></MaicaiCaseStudy>;
   } else if (caseKind === 'fries') {
