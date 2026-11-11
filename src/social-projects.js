@@ -15,7 +15,7 @@ export const huaxiaolouProject = {
   tags: ['虚拟偶像', '三维角色'],
   description: '迷你世界花小楼相关项目，收录角色视频、虚拟偶像直播、平面与动态视觉，以及抖音发布界面与账号数据。',
   role: '项目参与：三维场景搭建与镜头渲染',
-  image: './assets/hxl-cover.webp',
+  image: './assets/hxl-cherry-atmosphere-cover.webp',
   video: hxlClips[0].video,
   duration: hxlClips[0].duration,
   clips: hxlClips,

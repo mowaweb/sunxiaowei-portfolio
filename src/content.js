@@ -17,6 +17,21 @@ export const profile = {
   resume: './assets/resume.pdf',
 };
 
+const kongyijiProject = {
+  id: 'kongyiji',
+  title: '《孔乙己》· AI 叙事短片',
+  english: 'A STORY REIMAGINED',
+  category: 'personal',
+  nature: '个人创作',
+  tags: ['文学改编', 'AI 影像'],
+  duration: '01:34',
+  image: './assets/kongyiji.webp',
+  video: './assets/kongyiji.mp4',
+  description: '以《孔乙己》为基础进行 AI 短视频改编，探索角色、镜头与叙事表达。个人练习作品，独立创作。',
+  role: '创意 · AI 制作 · 剪辑合成',
+  portrait: true,
+};
+
 export const projects = [
   {
     id: 'drone',
@@ -175,23 +190,8 @@ export const projects = [
       ],
     },
   },
-  {
-    id: 'kongyiji',
-    number: '06',
-    title: '《孔乙己》· AI 叙事短片',
-    english: 'A STORY REIMAGINED',
-    category: 'personal',
-    nature: '个人创作',
-    tags: ['文学改编', 'AI 影像'],
-    duration: '01:34',
-    image: './assets/kongyiji.webp',
-    video: './assets/kongyiji.mp4',
-    description: '以《孔乙己》为基础进行 AI 短视频改编，探索角色、镜头与叙事表达。个人练习作品，独立创作。',
-    role: '创意 · AI 制作 · 剪辑合成',
-    portrait: true,
-  },
-  nalouProject,
-  ...additionalProjects,
+  // Keep the two virtual-idol accounts together in the two-column work grid.
+  ...additionalProjects.flatMap(project => project.id === 'huaxiaolou' ? [project, kongyijiProject, nalouProject] : [project]),
   ...personalAiProjects,
   ...graphicProjects,
   {
