@@ -1,0 +1,111 @@
+dialog.tencent-dialog {
+  color: #242529;
+  background: #fff;
+  scrollbar-color: #a5a5a5 #fff;
+}
+.tencent-dialog .dialog-content { padding: 0; }
+.tencent-dialog .dialog-heading {
+  color: #f0f2ed;
+  background: #1d1e22;
+  border-color: #ffffff20;
+}
+.tencent-dialog .dialog-heading > span { color: #b7c2b6; }
+.tencent-dialog .dialog-pagination { border-color: #24252926; }
+.tencent-dialog .dialog-pagination button,
+.tencent-dialog .dialog-pagination > span { color: #545955; }
+.tencent-case {
+  background: #fff;
+  color: #242529;
+  padding: 1.7% 0 3.5%;
+}
+.tencent-intro {
+  margin: 0 8.15%;
+  padding: 4.4% 7.9% 11.3%;
+  color: #f2f2ee;
+  background: #1d1e22;
+}
+.tencent-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 0 0 6.7%;
+  padding: 0 6.4%;
+}
+.tencent-eyebrow { margin: 0 0 5px; font-size: clamp(13px, 1.3vw, 20px); }
+.tencent-heading h2 {
+  margin: 0;
+  font-size: clamp(19px, 1.8vw, 29px);
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.tencent-subtitle { margin: 10px 0 0; font-size: clamp(13px, 1.35vw, 20px); }
+.tencent-dash { display: block; width: 12px; height: 1px; background: #747579; margin-top: 22px; }
+.tencent-English { margin: 18px 0 0; font-size: 9px; font-weight: 600; line-height: 1.5; text-align: right; }
+.tencent-artwork { display: block; position: relative; min-width: 0; cursor: zoom-in; }
+.tencent-artwork img { display: block; width: 100%; height: auto; }
+.tencent-artwork:focus-visible { outline: 2px solid #32776b; outline-offset: 4px; }
+.tencent-zoom {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 6px 10px;
+  color: #fff;
+  background: #17221ac9;
+  border-radius: 20px;
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+.tencent-artwork:is(:hover, :focus-visible) .tencent-zoom { opacity: 1; }
+.tencent-details {
+  position: relative;
+  display: grid;
+  grid-template-columns: 831fr 944fr;
+  align-items: start;
+  gap: 3.8%;
+  width: 61.6%;
+  margin: -8.2% auto 0;
+}
+.tencent-posters { width: 61.6%; margin: 6.6% auto 0; }
+.tencent-section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 0 20px;
+}
+.tencent-section-heading h3 { margin: 0; font-size: 13px; font-weight: 500; }
+.tencent-section-heading > span { font-size: 9px; letter-spacing: 0.08em; color: #777b79; }
+.tencent-poster-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.7%; }
+.tencent-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 61.6%;
+  margin: 26px auto 0;
+  color: #5d645f;
+  font-size: 11px;
+}
+.tencent-footer a { text-decoration: underline; text-underline-offset: 4px; }
+.tencent-footer a:focus-visible { outline: 2px solid #32776b; outline-offset: 5px; }
+@media (max-width: 700px) {
+  .tencent-case { padding-top: 0; padding-bottom: 24px; }
+  .tencent-intro { margin: 0; padding: 30px 18px 60px; }
+  .tencent-heading { padding: 0 2px; gap: 12px; margin-bottom: 28px; }
+  .tencent-heading h2 { font-size: clamp(18px, 4.7vw, 26px); }
+  .tencent-eyebrow { font-size: 12px; }
+  .tencent-subtitle { font-size: 13px; }
+  .tencent-English { display: none; }
+  .tencent-dash { margin-top: 16px; }
+  .tencent-details { width: calc(100% - 48px); gap: 12px; margin-top: -32px; }
+  .tencent-posters { width: calc(100% - 48px); margin-top: 32px; }
+  .tencent-section-heading { margin-bottom: 14px; }
+  .tencent-poster-grid { gap: 12px; }
+  .tencent-footer { width: calc(100% - 48px); margin-top: 22px; font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tencent-zoom { transition: none; }
+}

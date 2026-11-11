@@ -304,7 +304,7 @@ function ProjectDialog({ project, initialClipIndex = 0, onClose, onChange }) {
   if (!project) return null;
   const index = projects.findIndex(p => p.id === project.id);
   const caseKind = project.caseStudy?.kind;
-  const caseClass = { fuzzi: 'fuzzi-dialog', fries: 'fries-case-dialog', ip: 'ip-case-dialog', nalou: 'nalou-dialog', liweike: 'lw-dialog', poster: 'poster-dialog', unihui: 'unihui-dialog' }[caseKind] || '';
+  const caseClass = { tencent: 'tencent-dialog', xiguashuang: 'xiguashuang-dialog', fuzzi: 'fuzzi-dialog', fries: 'fries-case-dialog', ip: 'ip-case-dialog', nalou: 'nalou-dialog', liweike: 'lw-dialog', poster: 'poster-dialog', unihui: 'unihui-dialog' }[caseKind] || '';
   return <dialog className={`project-dialog ${caseKind ? 'case-dialog' : ''} ${caseClass}`} ref={ref} aria-label={project.title} onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === ref.current) onClose(); }}>
     <div className="dialog-content">
       <div className="dialog-heading"><span>SELECTED WORK / {project.number}</span><button ref={closeButton} className="dialog-close" onClick={onClose} aria-label="关闭作品视频"><span>关闭</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" stroke="currentColor" strokeWidth="1.5" /></svg></button></div>

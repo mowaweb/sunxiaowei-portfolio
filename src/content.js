@@ -149,6 +149,33 @@ export const projects = [
     caseStudy: { kind: 'fuzzi' },
   },
   {
+    id: 'xiguashuang',
+    title: '桂林三金西瓜霜 · IP 角色动画',
+    english: 'CHARACTER IN MOTION',
+    category: 'commercial',
+    medium: 'cg',
+    nature: '商业项目',
+    tags: ['角色绑定', '片尾动画'],
+    duration: '00:15',
+    image: './assets/xiguashuang-lineup.webp',
+    video: './assets/xiguashuang-film-landscape.mp4',
+    description: '参与桂林三金西瓜霜广告项目，负责片尾 IP 角色绑定与动画。展示横版、竖版广告演示及角色动画预演。',
+    role: '片尾 IP 角色绑定与动画',
+    clips: [
+      { id: 'xigua-landscape', title: '横版广告演示', stage: '项目演示 / DEMO', duration: '00:15', video: './assets/xiguashuang-film-landscape.mp4', image: './assets/xiguashuang-film-landscape.webp', portrait: false },
+      { id: 'xigua-portrait', title: '竖版广告演示', stage: '项目演示 / DEMO', duration: '00:10', video: './assets/xiguashuang-film-portrait.mp4', image: './assets/xiguashuang-film-portrait.webp', portrait: true },
+      { id: 'xigua-animation', title: '片尾角色动画预演', stage: '白模动作预演', duration: '00:04', video: './assets/xiguashuang-animation-preview.mp4', image: './assets/xiguashuang-animation-preview.webp', portrait: false },
+    ],
+    caseStudy: {
+      kind: 'xiguashuang',
+      art: [
+        { id: 'xigua-lineup', title: '品牌与产品系列', image: './assets/xiguashuang-lineup.webp', alt: '绿色背景下的桂林三金西瓜霜品牌标识与系列产品包装。', width: 1920, height: 1080, layout: 'wide' },
+        { id: 'xigua-product', title: '产品包装 · 项目画面', image: './assets/xiguashuang-product.webp', alt: '桂林西瓜霜产品包装盒与绿色瓶盖、黄色瓶身的产品。', width: 1000, height: 1000, layout: 'half' },
+        { id: 'xigua-character', title: '片尾 IP 角色 · 项目画面', image: './assets/xiguashuang-character.webp', alt: '西瓜霜拟人角色身穿绿色披风和靴子，微笑并竖起拇指。', width: 1036, height: 935, layout: 'half' },
+      ],
+    },
+  },
+  {
     id: 'kongyiji',
     number: '06',
     title: '《孔乙己》· AI 叙事短片',
@@ -167,6 +194,19 @@ export const projects = [
   ...additionalProjects,
   ...personalAiProjects,
   ...graphicProjects,
+  {
+    id: 'tencent-posters',
+    title: '腾讯棋牌 · 新年主 KV 与系列海报',
+    english: 'A NEW YEAR, A NEW CHAPTER',
+    category: 'graphic',
+    medium: 'cg',
+    nature: '商业项目',
+    tags: ['品牌 KV', '系列海报'],
+    contentLabel: '主 KV + 系列海报',
+    image: './assets/tencent-cover.webp',
+    description: '腾讯棋牌南京欢乐茶馆的新年视觉项目，展示「欢乐金陵有新局」主 KV、角色画面细节与系列海报。',
+    caseStudy: { kind: 'tencent' },
+  },
 ].map((project, index) => {
   let item = project;
   if (project.id === 'graphic-tmall-snake') item = {
