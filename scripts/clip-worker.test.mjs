@@ -43,7 +43,7 @@ test('a late seek crossing a block boundary matches the exact original bytes and
   assert.deepEqual(reads, [7, 8]);
 });
 
-test('all four full-length movies and their last bytes remain identical to the source', async () => {
+test('all registered clips and their last bytes remain identical to the source', async () => {
   for (const clip of clips.values()) {
     const {serve, source, reads} = await fixture(clip);
     const whole = await serve();

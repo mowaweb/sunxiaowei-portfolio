@@ -31,6 +31,7 @@ await fs.rm(output, { recursive: true, force: true });
 await build({ root, build: { outDir: output, copyPublicDir: false } });
 
 const omitted = new Set([
+  ...[...clips.values()].map(clip => clip.file),
   'film-drone-web.mp4', 'film-osmo-web.mp4', 'full-bambu.mp4', 'film-lotus-web.mp4',
   'personal-ai-gt.mp4', 'personal-ai-exam.mp4', 'personal-ai-10086.mp4',
 ].map(name => 'assets/' + name));
