@@ -14,6 +14,7 @@ import './case-studies.css';
 import './hero-slide.css';
 import './hero-opening.css';
 import './about-career.css';
+import './project-social-summary.css';
 
 function CapabilityIcon({ type }) {
   return <svg className="capability-icon" viewBox="0 0 100 100" fill="none" aria-hidden="true">
@@ -243,6 +244,10 @@ function ProjectCard({ project, onOpen }) {
   return <button data-project={project.id} className={`project-card ${project.featured ? 'featured' : ''} ${project.portrait ? 'portrait-project' : ''} ${project.category === 'graphic' ? 'graphic-project' : ''}`} onClick={() => onOpen(project)} aria-label={`${action}${project.title}`}>
     <div className="project-art"><img {...cover} src={cover?.src || project.image} sizes="(max-width: 640px) 50vw, (max-width: 1812px) 48vw, 836px" alt={project.title + '作品画面'} loading="lazy" decoding="async" />{project.portrait && <div className="portrait-cover-type" aria-hidden="true"><span>AI SHORT FILM</span><strong>孔乙己</strong><small>一个熟悉的故事，<br />一次新的影像表达。</small></div>}<div className="project-shade" /><div className="project-topline"><span>{project.number} / {project.nature}</span><span className="project-duration">{project.video ? <PlayIcon /> : <Arrow />}{fullFilms[project.id] ? '正片 + ' : ''}{countLabel}</span></div><div className="project-art-footer"><span>{project.english}</span><span className="project-open"><Arrow /></span></div>{project.featured && <div className="featured-title"><span>三维 × AI · 产品影像制作</span><strong>越过想象的边界。</strong></div>}<span className="project-hover-play">{project.video ? <PlayIcon /> : <Arrow />}{action}作品</span></div>
     <div className="project-meta"><h3>{project.title}</h3><div>{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></div>
+    {project.socialSummary && <div className="project-social-summary">
+      <span className="project-social-metrics">{project.socialSummary.map(metric => <span key={metric.label}><strong>{metric.value}</strong><span>{metric.label}</span></span>)}</span>
+      <small>{project.socialNote || '抖音账号与视频数据 · 据所提供的历史截图'}</small>
+    </div>}
     {fullFilms[project.id] && <FilmViews film={fullFilms[project.id]} />}
   </button>;
 }
@@ -304,7 +309,7 @@ function ProjectDialog({ project, initialClipIndex = 0, onClose, onChange }) {
   if (!project) return null;
   const index = projects.findIndex(p => p.id === project.id);
   const caseKind = project.caseStudy?.kind;
-  const caseClass = { tencent: 'tencent-dialog', xiguashuang: 'xiguashuang-dialog', fuzzi: 'fuzzi-dialog', fries: 'fries-case-dialog', ip: 'ip-case-dialog', nalou: 'nalou-dialog', liweike: 'lw-dialog', poster: 'poster-dialog', unihui: 'unihui-dialog' }[caseKind] || '';
+  const caseClass = { tencent: 'tencent-dialog', xiguashuang: 'xiguashuang-dialog', fuzzi: 'fuzzi-dialog', fries: 'fries-case-dialog', ip: 'ip-case-dialog', nalou: 'nalou-dialog', liweike: 'lw-dialog', huaxiaolou: 'hxl-dialog', poster: 'poster-dialog', unihui: 'unihui-dialog' }[caseKind] || '';
   return <dialog className={`project-dialog ${caseKind ? 'case-dialog' : ''} ${caseClass}`} ref={ref} aria-label={project.title} onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === ref.current) onClose(); }}>
     <div className="dialog-content">
       <div className="dialog-heading"><span>SELECTED WORK / {project.number}</span><button ref={closeButton} className="dialog-close" onClick={onClose} aria-label="关闭作品视频"><span>关闭</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" stroke="currentColor" strokeWidth="1.5" /></svg></button></div>

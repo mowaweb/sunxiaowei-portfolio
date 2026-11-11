@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import SocialAccountSection from './SocialAccountSection';
 
 const number = value => String(value).padStart(2, '0');
 
@@ -48,6 +49,7 @@ export default function LiweikeCaseStudy({ project, Player }) {
             <span className="lw-film-meta"><b>FILM / {number(index + 1)}</b><i>{clip.duration}</i></span>
             <img className="lw-film-thumb" src={clip.image} width="84" height="84" alt="" />
             <strong>{clip.title}</strong><span className="lw-film-stage">{clip.stage}</span>
+            {clip.socialLikes && <span className="social-clip-likes">视频点赞 {clip.socialLikes}<small>据抖音历史截图</small></span>}
             <span className="lw-film-play"><span aria-hidden="true">▸</span> 播放影片</span>
           </button>;
         })}
@@ -55,6 +57,7 @@ export default function LiweikeCaseStudy({ project, Player }) {
       <button type="button" className="lw-prev" aria-label="上一个片段" onClick={() => setSelected(i => wrap(i - 1))}>←</button>
       <button type="button" className="lw-next" aria-label="下一个片段" onClick={() => setSelected(i => wrap(i + 1))}>→</button>
     </section>
+    <SocialAccountSection project={project} />
     <section className="lw-gallery" aria-label="角色与场景静帧">
       <div className="lw-section-heading"><h3>角色与场景静帧</h3><span>STILL FRAMES / {number(stills.length)}</span></div>
       <div className="lw-gallery-rows">{Array.from({ length: Math.ceil(stills.length / 3) }, (_, row) =>

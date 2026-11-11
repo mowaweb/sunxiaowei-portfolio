@@ -10,6 +10,7 @@ import NalouCaseStudy from './NalouCaseStudy';
 import FuzziCaseStudy from './FuzziCaseStudy';
 import TencentCaseStudy from './TencentCaseStudy';
 import XiguashuangCaseStudy from './XiguashuangCaseStudy';
+import HuaxiaolouCaseStudy from './HuaxiaolouCaseStudy';
 import VideoTimeline from './VideoTimeline';
 import './liweike-case.css';
 import './poster-case.css';
@@ -103,6 +104,8 @@ export default function ProjectContent({ project, initialClipIndex = 0 }) {
     caseContent = <NalouCaseStudy key={project.id} project={project} Player={ClipPlayer} initialClipIndex={initialClipIndex} />;
   } else if (caseKind === 'liweike') {
     caseContent = <LiweikeCaseStudy project={project} Player={ClipPlayer} />;
+  } else if (caseKind === 'huaxiaolou') {
+    caseContent = <HuaxiaolouCaseStudy key={project.id} project={project} Player={ClipPlayer} />;
   } else if (caseKind === 'poster') {
     caseContent = <PosterCaseStudy key={project.id} project={project} Player={ClipPlayer} />;
   } else if (caseKind === 'unihui') {
